@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solo Leveling — Sistema Real</title>
+  <meta name="theme-color" content="#05050f">
+  <meta name="description" content="Sistema de gamificación de vida real inspirado en Solo Leveling">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon"><i class="ti ti-sword" aria-hidden="true"></i></div>
+    <span class="logo-txt">Solo Leveling</span>
+    <span class="logo-v">v3.0</span>
+  </div>
+  <div class="hud">
+    <div class="hstat">
+      <i class="ti ti-coin" aria-hidden="true" style="color:#ffd700;font-size:13px"></i>
+      <span class="hval" id="hC">0</span>
+    </div>
+    <span class="hsep">|</span>
+    <div class="hstat">
+      <i class="ti ti-bolt" aria-hidden="true" style="color:#bf5fff;font-size:13px"></i>
+      <span class="hval" id="hX">0</span>
+    </div>
+    <span class="hsep">|</span>
+    <div class="hstat">
+      <i class="ti ti-flame" aria-hidden="true" style="color:#ff2d55;font-size:13px"></i>
+      <span class="hval" id="hR">0</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nb on"  onclick="nav('inicio',this)">Inicio</button>
+  <button class="nb"     onclick="nav('misiones',this)">Misiones</button>
+  <button class="nb"     onclick="nav('rangos',this)">Rangos</button>
+  <button class="nb"     onclick="nav('calendario',this)">Calendario</button>
+  <button class="nb"     onclick="nav('zona',this)">Zona Oscura</button>
+  <button class="nb"     onclick="nav('ruta',this)">Ruta</button>
+  <button class="nb"     onclick="nav('tienda',this)">Tienda</button>
+  <button class="nb"     onclick="nav('alter',this)">Alter Egos</button>
+</div>
+
+<div class="content">
+
+  <!-- ===== INICIO ===== -->
+  <div class="sec on" id="sec-inicio">
+    <div id="rankupBanner"></div>
+
+    <div class="g2">
+      <div class="card">
+        <div class="slbl">Rango Hábitos</div>
+        <div style="margin-top:4px"><span class="pill pill-h" id="dRH">Ansioso</span></div>
+        <div class="stars" id="dSH">☆☆☆</div>
+        <div class="ssub" id="dSubH">0/20 días</div>
+        <div class="xbw"><div class="xb xb-p" id="dBH" style="width:0%"></div></div>
+      </div>
+      <div class="card">
+        <div class="slbl">Rango Técnico</div>
+        <div style="margin-top:4px"><span class="pill pill-t" id="dRT">Aprendiz</span></div>
+        <div class="stars" id="dST">☆☆☆</div>
+        <div class="ssub">Python fundamentos</div>
+        <div class="xbw"><div class="xb xb-g" id="dBT" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="g5">
+      <div class="card" style="padding:8px 4px;text-align:center">
+        <div class="orb oF"><span class="onum" id="sF">0</span><span class="olbl">Fuerza</span></div>
+      </div>
+      <div class="card" style="padding:8px 4px;text-align:center">
+        <div class="orb oM"><span class="onum" id="sM">0</span><span class="olbl">Mente</span></div>
+      </div>
+      <div class="card" style="padding:8px 4px;text-align:center">
+        <div class="orb oE"><span class="onum" id="sE">0</span><span class="olbl">Espíritu</span></div>
+      </div>
+      <div class="card" style="padding:8px 4px;text-align:center">
+        <div class="orb oV"><span class="onum" id="sV">0</span><span class="olbl">Vitalidad</span></div>
+      </div>
+      <div class="card" style="padding:8px 4px;text-align:center">
+        <div class="orb oD"><span class="onum" id="sD">0</span><span class="olbl">Disciplina</span></div>
+      </div>
+    </div>
+
+    <div class="stitle">Stacks de poder</div>
+    <div class="stack-grid" id="stackGrid"></div>
+
+    <div class="g2">
+      <div class="card">
+        <div class="slbl">XP Hoy</div>
+        <div class="sval" id="dXH">0</div>
+        <div class="ssub">de 189 posibles</div>
+        <div class="xbw"><div class="xb xb-c" id="dBX" style="width:0%"></div></div>
+      </div>
+      <div class="card">
+        <div class="slbl">Racha</div>
+        <div class="sval" id="dRC">0 días</div>
+        <div class="ssub" id="dBS">Sigue adelante</div>
+        <div class="xbw"><div class="xb xb-g" id="dBR" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:0">
+      <div class="slbl">Estado del guerrero</div>
+      <div style="font-size:14px;font-weight:700;margin-top:4px" id="dEst">Ansioso</div>
+      <div class="ssub" id="dEstS">Rango actual</div>
+    </div>
+
+    <button class="settings-btn" onclick="showReset()">
+      <i class="ti ti-refresh" aria-hidden="true"></i> Resetear progreso
+    </button>
+  </div>
+
+  <!-- ===== MISIONES ===== -->
+  <div class="sec" id="sec-misiones">
+    <div id="secretCard"></div>
+    <div class="card card2" style="margin-bottom:10px">
+      <div class="stitle">Espirituales y mentales</div>
+      <div id="mE"></div>
+    </div>
+    <div class="card card2" style="margin-bottom:10px">
+      <div class="stitle">Físicas</div>
+      <div id="mF"></div>
+    </div>
+    <div class="card card2">
+      <div class="stitle">Estudio</div>
+      <div id="mS"></div>
+    </div>
+  </div>
+
+  <!-- ===== RANGOS ===== -->
+  <div class="sec" id="sec-rangos">
+    <div class="g2">
+      <div class="card card2">
+        <div class="stitle">Hábitos</div>
+        <div id="rH"></div>
+      </div>
+      <div class="card card2">
+        <div class="stitle">Técnico</div>
+        <div id="rT"></div>
+      </div>
+    </div>
+    <div class="card card2" style="margin-bottom:10px">
+      <div class="stitle">Recompensas — Hábitos</div>
+      <div id="rRewH"></div>
+    </div>
+    <div class="card card2">
+      <div class="stitle">Recompensas — Técnico</div>
+      <div id="rRewT"></div>
+    </div>
+  </div>
+
+  <!-- ===== CALENDARIO ===== -->
+  <div class="sec" id="sec-calendario">
+    <div class="streak-box">
+      <i class="ti ti-flame" aria-hidden="true" style="font-size:26px;color:var(--c2)"></i>
+      <div>
+        <div class="streak-num" id="cRacha">0</div>
+        <div class="streak-lbl">días de racha</div>
+      </div>
+      <div style="flex:1;padding-left:12px">
+        <div class="bonus-row">
+          <span class="bdays">3 días</span>
+          <span class="bname">+10% XP</span>
+          <span class="bactive" id="b3" style="display:none">✦ Activo</span>
+        </div>
+        <div class="bonus-row">
+          <span class="bdays">7 días</span>
+          <span class="bname">Estado de flujo</span>
+          <span class="bactive" id="b7" style="display:none">✦ Activo</span>
+        </div>
+        <div class="bonus-row">
+          <span class="bdays">30 días</span>
+          <span class="bname">Despertar de poder</span>
+          <span class="bactive" id="b30" style="display:none">✦ Activo</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="leg">
+      <div class="leg-i"><div class="leg-d" style="background:var(--c3)"></div>Completado</div>
+      <div class="leg-i"><div class="leg-d" style="background:var(--red)"></div>Fallido</div>
+      <div class="leg-i"><div class="leg-d" style="background:var(--c5)"></div>Boss vencido</div>
+      <div class="leg-i"><div class="leg-d" style="background:var(--c1)"></div>Entrenamiento ligero</div>
+    </div>
+
+    <div class="cal-mode-btns">
+      <button class="cmb on" onclick="setCM('mark',this)">Marcar día</button>
+      <button class="cmb"    onclick="setCM('boss',this)">Boss fight</button>
+      <button class="cmb"    onclick="setCM('light',this)">Ligero</button>
+    </div>
+
+    <div class="card card2">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:12px;font-weight:600" id="cLabel">Junio 2025</span>
+        <div style="display:flex;gap:6px">
+          <button class="cmb" onclick="chM(-1)"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+          <button class="cmb" onclick="chM(1)"><i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
+      <div class="cal-hdr" id="cHdr"></div>
+      <div class="cal-grid" id="cGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===== ZONA OSCURA ===== -->
+  <div class="sec" id="sec-zona">
+    <div class="zone-wrap">
+      <div class="zone-title">¿Caíste hoy en la zona oscura?</div>
+      <div class="zone-big-chk" id="zonaBigChk" onclick="toggleZona()"></div>
+      <div class="zone-sub" id="zonaSub">Toca si fallaste hoy</div>
+      <div class="zone-list">
+        <div class="zone-item">Redes sociales sin límite (máx 20 min/día)</div>
+        <div class="zone-item">Lujuria</div>
+        <div class="zone-item">Simpear</div>
+        <div class="zone-item">Videojuegos sin ganarlos como recompensa</div>
+        <div class="zone-item">Comida chatarra / dulces / alcohol</div>
+        <div class="zone-item">Apuestas</div>
+      </div>
+    </div>
+    <div class="card card2">
+      <div class="stitle">Castigos — Rango: <span id="punRank" style="color:var(--red)">Ansioso</span></div>
+      <div class="punish-box">
+        <div class="ptitle"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Penalización activa</div>
+        <div id="punList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RUTA ===== -->
+  <div class="sec" id="sec-ruta">
+    <div class="stitle" style="margin-bottom:10px">Ruta de estudio — 6 meses</div>
+    <div id="rutaList"></div>
+  </div>
+
+  <!-- ===== TIENDA ===== -->
+  <div class="sec" id="sec-tienda">
+    <div class="streak-box" style="margin-bottom:12px">
+      <i class="ti ti-coin" aria-hidden="true" style="font-size:26px;color:var(--c5)"></i>
+      <div>
+        <div class="streak-num" style="color:var(--c5)" id="shopC">0</div>
+        <div class="streak-lbl">monedas de sombra</div>
+      </div>
+    </div>
+    <div class="card card2">
+      <div class="stitle">Recompensas disponibles</div>
+      <div id="shopList"></div>
+    </div>
+  </div>
+
+  <!-- ===== ALTER EGOS ===== -->
+  <div class="sec" id="sec-alter">
+    <div id="alterContent"></div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- RESET MODAL -->
+<div class="reset-overlay" id="resetOverlay" onclick="hideReset()"></div>
+<div class="reset-modal" id="resetModal">
+  <div style="font-size:14px;font-weight:700;color:var(--red);margin-bottom:8px">
+    <i class="ti ti-alert-triangle" aria-hidden="true"></i> Resetear progreso
+  </div>
+  <div style="font-size:11px;color:var(--t2);margin-bottom:10px">
+    Esta acción borrará todo tu progreso permanentemente.<br>
+    Escribe <strong style="color:var(--red)">RESET</strong> para confirmar.
+  </div>
+  <input class="reset-input" id="resetInput" placeholder="Escribe RESET">
+  <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+    <button class="reset-btn" onclick="confirmReset()">Confirmar</button>
+    <button class="cancel-btn" onclick="hideReset()">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- SCRIPTS — orden importa -->
+<script src="data.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
