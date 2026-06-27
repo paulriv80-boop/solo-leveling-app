@@ -1087,5 +1087,29 @@ function renderAll() {
 // INICIO DE LA APLICACIÓN
 // ============================================================
 
+// ============================================================
+// BOOT SYSTEM
+// ============================================================
+
+function bootSystem() {
+
+  const boot = document.getElementById('bootScreen');
+
+  if (!boot) return;
+
+  setTimeout(() => {
+
+    boot.style.opacity = '0';
+    boot.style.transition = 'opacity .8s ease';
+
+    setTimeout(() => {
+      boot.remove();
+    }, 800);
+
+  }, 2500);
+
+}
+
 loadState();
 renderAll();
+bootSystem();
