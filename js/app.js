@@ -11,7 +11,7 @@
 
 const CONFIG = {
   STORAGE_KEY: 'sl_v3',
-  STATE_VERSION: 3,          // Incrementar cuando cambie la forma del estado
+  STATE_VERSION: 4,          // Incrementar cuando cambie la forma del estado
   XP_DIA_MAXIMO: 189,       // Suma de todos los XP posibles en misiones diarias
   DIAS_POR_ESTRELLA: 20,    // Días consecutivos para ganar 1 estrella
   ESTRELLAS_POR_RANGO: 3,   // Estrellas necesarias para subir de rango
@@ -41,9 +41,13 @@ const DEFAULT_STATE = {
   rankT: 0,                   // Índice en RANGOS_TECNICO
   starsT: 0,
   dc: 0,                      // Días completados en subnivel actual
+  
   stacks: { shield: 0, steel: 0, iron: 0, clarity: 0, shadow: 0, warrior: 0 },
+  stacksHoy: {},
+  stacksHoyDate: null,
   alterActive: null,
   lastVisit: null,
+  
 };
 
 // Estado activo en memoria
@@ -166,6 +170,12 @@ const StateMigration = {
       raw.alterActive = null;
     }
 
+    // v3 → v4: stacks diarios
+    if (version < 4) {
+    raw.stacksHoy = {};
+    raw.stacksHoyDate = null;
+    }
+
     raw.version = CONFIG.STATE_VERSION;
     return raw;
   },
@@ -193,6 +203,12 @@ function loadState() {
   const today = DateUtils.today();
   if (!ST.mis[today])  ST.mis[today]  = {};
   if (!ST.zona[today]) ST.zona[today] = {};
+
+  // Si cambió el día, reiniciar los stacks diarios
+  if (ST.stacksHoyDate !== today) {
+  ST.stacksHoy = {};
+  ST.stacksHoyDate = today;
+  }
 
   // Notificar inactividad si aplica
   if (ST.lastVisit && ST.lastVisit !== today) {
