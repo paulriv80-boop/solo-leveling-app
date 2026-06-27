@@ -1,0 +1,8 @@
+/* ---- RESPONSIVE MOBILE ---- */
+@media (max-width: 480px) {
+  .stack-grid { grid-template-columns: repeat(3,1fr); }
+  .g5 { grid-template-columns: repeat(3,1fr); }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .alter-grid { grid-template-columns: 1fr 1fr; }
+  .hud .hstat:last-child { display: none; }
+}

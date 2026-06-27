@@ -1,0 +1,7 @@
+/* ---- LAYOUT ---- */
+.content { padding: 14px 14px 80px; max-width: 680px; margin: 0 auto; }
+.sec { display: none; }
+.sec.on { display: block; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+.g5 { display: grid; grid-template-columns: repeat(5,1fr); gap: 6px; margin-bottom: 12px; }

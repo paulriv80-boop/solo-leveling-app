@@ -1,0 +1,144 @@
+/* ---- TOPBAR ---- */
+
+/* ============================================================
+   TOPBAR — THE SYSTEM HUD
+============================================================ */
+
+.topbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:12px 18px;
+
+    background:rgba(8,16,24,.88);
+    backdrop-filter:blur(18px);
+
+    border-bottom:1px solid rgba(0,245,255,.15);
+
+    box-shadow:
+        0 2px 18px rgba(0,245,255,.05),
+        inset 0 -1px 0 rgba(255,255,255,.03);
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo-txt{
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:1.5px;
+}
+
+.logo-v{
+    margin-left:12px;
+
+    padding:3px 8px;
+
+    border-radius:20px;
+
+    border:1px solid rgba(0,245,255,.15);
+
+    background:rgba(0,245,255,.05);
+
+    color:var(--c1);
+
+    font-size:10px;
+}
+
+.hud{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.system-status{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    font-size:11px;
+
+    color:var(--t1);
+
+    letter-spacing:1px;
+
+}
+
+.status-dot{
+
+    width:8px;
+    height:8px;
+
+    border-radius:50%;
+
+    background:#00ff88;
+
+    box-shadow:
+        0 0 6px #00ff88,
+        0 0 14px #00ff88;
+
+    animation:statusPulse 1.8s infinite;
+
+}
+
+.operator-panel{
+
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+
+}
+
+.operator-label{
+
+    font-size:9px;
+
+    color:var(--t3);
+
+    letter-spacing:2px;
+
+    margin-bottom:4px;
+
+}
+
+.operator-values{
+
+    display:flex;
+    gap:12px;
+
+}
+
+.hstat{
+
+    display:flex;
+    align-items:center;
+    gap:4px;
+
+    color:var(--t1);
+
+    font-size:12px;
+
+}
+
+.hstat i{
+
+    color:var(--c1);
+
+}
+
+.hval{
+
+    color:white;
+
+    font-weight:700;
+
+}
