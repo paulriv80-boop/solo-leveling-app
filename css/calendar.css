@@ -1,0 +1,39 @@
+/* ---- CALENDARIO ---- */
+.cal-hdr { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-bottom: 3px; }
+.cal-dh { text-align: center; font-size: 9px; color: var(--t3); padding: 2px 0; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-d {
+  height: 38px; border-radius: 6px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-size: 10px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--bd); background: var(--bg2); color: var(--t2);
+  transition: all .15s; position: relative;
+}
+.cal-d:hover { border-color: var(--c1); color: var(--t0); }
+.cal-d.today  { border-color: var(--c2); color: var(--c2); box-shadow: var(--glow2); }
+.cal-d.green  { background: #001a08; border-color: var(--c3); color: var(--c3); }
+.cal-d.red    { background: #1a0008; border-color: var(--red); color: var(--red); }
+.cal-d.gold   { background: #1a1000; border-color: var(--c5); color: var(--c5); }
+.cal-d.blue   { background: #000d1a; border-color: var(--c1); color: var(--c1); }
+.boss-mk { position: absolute; top: 2px; right: 3px; font-size: 7px; color: var(--c5); }
+.cal-mc { font-size: 7px; color: inherit; opacity: .7; }
+
+.streak-box {
+  background: var(--bg2); border: 1px solid var(--bd); border-radius: 12px;
+  padding: 12px 14px; display: flex; align-items: center; gap: 14px; margin-bottom: 12px;
+}
+.streak-num { font-size: 26px; font-weight: 700; color: var(--c2); text-shadow: var(--glow2); }
+.streak-lbl { font-size: 10px; color: var(--t2); }
+.bonus-row {
+  background: var(--bg3); border-radius: 6px; padding: 6px 10px;
+  margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
+}
+.bonus-row:last-child { margin-bottom: 0; }
+.bdays { font-size: 10px; font-weight: 700; color: var(--c5); min-width: 52px; }
+.bname { flex: 1; font-size: 11px; color: var(--t1); }
+.bactive { font-size: 10px; color: var(--c3); text-shadow: var(--glow3); }
+.cal-mode-btns { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.cmb { font-size: 10px; padding: 4px 10px; background: var(--bg2); border: 1px solid var(--bd); border-radius: 6px; cursor: pointer; color: var(--t2); font-family: inherit; }
+.cmb.on { background: var(--bg3); border-color: var(--c1); color: var(--c1); }
+.leg { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.leg-i { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--t2); }
+.leg-d { width: 10px; height: 10px; border-radius: 2px; }

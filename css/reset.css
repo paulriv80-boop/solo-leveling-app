@@ -1,0 +1,17 @@
+/* ---- RESET MODAL ---- */
+.reset-overlay { display: none; position: fixed; inset: 0; background: #00000099; z-index: 499; }
+.reset-overlay.show { display: block; }
+.reset-modal {
+  display: none; background: var(--bg2); border: 2px solid var(--red);
+  border-radius: 14px; padding: 20px; text-align: center;
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 280px; z-index: 500;
+}
+.reset-modal.show { display: block; }
+.reset-input {
+  width: 100%; padding: 8px; background: var(--bg3); border: 1px solid var(--red);
+  border-radius: 6px; color: var(--t0); font-family: inherit; font-size: 13px;
+  margin: 10px 0; text-align: center;
+}
+.reset-btn   { padding: 8px 20px; background: #1a0008; border: 1px solid var(--red); border-radius: 8px; color: var(--red); cursor: pointer; font-family: inherit; font-size: 12px; }
+.cancel-btn  { padding: 8px 20px; background: var(--bg3); border: 1px solid var(--bd2); border-radius: 8px; color: var(--t2); cursor: pointer; font-family: inherit; font-size: 12px; margin-left: 8px; }

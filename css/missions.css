@@ -1,0 +1,31 @@
+/* ---- MISIONES ---- */
+.mrow {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 0; border-bottom: 1px solid var(--bd); position: relative;
+}
+.mrow:last-child { border-bottom: none; }
+.mchk {
+  width: 18px; height: 18px; border: 1.5px solid var(--bd2); border-radius: 4px;
+  cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  transition: all .15s; background: var(--bg3); color: var(--c3); font-size: 11px;
+}
+.mchk.done { background: #001a08; border-color: var(--c3); box-shadow: var(--glow3); }
+.mtxt { flex: 1; font-size: 12px; color: var(--t1); cursor: pointer; }
+.mtxt.done { color: var(--t3); text-decoration: line-through; }
+.mxp { font-size: 10px; color: var(--c2); font-weight: 600; white-space: nowrap; }
+.mstat { font-size: 9px; color: var(--t3); white-space: nowrap; margin-left: 2px; }
+
+/* ---- MISIÓN SECRETA ---- */
+.secret-card {
+  background: linear-gradient(135deg, var(--bg2), var(--bg3));
+  border: 1px solid var(--c5); border-radius: 12px;
+  padding: 14px; margin-bottom: 12px; text-align: center;
+}
+.secret-icon  { font-size: 32px; color: var(--c5); text-shadow: var(--glow5); margin-bottom: 8px; }
+.secret-title { font-size: 12px; font-weight: 700; color: var(--c5); }
+.secret-desc  { font-size: 11px; color: var(--t1); margin-top: 6px; }
+.secret-btn {
+  font-size: 11px; padding: 6px 14px; background: var(--bg3);
+  border: 1px solid var(--c5); border-radius: 8px; cursor: pointer;
+  color: var(--c5); font-family: inherit; margin-top: 8px;
+}

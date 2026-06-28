@@ -1,0 +1,12 @@
+/* ---- MODULOS RUTA ---- */
+.mod-row {
+  background: var(--bg2); border: 1px solid var(--bd); border-radius: 8px;
+  padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+}
+.mod-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-active { background: var(--c2); box-shadow: var(--glow2); }
+.dot-done   { background: var(--c3); }
+.dot-locked { background: var(--bg4); }
+.mod-name { flex: 1; font-size: 12px; color: var(--t0); }
+.mod-sub  { font-size: 9px; color: var(--t3); margin-top: 1px; }
+.mod-wk   { font-size: 9px; color: var(--t3); white-space: nowrap; }
