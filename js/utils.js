@@ -1,0 +1,131 @@
+// ============================================================
+// MÓDULO: UTILS — Solo Leveling
+// Utilidades reutilizables: fechas, formateo, acceso seguro al
+// DOM y notificaciones (Toast). Sin lógica de negocio.
+// ============================================================
+
+const DateUtils = {
+  today() {
+    return new Date().toISOString().split('T')[0];
+  },
+
+  /**
+   * Devuelve el lunes de la semana actual (clave para misión secreta semanal).
+   */
+  weekStart() {
+    const d = new Date();
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff)).toISOString().split('T')[0];
+  },
+
+  /**
+   * Calcula la racha real de días verdes consecutivos hasta hoy.
+   * No cuenta total de verdes — cuenta los consecutivos desde ayer hacia atrás.
+   */
+  calcRacha(dias) {
+    let count = 0;
+    const today = new Date();
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().split('T')[0];
+      if (dias[key] === 'green') {
+        count++;
+      } else {
+        break;
+      }
+    }
+    return count;
+  },
+
+  /**
+   * Días entre dos fechas ISO 'YYYY-MM-DD'.
+   */
+  daysBetween(a, b) {
+    return Math.floor((new Date(b) - new Date(a)) / 86400000);
+  },
+};
+
+
+// ============================================================
+// HELPERS DE DOM
+// Funciones pequeñas de presentación reutilizables.
+// ============================================================
+
+/**
+ * Obtiene un elemento del DOM de forma segura.
+ * Evita crasheos silenciosos en renders.
+ */
+function el(id) {
+  const element = document.getElementById(id);
+  if (!element) {
+    console.warn(`[DOM] Elemento no encontrado: #${id}`);
+  }
+  return element;
+}
+
+/**
+ * Actualiza textContent de un elemento de forma segura.
+ */
+function setText(id, text) {
+  const element = el(id);
+  if (element) element.textContent = text;
+}
+
+/**
+ * Actualiza un estilo inline de forma segura.
+ */
+function setStyle(id, prop, value) {
+  const element = el(id);
+  if (element) element.style[prop] = value;
+}
+
+/**
+ * Renderiza N estrellas llenas y (max-N) vacías.
+ */
+function starsHTML(n, max = 3) {
+  return '★'.repeat(Math.max(0, n)) + '☆'.repeat(Math.max(0, max - n));
+}
+
+/**
+ * Calcula porcentaje clampeado a [0, 100].
+ */
+function pct(value, total) {
+  if (total === 0) return 0;
+  return Math.min(100, Math.max(0, Math.round((value / total) * 100)));
+}
+
+/**
+ * Texto descriptivo del estado de racha.
+ */
+function bonusLabel(racha) {
+  if (racha >= 30) return 'Despertar de poder ✦';
+  if (racha >= 7)  return 'Estado de flujo ✦';
+  if (racha >= 3)  return 'Bonus XP activo ✦';
+  const faltan = CONFIG.RACHA_BONUS[0] - racha;
+  return `${faltan} día${faltan !== 1 ? 's' : ''} para primer bonus`;
+}
+
+
+// ============================================================
+// SISTEMA DE NOTIFICACIONES (TOAST)
+// ============================================================
+
+const Toast = {
+  _timer: null,
+
+  show(msg, color) {
+    const t = el('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.style.borderColor = color || 'var(--c2)';
+    t.style.color = color || 'var(--c1)';
+    t.classList.add('show');
+    clearTimeout(this._timer);
+    this._timer = setTimeout(() => t.classList.remove('show'), 3200);
+  },
+};
+
+// Alias global para compatibilidad con llamadas existentes en HTML
+function showToast(msg, col) { Toast.show(msg, col); }
