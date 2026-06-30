@@ -1,3 +1,14 @@
+/* ---- PROPÓSITO ---- */
+.proposito-row { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+.proposito-input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--bd2);
+  border-radius: 8px; padding: 7px 10px; color: var(--t0);
+  font-family: inherit; font-size: 12px; outline: none;
+}
+.proposito-input:focus { border-color: var(--c3); box-shadow: 0 0 0 2px var(--c3)22; }
+.proposito-input::placeholder { color: var(--t3); }
+.proposito-hint { font-size: 10px; color: var(--t3); margin-top: 5px; }
+
 /* ---- MODULOS RUTA ---- */
 .mod-row {
   background: var(--bg2); border: 1px solid var(--bd); border-radius: 8px;

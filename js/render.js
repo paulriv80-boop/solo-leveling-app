@@ -39,8 +39,9 @@ function renderInicio() {
   }
   setText('dEstS', rh.subs ? rh.subs[Math.min(ST.starsH, 2)] : rh.desc || '');
 
-  // Stats (orbs)
-  ['F', 'M', 'E', 'V', 'D'].forEach(k => setText('s' + k, ST.stats[k] || 0));
+  // Stats (atributos)
+  ['fuerza','agilidad','energia','serenidad','confianza','conocimiento','claridad','espiritualidad','disciplina']
+    .forEach(k => setText('s' + k, ST.stats[k] || 0));
 
   // HUD superior
   setText('hC', ST.coins);
@@ -53,94 +54,74 @@ function renderInicio() {
     if (indicator) indicator.style.display = ST.racha >= dias ? 'inline' : 'none';
   });
 
-  renderStacks();
-}
-
-function renderStacks() {
-  const container = el('stackGrid');
-  if (!container) return;
-
-  const fragments = STACKS.map(sk => {
-    const lvl = ST.stacks[sk.id] || 0;
-    const isActive = lvl > 0;
-    return `<div class="stack-item${isActive ? ' active' : ''}" title="${sk.name} — ${sk.desc}">
-      ${STACK_SVGS[sk.id]}
-      <div class="stack-name">${sk.name}</div>
-      <div class="stack-lvl">${isActive ? 'Nv.' + lvl : '—'}</div>
-      <div class="stack-bar">
-        <div class="stack-bar-fill" style="width:${pct(lvl, sk.max)}%;background:${sk.color}"></div>
-      </div>
-    </div>`;
-  });
-
-  container.innerHTML = fragments.join('');
 }
 
 
 // ---- MISIONES ----
 
 function renderMisiones() {
-  const wk = DateUtils.weekStart();
-  const secretEl = el('secretCard');
-  if (secretEl) secretEl.innerHTML = buildSecretCard(wk);
-
-  renderListaMisiones(MISIONES.E, 'mE');
-  renderListaMisiones(MISIONES.F, 'mF');
-  renderListaMisiones(MISIONES.S, 'mS');
+  renderListaMisiones(MISIONES.FISICO,     'mFISICO');
+  renderListaMisiones(MISIONES.MENTE,      'mMENTE');
+  renderListaMisiones(MISIONES.ESPIRITUAL, 'mESPIRITUAL');
+  renderProposito('mPROPOSITO');
 }
 
 function renderListaMisiones(list, elId) {
   const container = el(elId);
   if (!container) return;
 
-  const today = DateUtils.today();
+  const today    = DateUtils.today();
   const todayMis = ST.mis[today] || {};
 
   container.innerHTML = list.map(m => {
-    const done = !!todayMis[m.id];
-    const tipHTML = m.tip
-      ? `<div class="tooltip">
-           <div class="tooltip-title">${m.tip.title}</div>
-           ${m.tip.desc}
-         </div>`
-      : '';
+    const done     = !!todayMis[m.id];
+    const statsStr = m.stats.join(',');
+    const statTags = m.stats.map(s =>
+      `<span class="mstat-tag">${s}</span>`
+    ).join('');
 
     return `<div class="mrow">
       <div class="mchk${done ? ' done' : ''}"
-           onclick="toggleMision('${m.id}',${m.xp},'${m.st}',${m.coins || 0})">
+           onclick="toggleMision('${m.id}',${m.xp},'${statsStr}',${m.coins || 0})">
         ${done ? '✓' : ''}
       </div>
-      <span class="mtxt${done ? ' done' : ''}">${m.t}</span>
-      <span class="mstat">${m.st}</span>
-      <span class="mxp">+${m.xp}${m.coins ? ' +' + m.coins + 'c' : ''}</span>
-      ${tipHTML}
+      <div class="m-body">
+        <span class="mtxt${done ? ' done' : ''}">${m.t}</span>
+        ${m.desc ? `<span class="mdesc">${m.desc}</span>` : ''}
+        <div class="m-meta">
+          <span class="mxp">+${m.xp} XP</span>
+          ${statTags}
+        </div>
+      </div>
     </div>`;
   }).join('');
 }
 
-function buildSecretCard(wk) {
-  if (!ST.mis[wk]) ST.mis[wk] = {};
-  if (ST.mis[wk]._secretIdx === undefined) {
-    ST.mis[wk]._secretIdx = Math.floor(Math.random() * MISIONES_SECRETAS.length);
-  }
+function renderProposito(elId) {
+  const container = el(elId);
+  if (!container) return;
 
-  const idx      = ST.mis[wk]._secretIdx;
-  const revealed = !!ST.mis[wk]._secretRevealed;
-  const done     = !!ST.mis[wk]._secretDone;
+  const today    = DateUtils.today();
+  const todayMis = ST.mis[today] || {};
+  const m        = MISIONES.PROPOSITO[0];
+  const done     = !!todayMis[m.id];
+  const nombre   = ST.proposito || 'Sin propósito configurado';
+  const statsStr = m.stats.join(',');
+  const statTags = m.stats.map(s => `<span class="mstat-tag">${s}</span>`).join('');
 
-  const innerHTML = revealed
-    ? `<div class="secret-desc">${MISIONES_SECRETAS[idx]}</div>
-       ${done
-         ? `<div style="color:var(--c3);font-size:11px;margin-top:6px">✦ Completada esta semana</div>`
-         : `<button class="secret-btn" onclick="completeSecret('${wk}')">
-              Completar — +${CONFIG.XP_MISION_SECRETA} XP +${CONFIG.COINS_MISION_SECRETA}c
-            </button>`}`
-    : `<button class="secret-btn" onclick="revealSecret('${wk}')">Revelar misión</button>`;
-
-  return `<div class="secret-card">
-    <div class="secret-icon">❓</div>
-    <div class="secret-title">Misión Secreta Semanal</div>
-    ${innerHTML}
+  container.innerHTML = `<div class="mrow">
+    <div class="mchk${done ? ' done' : ''}"
+         onclick="toggleMision('${m.id}',${m.xp},'${statsStr}',0)">
+      ${done ? '✓' : ''}
+    </div>
+    <div class="m-body">
+      <span class="mtxt${done ? ' done' : ''}">${nombre}</span>
+      ${!ST.proposito ? '<span class="mdesc">Configúralo en la pestaña Ruta</span>' : ''}
+      <div class="m-meta">
+        <span class="mxp">+${m.xp} XP</span>
+        ${statTags}
+      </div>
+    </div>
   </div>`;
 }
 
@@ -320,6 +301,9 @@ function renderZona() {
 // ---- RUTA DE ESTUDIO ----
 
 function renderRuta() {
+  const propInput = el('propositoInput');
+  if (propInput) propInput.value = ST.proposito || '';
+
   const container = el('rutaList');
   if (!container) return;
 

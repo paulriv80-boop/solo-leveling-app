@@ -1,29 +1,29 @@
 /* ---- MISIONES ---- */
 .mrow {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 0; border-bottom: 1px solid var(--bd); position: relative;
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 10px 0; border-bottom: 1px solid var(--bd);
 }
 .mrow:last-child { border-bottom: none; }
 .mchk {
-  width: 18px; height: 18px; border: 1.5px solid var(--bd2); border-radius: 4px;
-  cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; min-width: 18px; border: 1.5px solid var(--bd2); border-radius: 4px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: all .15s; background: var(--bg3); color: var(--c3); font-size: 11px;
+  margin-top: 2px;
 }
 .mchk.done { background: #001a08; border-color: var(--c3); box-shadow: var(--glow3); }
-.mtxt { flex: 1; font-size: 12px; color: var(--t1); cursor: pointer; }
+.m-body { flex: 1; min-width: 0; }
+.mtxt { display: block; font-size: 12px; color: var(--t1); line-height: 1.4; }
 .mtxt.done { color: var(--t3); text-decoration: line-through; }
+.mdesc { display: block; font-size: 10px; color: var(--t3); margin-top: 1px; }
+.m-meta { display: flex; align-items: center; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
 .mxp { font-size: 10px; color: var(--c2); font-weight: 600; white-space: nowrap; }
-.mstat { font-size: 9px; color: var(--t3); white-space: nowrap; margin-left: 2px; }
-
-/* ---- MISIÓN SECRETA ---- */
-.secret-card {
-  background: linear-gradient(135deg, var(--bg2), var(--bg3));
-  border: 1px solid var(--c5); border-radius: 12px;
-  padding: 14px; margin-bottom: 12px; text-align: center;
+.mstat-tag {
+  font-size: 9px; padding: 1px 6px; border-radius: 4px;
+  background: var(--bg3); border: 1px solid var(--bd2); color: var(--t2);
+  text-transform: capitalize; white-space: nowrap;
 }
-.secret-icon  { font-size: 32px; color: var(--c5); text-shadow: var(--glow5); margin-bottom: 8px; }
-.secret-title { font-size: 12px; font-weight: 700; color: var(--c5); }
-.secret-desc  { font-size: 11px; color: var(--t1); margin-top: 6px; }
+
+/* ---- BOTÓN GENÉRICO RPG (usado en rank-up, ruta) ---- */
 .secret-btn {
   font-size: 11px; padding: 6px 14px; background: var(--bg3);
   border: 1px solid var(--c5); border-radius: 8px; cursor: pointer;

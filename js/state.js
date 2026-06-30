@@ -9,7 +9,10 @@ const DEFAULT_STATE = {
   coins: 0,
   totalXP: 0,
   racha: 0,                   // Días verdes consecutivos reales (calculado)
-  stats: { F: 0, M: 0, E: 0, V: 0, D: 0 },
+  stats: {
+    fuerza: 0, agilidad: 0, energia: 0, serenidad: 0,
+    confianza: 0, conocimiento: 0, claridad: 0, espiritualidad: 0, disciplina: 0,
+  },
   mis: {},                    // { 'YYYY-MM-DD': { misionId: true/false } }
   zona: {},                   // { 'YYYY-MM-DD': { fell: bool } }
   dias: {},                   // { 'YYYY-MM-DD': 'green'|'red'|'gold'|'blue' }
@@ -18,13 +21,9 @@ const DEFAULT_STATE = {
   rankT: 0,                   // Índice en RANGOS_TECNICO
   starsT: 0,
   dc: 0,                      // Días completados en subnivel actual
-
-  stacks: { shield: 0, steel: 0, iron: 0, clarity: 0, shadow: 0, warrior: 0 },
-  stacksHoy: {},
-  stacksHoyDate: null,
+  proposito: '',              // Texto de la misión Propósito (configurable desde Ruta)
   alterActive: null,
   lastVisit: null,
-
 };
 
 // Estado activo en memoria — única fuente de verdad
@@ -84,7 +83,7 @@ const StateMigration = {
 
     // v1 → v2: stacks no existían
     if (version < 2) {
-      raw.stacks = { shield: 0, steel: 0, iron: 0, clarity: 0, shadow: 0, warrior: 0 };
+      raw.stacks = {};
     }
 
     // v2 → v3: alterActive no existía
@@ -94,8 +93,20 @@ const StateMigration = {
 
     // v3 → v4: stacks diarios
     if (version < 4) {
-    raw.stacksHoy = {};
-    raw.stacksHoyDate = null;
+      raw.stacksHoy = {};
+      raw.stacksHoyDate = null;
+    }
+
+    // v4 → v5: nuevo sistema de atributos (9), elimina stacks, agrega proposito
+    if (version < 5) {
+      raw.stats = {
+        fuerza: 0, agilidad: 0, energia: 0, serenidad: 0,
+        confianza: 0, conocimiento: 0, claridad: 0, espiritualidad: 0, disciplina: 0,
+      };
+      delete raw.stacks;
+      delete raw.stacksHoy;
+      delete raw.stacksHoyDate;
+      raw.proposito = raw.proposito || '';
     }
 
     raw.version = CONFIG.STATE_VERSION;
@@ -125,12 +136,6 @@ function loadState() {
   const today = DateUtils.today();
   if (!ST.mis[today])  ST.mis[today]  = {};
   if (!ST.zona[today]) ST.zona[today] = {};
-
-  // Si cambió el día, reiniciar los stacks diarios
-  if (ST.stacksHoyDate !== today) {
-  ST.stacksHoy = {};
-  ST.stacksHoyDate = today;
-  }
 
   // Notificar inactividad si aplica
   if (ST.lastVisit && ST.lastVisit !== today) {

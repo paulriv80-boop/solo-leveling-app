@@ -20,81 +20,32 @@ function xpHoy() {
  * Aplica el toggle de una misión: marca o desmarca, ajusta XP/coins/stats,
  * y revierte el día verde si corresponde. Devuelve si la misión quedó
  * completada (true) o desmarcada (false).
+ * @param {string}   id    - ID de la misión
+ * @param {number}   xp    - XP de la misión
+ * @param {string[]} stats - Atributos que incrementa (array)
+ * @param {number}   coins - Monedas opcionales
  */
-function applyMissionToggle(id, xp, stat, coins) {
+function applyMissionToggle(id, xp, stats, coins) {
   const today = DateUtils.today();
   if (!ST.mis[today]) ST.mis[today] = {};
 
   const wasDone = !!ST.mis[today][id];
   ST.mis[today][id] = !wasDone;
+  const delta = wasDone ? -1 : 1;
 
-  if (!wasDone) {
-    // Completando misión
-    ST.totalXP += xp;
-    ST.coins   += (coins || 0);
-    ST.stats[stat] = (ST.stats[stat] || 0) + 1;
-  } else {
-    // Desmarcando misión
-    ST.totalXP     = Math.max(0, ST.totalXP - xp);
-    ST.coins       = Math.max(0, ST.coins - (coins || 0));
-    ST.stats[stat] = Math.max(0, (ST.stats[stat] || 0) - 1);
-    // Si el día estaba marcado como verde, revertirlo
-    if (ST.dias[today] === 'green') {
-      delete ST.dias[today];
-      ST.racha = DateUtils.calcRacha(ST.dias);
-    }
+  ST.totalXP = Math.max(0, ST.totalXP + delta * xp);
+  ST.coins   = Math.max(0, ST.coins   + delta * (coins || 0));
+
+  (stats || []).forEach(s => {
+    ST.stats[s] = Math.max(0, (ST.stats[s] || 0) + delta);
+  });
+
+  if (wasDone && ST.dias[today] === 'green') {
+    delete ST.dias[today];
+    ST.racha = DateUtils.calcRacha(ST.dias);
   }
 
   return { completed: !wasDone };
-}
-
-/**
- * Evalúa qué stacks de poder se cumplen con las misiones de hoy.
- * Solo lectura — no muta ST.
- */
-function recalcStacksHoy() {
-  const today = DateUtils.today();
-  const m = ST.mis[today] || {};
-
-  const conditions = {
-    shield:  m.e1 && m.e3,
-    steel:   !!m.s1,
-    iron:    m.f4 && m.f5,
-    clarity: m.e4 && m.e3,
-    shadow:  !(ST.zona[today]?.fell),
-    warrior: Object.values(MISIONES).flat().every(ms => m[ms.id]),
-  };
-
-  return conditions;
-}
-
-/**
- * Incrementa una vez por día cada stack cuya condición se cumple hoy.
- * Devuelve la lista de IDs de stacks recién desbloqueados.
- */
-function applyStackUpdates() {
-  const conditions = recalcStacksHoy();
-  const today = DateUtils.today();
-  const stacksHoy = ST.stacksHoy || {};
-  const unlocked = [];
-
-  for (const [id, met] of Object.entries(conditions)) {
-    if (met && !stacksHoy[id]) {
-      ST.stacks[id] = Math.min(5, (ST.stacks[id] || 0) + 1);
-      stacksHoy[id] = true;
-      unlocked.push(id);
-    }
-  }
-
-  // Guardar qué stacks ya se activaron hoy (se resetea al día siguiente)
-  if (!ST.stacksHoy) ST.stacksHoy = {};
-  if (!ST.stacksHoyDate || ST.stacksHoyDate !== today) {
-    ST.stacksHoy = {};
-    ST.stacksHoyDate = today;
-  }
-  Object.assign(ST.stacksHoy, stacksHoy);
-
-  return unlocked;
 }
 
 /**

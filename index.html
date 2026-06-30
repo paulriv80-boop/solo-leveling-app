@@ -193,32 +193,50 @@
       </div>
     </div>
 
-    <div class="g5">
-      <div class="card">
-        <div class="orb oF"><span class="onum" id="sF">0</span><span class="olbl">Fuerza</span></div>
+    <div class="g3 attrs">
+      <div class="card attr-card">
+        <div class="orb oFuerza"><span class="onum" id="sfuerza">0</span></div>
+        <div class="olbl">Fuerza</div>
       </div>
-      <div class="card">
-        <div class="orb oM"><span class="onum" id="sM">0</span><span class="olbl">Mente</span></div>
+      <div class="card attr-card">
+        <div class="orb oAgilidad"><span class="onum" id="sagilidad">0</span></div>
+        <div class="olbl">Agilidad</div>
       </div>
-      <div class="card">
-        <div class="orb oE"><span class="onum" id="sE">0</span><span class="olbl">Espíritu</span></div>
+      <div class="card attr-card">
+        <div class="orb oEnergia"><span class="onum" id="senergia">0</span></div>
+        <div class="olbl">Energía</div>
       </div>
-      <div class="card">
-        <div class="orb oV"><span class="onum" id="sV">0</span><span class="olbl">Vitalidad</span></div>
+      <div class="card attr-card">
+        <div class="orb oSerenidad"><span class="onum" id="sserenidad">0</span></div>
+        <div class="olbl">Serenidad</div>
       </div>
-      <div class="card">
-        <div class="orb oD"><span class="onum" id="sD">0</span><span class="olbl">Disciplina</span></div>
+      <div class="card attr-card">
+        <div class="orb oConfianza"><span class="onum" id="sconfianza">0</span></div>
+        <div class="olbl">Confianza</div>
+      </div>
+      <div class="card attr-card">
+        <div class="orb oConocimiento"><span class="onum" id="sconocimiento">0</span></div>
+        <div class="olbl">Conocimiento</div>
+      </div>
+      <div class="card attr-card">
+        <div class="orb oClaridad"><span class="onum" id="sclaridad">0</span></div>
+        <div class="olbl">Claridad</div>
+      </div>
+      <div class="card attr-card">
+        <div class="orb oEspiritualidad"><span class="onum" id="sespiritualidad">0</span></div>
+        <div class="olbl">Espiritualidad</div>
+      </div>
+      <div class="card attr-card">
+        <div class="orb oDisciplina"><span class="onum" id="sdisciplina">0</span></div>
+        <div class="olbl">Disciplina</div>
       </div>
     </div>
-
-    <div class="stitle">Stacks de poder</div>
-    <div class="stack-grid" id="stackGrid"></div>
 
     <div class="g2">
       <div class="card">
         <div class="slbl">XP Hoy</div>
         <div class="sval" id="dXH">0</div>
-        <div class="ssub">de 189 posibles</div>
+        <div class="ssub">de 177 posibles</div>
         <div class="xbw"><div class="xb xb-c" id="dBX" style="width:0%"></div></div>
       </div>
       <div class="card">
@@ -242,18 +260,21 @@
 
   <!-- ===== MISIONES ===== -->
   <div class="sec" id="sec-misiones">
-    <div id="secretCard"></div>
     <div class="card card2" style="margin-bottom:10px">
-      <div class="stitle">Espirituales y mentales</div>
-      <div id="mE"></div>
+      <div class="stitle">Físico</div>
+      <div id="mFISICO"></div>
     </div>
     <div class="card card2" style="margin-bottom:10px">
-      <div class="stitle">Físicas</div>
-      <div id="mF"></div>
+      <div class="stitle">Mente</div>
+      <div id="mMENTE"></div>
+    </div>
+    <div class="card card2" style="margin-bottom:10px">
+      <div class="stitle">Espiritual</div>
+      <div id="mESPIRITUAL"></div>
     </div>
     <div class="card card2">
-      <div class="stitle">Estudio</div>
-      <div id="mS"></div>
+      <div class="stitle">Propósito</div>
+      <div id="mPROPOSITO"></div>
     </div>
   </div>
 
@@ -358,6 +379,14 @@
 
   <!-- ===== RUTA ===== -->
   <div class="sec" id="sec-ruta">
+    <div class="card card2" style="margin-bottom:12px">
+      <div class="stitle">Mi propósito</div>
+      <div class="proposito-row">
+        <input id="propositoInput" class="proposito-input" placeholder="ej: Estudiar Python, Crear empresa...">
+        <button class="secret-btn" onclick="saveProposito()">Guardar</button>
+      </div>
+      <div class="proposito-hint">Aparece como misión diaria en Misiones</div>
+    </div>
     <div class="stitle" style="margin-bottom:10px">Ruta de estudio — 6 meses</div>
     <div id="rutaList"></div>
   </div>

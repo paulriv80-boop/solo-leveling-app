@@ -36,41 +36,16 @@ function nav(id, btn) {
 
 // ---- MISIONES ----
 
-function revealSecret(wk) {
-  if (!ST.mis[wk]) ST.mis[wk] = {};
-  ST.mis[wk]._secretRevealed = true;
-  saveState();
-  renderMisiones();
-}
-
-function completeSecret(wk) {
-  if (!ST.mis[wk]) ST.mis[wk] = {};
-  ST.mis[wk]._secretDone = true;
-  ST.totalXP += CONFIG.XP_MISION_SECRETA;
-  ST.coins   += CONFIG.COINS_MISION_SECRETA;
-  Toast.show(`¡Misión secreta completada! +${CONFIG.XP_MISION_SECRETA} XP +${CONFIG.COINS_MISION_SECRETA}c`, '#ffd700');
-  saveState();
-  renderMisiones();
-  renderInicio();
-}
-
 /**
- * Maneja el click de marcar/desmarcar una misión: aplica la lógica de
- * negocio, muestra feedback al usuario y refresca el render afectado.
+ * Maneja el click de marcar/desmarcar una misión.
+ * @param {string} statsStr - Stats separados por coma, ej: 'fuerza,claridad'
  */
-function toggleMision(id, xp, stat, coins) {
-  const result = applyMissionToggle(id, xp, stat, coins);
+function toggleMision(id, xp, statsStr, coins) {
+  const stats  = statsStr ? statsStr.split(',') : [];
+  const result = applyMissionToggle(id, xp, stats, coins);
 
   if (result.completed) {
-    Toast.show(`+${xp} XP — ${stat}`, 'var(--c1)');
-
-    const unlockedStacks = applyStackUpdates();
-    unlockedStacks.forEach(stackId => {
-      const stack = STACKS.find(s => s.id === stackId);
-      Toast.show(`✦ ${stack?.name} activado!`, '#ffd700');
-    });
-    renderStacks();
-
+    Toast.show(`+${xp} XP`, 'var(--c1)');
     const dayResult = applyDayCompletion();
     if (dayResult.completed) {
       if (dayResult.rankUp) showRankUp();
@@ -81,6 +56,15 @@ function toggleMision(id, xp, stat, coins) {
   saveState();
   renderMisiones();
   renderInicio();
+}
+
+function saveProposito() {
+  const input = el('propositoInput');
+  if (!input) return;
+  ST.proposito = input.value.trim();
+  saveState();
+  Toast.show('Propósito guardado ✦', 'var(--c3)');
+  renderMisiones();
 }
 
 
