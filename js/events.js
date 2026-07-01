@@ -45,7 +45,8 @@ function toggleMision(id, xp, statsStr, coins) {
   const result = applyMissionToggle(id, xp, stats, coins);
 
   if (result.completed) {
-    Toast.show(`+${xp} XP`, 'var(--c1)');
+    const coinsMsg = coins > 0 ? ` +${coins}c` : '';
+    Toast.show(`+${xp} XP${coinsMsg}`, 'var(--c1)');
     const dayResult = applyDayCompletion();
     if (dayResult.completed) {
       if (dayResult.rankUp) showRankUp();

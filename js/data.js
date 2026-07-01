@@ -75,27 +75,27 @@ const PENALIZACIONES = [
 
 const MISIONES = {
   FISICO: [
-    { id: 'f1', t: 'Ejercicio de fuerza',   desc: 'Mínimo 45 minutos',   xp: 20, stats: ['fuerza'] },
-    { id: 'f2', t: 'Ejercicio de cardio',    desc: 'Mínimo 30 minutos',   xp: 15, stats: ['agilidad'] },
-    { id: 'f3', t: 'Hidratación',            desc: '2 a 3 litros',        xp: 8,  stats: ['energia'] },
-    { id: 'f4', t: 'Alimentación saludable', desc: '',                    xp: 8,  stats: ['energia'] },
-    { id: 'f5', t: 'Sueño de calidad',       desc: '6 a 8 horas',        xp: 10, stats: ['energia', 'claridad'] },
+    { id: 'ph1', t: 'Ejercicio de fuerza',   desc: 'Mínimo 45 minutos',   xp: 20, coins: 3, stats: ['fuerza'] },
+    { id: 'ph2', t: 'Ejercicio de cardio',    desc: 'Mínimo 30 minutos',   xp: 15, coins: 2, stats: ['agilidad'] },
+    { id: 'ph3', t: 'Hidratación',            desc: '2 a 3 litros',        xp: 8,  coins: 1, stats: ['energia'] },
+    { id: 'ph4', t: 'Alimentación saludable', desc: '',                    xp: 8,  coins: 1, stats: ['energia'] },
+    { id: 'ph5', t: 'Sueño de calidad',       desc: '6 a 8 horas',        xp: 10, coins: 2, stats: ['energia', 'claridad'] },
   ],
   MENTE: [
-    { id: 'm1', t: 'Meditación',         desc: 'Mínimo 10 minutos',      xp: 10, stats: ['serenidad', 'claridad'] },
-    { id: 'm2', t: 'Autoconfirmación',   desc: '5 a 10 minutos',         xp: 8,  stats: ['confianza'] },
-    { id: 'm3', t: 'Informarse',         desc: 'Leer titulares del día', xp: 5,  stats: ['conocimiento'] },
-    { id: 'm4', t: 'Estudiar inglés',    desc: '30 minutos',             xp: 15, stats: ['conocimiento', 'disciplina'] },
-    { id: 'm5', t: 'Lectura',            desc: 'Mínimo 5 páginas',       xp: 10, stats: ['conocimiento'] },
-    { id: 'm6', t: 'Journaling',         desc: '',                       xp: 8,  stats: ['claridad', 'confianza'] },
+    { id: 'mn1', t: 'Meditación',         desc: 'Mínimo 10 minutos',      xp: 10, coins: 1, stats: ['serenidad', 'claridad'] },
+    { id: 'mn2', t: 'Autoconfirmación',   desc: '5 a 10 minutos',         xp: 8,  coins: 1, stats: ['confianza'] },
+    { id: 'mn3', t: 'Informarse',         desc: 'Leer titulares del día', xp: 5,  coins: 0, stats: ['conocimiento'] },
+    { id: 'mn4', t: 'Estudiar inglés',    desc: '30 minutos',             xp: 15, coins: 3, stats: ['conocimiento', 'disciplina'] },
+    { id: 'mn5', t: 'Lectura',            desc: 'Mínimo 5 páginas',       xp: 10, coins: 2, stats: ['conocimiento'] },
+    { id: 'mn6', t: 'Journaling',         desc: '',                       xp: 8,  coins: 1, stats: ['claridad', 'confianza'] },
   ],
   ESPIRITUAL: [
-    { id: 'e1', t: 'Lectura y reflexión espiritual', desc: '', xp: 15, stats: ['espiritualidad', 'conocimiento'] },
-    { id: 'e2', t: 'Oración',                        desc: '', xp: 10, stats: ['espiritualidad', 'serenidad'] },
-    { id: 'e3', t: 'Gratitud',                       desc: '', xp: 10, stats: ['espiritualidad'] },
+    { id: 'sp1', t: 'Lectura y reflexión espiritual', desc: '', xp: 15, coins: 2, stats: ['espiritualidad', 'conocimiento'] },
+    { id: 'sp2', t: 'Oración',                        desc: '', xp: 10, coins: 1, stats: ['espiritualidad', 'serenidad'] },
+    { id: 'sp3', t: 'Gratitud',                       desc: '', xp: 10, coins: 1, stats: ['espiritualidad'] },
   ],
   PROPOSITO: [
-    { id: 'p1', t: 'Propósito', desc: '', xp: 25, stats: ['disciplina'], dynamic: true },
+    { id: 'pu1', t: 'Propósito', desc: '', xp: 25, coins: 5, stats: ['disciplina'], dynamic: true },
   ],
 };
 

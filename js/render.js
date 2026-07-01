@@ -43,6 +43,12 @@ function renderInicio() {
   ['fuerza','agilidad','energia','serenidad','confianza','conocimiento','claridad','espiritualidad','disciplina']
     .forEach(k => setText('s' + k, ST.stats[k] || 0));
 
+  // Nivel del Operator
+  const lvl = getLevel(ST.totalXP);
+  setText('dLvl', 'Nivel ' + lvl.level);
+  setText('dLvlSub', lvl.xpInLevel + ' / ' + lvl.xpNeeded + ' XP al siguiente nivel');
+  setStyle('dBLvl', 'width', pct(lvl.xpInLevel, lvl.xpNeeded) + '%');
+
   // HUD superior
   setText('hC', ST.coins);
   setText('hX', ST.totalXP);
@@ -89,7 +95,7 @@ function renderListaMisiones(list, elId) {
         <span class="mtxt${done ? ' done' : ''}">${m.t}</span>
         ${m.desc ? `<span class="mdesc">${m.desc}</span>` : ''}
         <div class="m-meta">
-          <span class="mxp">+${m.xp} XP</span>
+          <span class="mxp">+${m.xp} XP${m.coins ? ' +' + m.coins + 'c' : ''}</span>
           ${statTags}
         </div>
       </div>
@@ -111,14 +117,14 @@ function renderProposito(elId) {
 
   container.innerHTML = `<div class="mrow">
     <div class="mchk${done ? ' done' : ''}"
-         onclick="toggleMision('${m.id}',${m.xp},'${statsStr}',0)">
+         onclick="toggleMision('${m.id}',${m.xp},'${statsStr}',${m.coins || 0})">
       ${done ? '✓' : ''}
     </div>
     <div class="m-body">
       <span class="mtxt${done ? ' done' : ''}">${nombre}</span>
       ${!ST.proposito ? '<span class="mdesc">Configúralo en la pestaña Ruta</span>' : ''}
       <div class="m-meta">
-        <span class="mxp">+${m.xp} XP</span>
+        <span class="mxp">+${m.xp} XP +${m.coins}c</span>
         ${statTags}
       </div>
     </div>

@@ -109,6 +109,12 @@ const StateMigration = {
       raw.proposito = raw.proposito || '';
     }
 
+    // v5 → v6: IDs de misiones renombrados (ph/mn/sp/pu) para evitar colisión
+    // con IDs del sistema anterior. Se limpia ST.mis para estado limpio.
+    if (version < 6) {
+      raw.mis = {};
+    }
+
     raw.version = CONFIG.STATE_VERSION;
     return raw;
   },

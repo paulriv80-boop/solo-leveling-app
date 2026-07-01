@@ -5,18 +5,10 @@
 // ============================================================
 
 const DateUtils = {
+  // Usa fecha local (no UTC) para que el día cambie a medianoche local, no a medianoche UTC.
   today() {
-    return new Date().toISOString().split('T')[0];
-  },
-
-  /**
-   * Devuelve el lunes de la semana actual (clave para misión secreta semanal).
-   */
-  weekStart() {
     const d = new Date();
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff)).toISOString().split('T')[0];
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   },
 
   /**
@@ -94,6 +86,24 @@ function starsHTML(n, max = 3) {
 function pct(value, total) {
   if (total === 0) return 0;
   return Math.min(100, Math.max(0, Math.round((value / total) * 100)));
+}
+
+/**
+ * Calcula el nivel actual del Operator a partir del XP total acumulado.
+ * XP para pasar de nivel N a N+1: 200 + (N-1)*150.
+ *   Nivel 1→2: 200 XP | 2→3: 350 | 3→4: 500 | 4→5: 650 ...
+ */
+function getLevel(totalXP) {
+  let level = 1;
+  let accumulated = 0;
+  while (true) {
+    const needed = 200 + (level - 1) * 150;
+    if (accumulated + needed > totalXP) {
+      return { level, xpInLevel: totalXP - accumulated, xpNeeded: needed };
+    }
+    accumulated += needed;
+    level++;
+  }
 }
 
 /**
