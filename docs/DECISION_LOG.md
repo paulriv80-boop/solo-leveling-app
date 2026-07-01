@@ -4,6 +4,98 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-06-30 — Sistema de misiones: refactorización completa (sprint 2.6)
+
+**Problema:** La estructura de misiones anterior (3 categorías, stacks de poder, misión secreta semanal, 5 orbes de stats, tooltips en checkboxes) no representaba bien el sistema de evolución personal del usuario ni era escalable.
+
+**Alternativas consideradas:**
+1. **Ajuste incremental:** añadir nuevas categorías manteniendo la estructura. Descartada: dejaba código de stacks y misión secreta como deuda técnica activa.
+2. **Refactorización completa con arquitectura data-driven.** **Elegida.**
+
+**Solución elegida:**
+- 4 categorías: Físico / Mente / Espiritual / Propósito. Cada misión tiene `stats: ['attr1', 'attr2']` (array) en lugar de una stat hardcodeada. Añadir una misión futura solo requiere tocar `data.js`, no `logic.js` ni `render.js`.
+- Misión Propósito: texto dinámico desde `ST.proposito`, configurable en la pestaña Ruta. Resuelve el problema de que la misión de "Ruta de Estudio" fuera estática en código.
+- Stacks de poder eliminados: añadían complejidad de UI/lógica sin aportar valor claro en esta etapa del producto.
+- Misión secreta semanal eliminada: implementación frágil (mutación de estado en función de render) con impacto bajo en el sistema global. Eliminada en lugar de corregida.
+- 5 orbes reemplazados por 9 atributos en grilla 3×3: Fuerza, Agilidad, Energía, Serenidad, Confianza, Conocimiento, Claridad, Espiritualidad, Disciplina.
+
+**Motivos:**
+- La arquitectura `stats: []` por misión escala a cualquier número de misiones/atributos sin tocar lógica.
+- Eliminar features frágiles > corregirlas cuando no aportan valor de producto.
+- Los 9 atributos cubren todos los vectores del sistema de evolución personal del usuario.
+
+---
+
+## 2026-06-30 — Fix timezone en `DateUtils.today()` (sprint 2.7)
+
+**Problema:** `DateUtils.today()` retornaba `new Date().toISOString().split('T')[0]`, que es fecha UTC. En Colombia (UTC-5), el día UTC cambia 5 horas antes que el día local, causando que las misiones se "resetearan" a las 7pm hora local en lugar de medianoche.
+
+**Alternativas consideradas:**
+1. **Ajuste con offset manual** (`new Date(Date.now() - offset * 60000)`). Descartada: hardcodear un offset rompe en zonas con horario de verano.
+2. **`Intl.DateTimeFormat`** con `timeZone` explícito. Descartada: requiere conocer la zona del usuario.
+3. **Fecha local con `getFullYear/getMonth/getDate`.** **Elegida.**
+
+**Solución elegida:**
+```js
+today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+```
+Usa la fecha local del dispositivo sin ningún offset. Correcto para cualquier zona horaria. Verificado: en UTC-5 a las 10pm, la fecha local es diferente a la UTC y el reset ocurre a medianoche local.
+
+---
+
+## 2026-06-30 — Renombrado de IDs de misiones para evitar colisión (sprint 2.7)
+
+**Problema:** Los IDs asignados en sprint 2.6 (`f1-f5`, `e1-e3`, `s1`, `p1`) colisionaban con IDs del sistema anterior. El localStorage con datos del día anterior marcaba como "completadas" misiones del nuevo sistema porque compartían el mismo ID.
+
+**Solución elegida:** IDs descriptivos con prefijo por categoría:
+- `ph1-ph5` (PHysical) — Físico
+- `mn1-mn6` (MiNd) — Mente
+- `sp1-sp3` (SPiritual) — Espiritual
+- `pu1` (PUrpose) — Propósito
+
+Migración `v5→v6` limpia completamente `ST.mis` al actualizar, eliminando cualquier dato de misiones con IDs inválidos del estado guardado.
+
+**Motivo:** Los IDs de misiones son claves de `localStorage`; un cambio de ID sin migración es un bug silencioso de estado.
+
+---
+
+## 2026-06-30 — Economía de monedas por misión (sprint 2.7)
+
+**Problema:** La Tienda requería monedas pero no había una fuente diaria clara para acumularlas.
+
+**Solución elegida:** Cada misión define `coins` directamente en `data.js`. Máximo diario: 26c. Escala por esfuerzo:
+- Alta: 3–5c (ejercicio de fuerza, inglés, propósito)
+- Media: 2c (cardio, sueño, lectura espiritual, oración)
+- Baja: 1c (meditación, journaling, gratitud, hidratación, alimentación)
+- Cero: misiones de bajo tiempo (informarse)
+
+**Motivos:**
+- La escala intencionada incentiva misiones de mayor esfuerzo.
+- Definir `coins` en `data.js` (no hardcodeado en lógica) permite ajustar la economía sin tocar `logic.js`.
+
+---
+
+## 2026-06-30 — Sistema de Level del Operator (sprint 2.7)
+
+**Problema:** El XP total acumulado no tenía representación visual de progreso a largo plazo en el Inicio.
+
+**Solución elegida:** `getLevel(totalXP)` en `utils.js` con progresión escalada:
+- Nivel 1→2: 200 XP
+- Cada nivel adicional: +150 XP respecto al anterior (Nivel 2→3: 350 XP, Nivel 3→4: 500 XP…)
+
+Card "Operator Level" en Inicio muestra: nombre del nivel, XP actual / XP necesario y barra de progreso porcentual.
+
+**Alternativas descartadas:**
+- Niveles con XP fijo por nivel (lineal): fácil de escalar pero sin sensación de progresión creciente.
+- Tabla de XP precalculada: innecesaria para este tamaño.
+
+**Motivo de progresión escalada:** Los primeros niveles se alcanzan rápido (reward loop), los altos requieren constancia sostenida (refleja la naturaleza del sistema de evolución personal).
+
+---
+
 ## 2026-06-28 — Modularización de `js/app.js`
 
 **Problema:** `js/app.js` concentraba 1131 líneas con 9+ responsabilidades (configuración, estado, persistencia, migraciones, utilidades, lógica de negocio y presentación de 8 módulos). Esto incumple la regla del proyecto de evitar archivos gigantes y de mantener la lógica de negocio desacoplada del HTML/render.

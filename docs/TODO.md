@@ -25,4 +25,6 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
 ## Bugs / hallazgos menores detectados
 
 - [x] Doble llamada a `saveState()` dentro del flujo `toggleMision` → `checkDayComplete`. Corregido durante el refactor: `applyDayCompletion()` (en `logic.js`) ya no persiste por sí mismo; `toggleMision()` (en `events.js`) guarda una sola vez al final.
-- [ ] `buildSecretCard()` asigna `ST.mis[wk]._secretIdx` (mutación de estado) dentro de una función de render. Si el usuario abre la pestaña Misiones sin completar ninguna misión ni revelar la secreta, ese índice asignado en memoria puede no persistirse y reasignarse al azar en la siguiente sesión. Impacto bajo (solo cambia qué misión secreta se muestra, sin pérdida de XP/monedas). No corregido — preservado tal cual para no mezclar el fix con el refactor estructural; pendiente de decisión.
+- [x] `buildSecretCard()` — ya no aplica. La Misión Secreta Semanal fue eliminada completamente en el sprint 2.6. El bug desapareció junto con la feature.
+- [x] Misiones no se reseteaban al día siguiente (sprint 2.7). Causa dual: (1) `DateUtils.today()` usaba `toISOString()` (UTC) en lugar de fecha local; (2) colisión de IDs de misión entre sprints. Ambos corregidos.
+- [x] Atributos stats de misiones no se sumaban correctamente. Causa: `applyMissionToggle` recibía un string en lugar de array. Corregido al pasar `statsStr.split(',')` en `events.js`.

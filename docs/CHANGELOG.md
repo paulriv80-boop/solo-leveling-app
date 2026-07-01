@@ -2,6 +2,41 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-06-30 — sprint 2.7 (`3622e99`)
+
+**Versión:** v4.0 Alpha — STATE_VERSION 6
+**Archivos:** `js/data.js`, `js/config.js`, `js/state.js`, `js/utils.js`, `js/render.js`, `js/events.js`, `index.html`
+**Tipo:** Bug fix + Nuevas funcionalidades
+
+### Bugs corregidos
+- **Reset diario de misiones (bug timezone):** `DateUtils.today()` usaba `toISOString()` (UTC). En Colombia (UTC-5) el día cambiaba a las 7pm local en lugar de medianoche, dejando misiones completadas "visibles" durante 5 horas extra al siguiente día local. Reemplazado por fecha local con `getFullYear/getMonth/getDate`.
+- **Colisión de IDs de misiones:** Los IDs de la refactorización anterior (`f1-f5`, `e1-e3`) coincidían con IDs del sistema anterior, causando que el estado guardado de días anteriores apareciera como "marcado" en el nuevo sistema. IDs renombrados a `ph1-ph5`, `mn1-mn6`, `sp1-sp3`, `pu1`. Migración v5→v6 limpia `ST.mis` al actualizar.
+
+### Nuevas funcionalidades
+- **Monedas por misión:** Cada misión otorga coins al completarse (máx. 26c/día). Se muestran en la fila de misión (`+20 XP +3c`) y en el toast al completar. Escala: misiones de mayor esfuerzo dan más monedas (ejercicio de fuerza 3c, inglés 3c, propósito 5c).
+- **Sistema de Level del Operator:** `getLevel(totalXP)` en `utils.js` calcula el nivel con progresión escalada (Nivel 1→2: 200 XP, +150 XP adicionales por nivel). Card "Operator Level" en Inicio muestra nivel actual, XP en el nivel y barra de progreso. Se actualiza en tiempo real al completar misiones.
+
+---
+
+## 2026-06-30 — sprint 2.6 (`15cb337`)
+
+**Versión:** v4.0 Alpha — STATE_VERSION 5
+**Archivos:** `js/data.js`, `js/config.js`, `js/state.js`, `js/logic.js`, `js/render.js`, `js/events.js`, `index.html`, `css/components.css`, `css/layout.css`, `css/missions.css`, `css/route.css`
+**Tipo:** Refactorización completa de funcionalidad e interfaz
+
+- **Atributos (Inicio):** 5 orbs (F/M/E/V/D) reemplazados por 9 en grilla 3×3: Fuerza, Agilidad, Energía, Serenidad, Confianza, Conocimiento, Claridad, Espiritualidad, Disciplina. Colores distintos por tipo.
+- **Stacks de poder:** Eliminados completamente (sección en Inicio, lógica en `logic.js`, CSS en `components.css`).
+- **Misiones — nueva estructura:** 4 categorías (Físico / Mente / Espiritual / Propósito) reemplazando las 3 antiguas (E/F/S). Cada misión muestra nombre, descripción opcional, XP y chips de atributos que incrementa. Sin tooltips.
+- **Misión Propósito:** Misión única dinámica cuyo texto se configura desde la pestaña Ruta (`ST.proposito`). Botón "Guardar" persiste el propósito. No requiere modificar código.
+- **Misión secreta semanal:** Eliminada completamente (card, lógica, estados en `ST.mis`).
+- **data.js:** Cada misión tiene `stats: ['attr1', 'attr2']` — arquitectura preparada para agregar misiones o atributos sin tocar lógica.
+- **logic.js:** `applyMissionToggle` acepta array de stats; delta unificado (+1/-1). Eliminadas `recalcStacksHoy()` y `applyStackUpdates()`.
+- **state.js:** Migración v4→v5: nuevos atributos (9), elimina stacks, agrega `ST.proposito`.
+- **XP diario máximo:** 189 → 177 (15 misiones × XP asignado por dificultad).
+- **Verificado:** Chrome headless, 0 errores JS, 8/8 pestañas OK, toggle misión actualiza XP y atributo, propósito guardado en Ruta aparece en Misiones.
+
+---
+
 ## [Sin publicar] — 2026-06-28
 
 **Versión:** v4.0 Alpha
@@ -55,6 +90,4 @@ Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendent
 
 ## Próximo sprint (propuesto)
 
-- Dividir `css/modules.css` por feature.
-- Eliminar estilos inline duplicados en `index.html`.
-- Evaluar conversión a PWA (`manifest.json` + `service-worker.js`).
+- Convertir a PWA: `manifest.json` + `service-worker.js`, soporte offline, instalable en pantalla de inicio.
