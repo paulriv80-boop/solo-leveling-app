@@ -2,6 +2,43 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-02 — sprint 2.9b iconos SVG rangos (`4580ffc`)
+
+**Versión:** v4.0 Alpha — STATE_VERSION 7
+**Archivos:** `js/data.js`, `js/render.js`, `css/ranks.css`, `index.html`
+**Tipo:** Mejora visual
+
+- **SVG por rango:** cada elemento de `RANGOS` incluye propiedad `svg` con markup inline. 6 íconos que replican el diseño de referencia visual:
+  - E · Novato — círculo bronce con chevron (∧) y acentos en ejes cardinales
+  - D · Adepto — círculo acero con flecha apuntando arriba y diamante central
+  - C · Experto — estrella de 4 puntas (compás dorado) con cruceta interior
+  - B · Disciplinado — círculo violeta con espada vertical y corona de laurel
+  - A · Liberado — fénix plateado con alas desplegadas hacia arriba
+  - S · Trascendente — orbe dorado con anillo orbital y eje radiante vertical
+- `render.js`: `renderRankAccord()` inyecta el SVG en el header y en cada fila de la lista mediante `innerHTML`. `drop-shadow` dinámico al color del rango activo.
+- `css/ranks.css`: `.rank-badge-hdr` y `.rank-badge-xs` son contenedores SVG puros — sin borde ni color CSS propio.
+
+---
+
+## 2026-07-02 — sprint 2.9 refactorización sistema de rangos fase 1 (`c677f95`)
+
+**Versión:** v4.0 Alpha — STATE_VERSION 7
+**Archivos:** `js/data.js`, `js/config.js`, `js/state.js`, `js/logic.js`, `js/render.js`, `js/events.js`, `js/utils.js`, `index.html`, `css/ranks.css`, `css/components.css`
+**Tipo:** Refactorización mayor + eliminación de features
+
+- **Rango Técnico eliminado** completamente (datos, lógica, render, HTML).
+- **Sistema de estrellas eliminado:** `DIAS_POR_ESTRELLA`, `ESTRELLAS_POR_RANGO`, `ST.starsH`, `ST.starsT`, `ST.dc`, `starsHTML()`, `.stars` CSS — todo removido.
+- **Recompensas de rango eliminadas:** `RECOMPENSAS_HABITOS` y `RECOMPENSAS_TECNICO` removidas de `data.js`.
+- **Pestaña "Rangos" eliminada** del menú (7 pestañas). Sección `#sec-rangos` e IDs `rH`, `rT`, `rRewH`, `rRewT` removidos del HTML. `renderRangos()`, `buildRangList()`, `buildRewList()`, `showRankUp()` removidas de `render.js`.
+- **6 nuevos rangos** (`RANGOS`): E Novato · D Adepto · C Experto · B Disciplinado · A Liberado · S Trascendente — con color, colorGlow, desc y skills.
+- **Acordeón de rango en Inicio:** card clicable que muestra rango actual y, al expandir, lista los 6 rangos con estado (actual / superado / bloqueado). Sin cambio de pantalla.
+- **`applyDayCompletion()` simplificada:** solo marca día verde y recalcula racha. Lógica de avance de rango pendiente de rediseño en fase 2.
+- **Alter Egos:** umbral de desbloqueo → índice 3 (Disciplinado).
+- **Migración v6→v7:** `rankH → rank`, elimina `starsH`, `rankT`, `starsT`, `dc`.
+- **Limpieza adicional:** `.pill-t`, `rankupBanner` eliminados.
+
+---
+
 ## 2026-06-30 — sprint 2.7 (`3622e99`)
 
 **Versión:** v4.0 Alpha — STATE_VERSION 6
@@ -90,4 +127,5 @@ Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendent
 
 ## Próximo sprint (propuesto)
 
+- Sistema de rangos fase 2: definir lógica de avance de rango (cómo y cuándo sube el jugador).
 - Convertir a PWA: `manifest.json` + `service-worker.js`, soporte offline, instalable en pantalla de inicio.

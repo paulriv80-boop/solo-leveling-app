@@ -7,6 +7,8 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
 - [x] Redactar documentación obligatoria (MASTER_PROJECT, README, CHANGELOG, TODO, DECISION_LOG).
 - [x] Dividir `js/app.js` en módulos por responsabilidad (`config`, `state`, `utils`, `logic`, `render`, `events`) — ver DECISION_LOG.
 - [x] Separar lógica de negocio de las funciones que tocan el DOM (parte del punto anterior).
+- [x] Refactorización sistema de rangos fase 1: eliminar Rango Técnico, estrellas, recompensas; 6 nuevos rangos con íconos SVG; acordeón en Inicio (sprint 2.9 + 2.9b).
+- [ ] **Sistema de rangos fase 2:** definir lógica de avance de rango (cómo y cuándo sube `ST.rank`). La fase 1 dejó `applyDayCompletion()` sin progresión de rango — pendiente de diseño y aprobación del usuario antes de implementar.
 
 ## Media prioridad
 

@@ -3,7 +3,7 @@
 ## 1. Estado general
 
 - **Versión visible (UI):** v4.0 Alpha (badge del topbar en `index.html`).
-- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 6` (`js/config.js`).
+- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 7` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
   - Repo: https://github.com/paulriv80-boop/solo-leveling-app
@@ -12,10 +12,11 @@
 
 ## 2. Visión del producto
 
-Plataforma de evolución personal gamificada inspirada en Solo Leveling. Combina dos sistemas de rango paralelos:
+Plataforma de evolución personal gamificada inspirada en Solo Leveling. Sistema de rango único de 6 niveles:
 
-- **Rango Hábitos** (disciplina, espiritualidad, cuerpo, mente) — 6 rangos, de Ansioso a Dominio Interno.
-- **Rango Técnico** (carrera en datos/IA) — 7 rangos, de Aprendiz a Maestro.
+**E Novato → D Adepto → C Experto → B Disciplinado → A Liberado → S Trascendente**
+
+Cada rango tiene ícono SVG propio, color y habilidades desbloqueadas. La lógica de avance de rango (fase 2) está pendiente de diseño.
 
 Meta del usuario: transformación personal en 12 meses; generar ingresos en 6 meses mediante habilidades técnicas (Python, SQL, ML, IA generativa).
 
@@ -55,7 +56,7 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 - **Datos** → `data.js` (sin lógica).
 - **Estado** → `config.js` + `state.js` (única fuente de verdad: `ST`).
-- **Lógica de negocio** → `logic.js` (XP, monedas, rachas, rangos, nivel; muta `ST` pero nunca el DOM).
+- **Lógica de negocio** → `logic.js` (XP, monedas, rachas, nivel; muta `ST` pero nunca el DOM).
 - **Presentación** → `render.js` (lee `ST` + `data.js`, nunca muta estado).
 - **Utilidades** → `utils.js` (fechas, formateo, helpers DOM seguros, Toast).
 - **Orquestación** → `events.js` (todo lo que el HTML llama vía `onclick=""`; conecta logic → state → render).
@@ -64,30 +65,28 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 | Módulo | Descripción |
 |---|---|
-| Inicio | Dashboard: rango actual, estrellas, XP del día, racha, 9 atributos en grilla 3×3, Operator Level |
+| Inicio | Dashboard: acordeón de rango (SVG + acordeón expandible), XP del día, racha, 9 atributos 3×3, Operator Level |
 | Misiones | 4 categorías diarias (Físico / Mente / Espiritual / Propósito) — XP + coins + chips de atributos por misión |
-| Rangos | Listado de rangos de Hábitos y Técnico + tabla de recompensas por rango |
 | Calendario | Calendario mensual con estados (verde/rojo/dorado/azul), racha y bonus por racha |
-| Zona Oscura | Registro diario de "caída" + penalizaciones graduales según rango de Hábitos |
+| Zona Oscura | Registro diario de "caída" + penalizaciones graduales según rango actual |
 | Ruta | Ruta de estudio de 6 meses + campo configurable de Propósito personal |
 | Tienda | Canje de monedas de sombra por recompensas reales |
-| Alter Egos | Identidades secundarias desbloqueables desde rango "Equilibrado" |
+| Alter Egos | Identidades secundarias desbloqueables desde Rango B (Disciplinado) |
 | Reset | Modal de confirmación para borrar todo el progreso |
 
 ## 5. Sistema de progresión (resumen)
 
-- 1 estrella cada `CONFIG.DIAS_POR_ESTRELLA` (20) días consecutivos completando **todas** las misiones diarias.
-- 3 estrellas → sube de rango de Hábitos, banner de rank-up con habilidades desbloqueadas y recompensa.
 - Racha (`ST.racha`) = días verdes consecutivos reales, recalculada desde el calendario (`DateUtils.calcRacha`), nunca un contador acumulativo simple.
 - Bonus de racha en `CONFIG.RACHA_BONUS = [3, 7, 30]` días.
-- **9 atributos** (`ST.stats`): Fuerza, Agilidad, Energía, Serenidad, Confianza, Conocimiento, Claridad, Espiritualidad, Disciplina. Cada misión especifica qué atributos incrementa mediante `stats: ['attr1', 'attr2']`.
+- **Rango (`ST.rank`):** índice 0–5 en `RANGOS`. La lógica de avance (cuándo sube) está pendiente de diseño en fase 2. El rango se muestra en Inicio como card acordeón con ícono SVG del rango actual.
+- **9 atributos** (`ST.stats`): Fuerza, Agilidad, Energía, Serenidad, Confianza, Conocimiento, Claridad, Espiritualidad, Disciplina. Cada misión especifica cuáles incrementa mediante `stats: ['attr1', 'attr2']`.
 - **Monedas (`ST.coins`):** máx. 26c/día según misiones completadas. Se gastan en la Tienda.
-- **Operator Level:** `getLevel(totalXP)` en `utils.js` calcula nivel con progresión escalada (Nivel 1→2: 200 XP, cada nivel siguiente requiere 150 XP adicionales). Se muestra en Inicio con barra de progreso.
-- **Misiones auto-reset:** cada nuevo día local (fecha en hora local, no UTC) el historial del día anterior queda intacto pero el día actual siempre empieza desde cero. Almacenamiento: `ST.mis['YYYY-MM-DD']`.
+- **Operator Level:** `getLevel(totalXP)` calcula nivel con progresión escalada (Nivel 1→2: 200 XP, +150 XP por cada nivel adicional). Se muestra en Inicio con barra de progreso.
+- **Misiones auto-reset:** cada nuevo día local (no UTC) el día actual empieza desde cero. Almacenamiento: `ST.mis['YYYY-MM-DD']`.
 
 ## 6. Funcionalidades implementadas
 
-Todas las descritas en la sección 4, con persistencia completa en `localStorage` (clave `sl_v3`) y migraciones de esquema de v1 a v6.
+Todas las descritas en la sección 4, con persistencia completa en `localStorage` (clave `sl_v3`) y migraciones de esquema de v1 a v7.
 
 **Estructura de misiones (`data.js`):**
 ```js
@@ -105,6 +104,7 @@ Categorías: `FISICO` (ph1–ph5) / `MENTE` (mn1–mn6) / `ESPIRITUAL` (sp1–sp
 | v3→v4 | Añade `stacks`, `stacksHoy`, `zona`, `alter` |
 | v4→v5 | 9 nuevos atributos, elimina stacks, añade `proposito` |
 | v5→v6 | Limpia `ST.mis` (fix colisión de IDs de misiones) |
+| v6→v7 | `rankH → rank`, elimina `starsH`, `rankT`, `starsT`, `dc` |
 
 ## 7. Funcionalidades pendientes (roadmap)
 

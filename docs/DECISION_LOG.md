@@ -4,6 +4,47 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-02 — Íconos SVG en lugar de letras para los rangos (sprint 2.9b)
+
+**Problema:** La primera versión del acordeón de rango usaba letras (E, D, C, B, A, S) en badges circulares con borde de color. No reflejaba la identidad visual del diseño de referencia.
+
+**Alternativas consideradas:**
+1. **Letras con borde de color** (implementado en sprint 2.9). Rápido, pero sin valor visual real — cualquier letra en cualquier app se ve igual.
+2. **Imágenes PNG/JPG externas.** Descartadas: añaden archivos binarios al repositorio, no escalan sin perder calidad, requieren rutas y peticiones HTTP.
+3. **SVG inline por rango en `data.js`.** **Elegida.**
+
+**Solución elegida:** propiedad `svg` (string) en cada objeto de `RANGOS`. `render.js` lo inyecta con `innerHTML`. El SVG usa `viewBox="0 0 100 100"` para escalar limpiamente a cualquier tamaño (header 52px, lista 32px). `drop-shadow(color)` dinámico via `filter` CSS para el glow del rango activo.
+
+**Motivos:**
+- Los SVGs inline no requieren archivos externos, no generan peticiones de red y escalan sin artefactos.
+- Centralizar el SVG en `data.js` garantiza que el ícono, el color y el glow de un rango siempre viajan juntos — cambiar un rango en el futuro es tocar un solo objeto.
+- La arquitectura ya era data-driven; los SVGs son un dato más del rango.
+
+---
+
+## 2026-07-02 — Sistema de rangos fase 1: refactorización completa (sprint 2.9)
+
+**Problema:** El sistema anterior tenía dos rangos paralelos (Hábitos + Técnico), estrellas como subnivel, recompensas por rango y una pestaña "Rangos" separada. Era complejo, estaba acoplado en múltiples archivos y el usuario decidió rediseñarlo completamente antes de continuar con PWA.
+
+**Alternativas consideradas:**
+1. **Ajuste incremental:** añadir nuevos rangos manteniendo la estructura dual. Descartada: perpetuaba la complejidad y la deuda técnica del Rango Técnico y las estrellas.
+2. **Eliminar Rangos completamente** hasta la fase 2. Descartada: el rango es parte de la identidad visual del juego — debe seguir visible en Inicio.
+3. **Eliminar dual-rank + estrellas, integrar rango en Inicio como acordeón, dejar avance de rango para fase 2.** **Elegida.**
+
+**Solución elegida:**
+- Un único array `RANGOS` (6 rangos: E→S) reemplaza `RANGOS_HABITOS` y `RANGOS_TECNICO`.
+- Estado simplificado: `ST.rank` (índice 0–5). Eliminados `starsH`, `starsT`, `rankT`, `dc`.
+- Pestaña "Rangos" eliminada del menú. El rango se muestra en Inicio como card acordeón (clicable, sin cambio de pantalla).
+- `applyDayCompletion()` simplificada: solo marca día verde y racha. **La lógica de avance de rango es fase 2** — se diseñará e implementará por separado, con aprobación previa del usuario.
+- Migración v6→v7 preserva el `rankH` anterior como nuevo `rank` (sin perder progreso del usuario).
+
+**Motivos:**
+- Reducir surface area antes de añadir PWA. Menos código, menos bugs potenciales.
+- El acordeón en Inicio es menos fricción que una pestaña separada: el usuario ve su rango sin navegar.
+- Separar "mostrar rango" de "avanzar rango" permite presentar el nuevo sistema visual antes de definir las reglas de progresión.
+
+---
+
 ## 2026-06-30 — Sistema de misiones: refactorización completa (sprint 2.6)
 
 **Problema:** La estructura de misiones anterior (3 categorías, stacks de poder, misión secreta semanal, 5 orbes de stats, tooltips en checkboxes) no representaba bien el sistema de evolución personal del usuario ni era escalable.

@@ -1258,6 +1258,26 @@ Esto evita perder contexto meses después.
 
 ---
 
+BRAND_IDENTITY
+
+Registrar y mantener actualizada la identidad visual y de marca del producto.
+
+Debe incluir:
+
+- Nombre del producto y concepto visual general.
+- Paleta de colores con códigos hex exactos y uso de cada color (primario, acento, fondo, texto, glows, etc.).
+- Tipografía: fuentes, tamaños y pesos utilizados.
+- Estilo visual e inspiración (Solo Leveling, RPG futurista, etc.).
+- Componentes visuales clave: descripción de pantallas principales con capturas o mockups.
+- Identidad de marca: principios estéticos, tono y personalidad visual.
+- Uso correcto e incorrecto de los elementos visuales.
+
+Este documento es la fuente de verdad para protección de diseño, futuros trámites de registro de marca y para garantizar consistencia visual entre versiones.
+
+Nunca implementar cambios visuales importantes sin actualizarlo.
+
+---
+
 ## ACTUALIZACIÓN AUTOMÁTICA
 
 Después de cada modificación importante el asistente debe proponer actualizar automáticamente:
@@ -1267,6 +1287,7 @@ Después de cada modificación importante el asistente debe proponer actualizar 
 - README (cuando corresponda)
 - TODO
 - DECISION_LOG
+- BRAND_IDENTITY (cuando corresponda a cambios visuales)
 
 Nunca dejar documentación importante desactualizada.
 
