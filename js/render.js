@@ -46,17 +46,17 @@ function renderRankAccord() {
   const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
   const rh  = RANGOS[cur];
 
-  // Actualizar header
+  // Actualizar header con SVG
   const badge = el('dRankBadge');
   if (badge) {
-    badge.textContent    = rh.letter;
-    badge.style.color    = rh.color;
-    badge.style.borderColor = rh.color;
-    badge.style.boxShadow   = `0 0 14px ${rh.colorGlow}`;
+    badge.innerHTML       = rh.svg;
+    badge.style.filter    = `drop-shadow(0 0 7px ${rh.color})`;
+    badge.style.boxShadow = '';
+    badge.style.border    = '';
   }
   setText('dRankName', rh.name);
 
-  // Construir lista de rangos
+  // Construir lista de rangos con SVG en cada fila
   const body = el('rankAccordBody');
   if (!body) return;
 
@@ -64,14 +64,12 @@ function renderRankAccord() {
     const isCurrent = i === cur;
     const isPast    = i < cur;
     const rowClass  = isCurrent ? 'rank-cur' : isPast ? 'rank-past' : 'rank-fut';
-    const badgeStyle = isCurrent
-      ? `color:${r.color};border-color:${r.color};box-shadow:0 0 10px ${r.colorGlow}`
-      : '';
-    const nameStyle  = isCurrent ? `color:${r.color}` : '';
-    const desc       = isCurrent ? r.desc : isPast ? '✓ Superado' : 'Bloqueado';
+    const svgStyle  = isCurrent ? `filter:drop-shadow(0 0 4px ${r.color})` : '';
+    const nameStyle = isCurrent ? `color:${r.color}` : '';
+    const desc      = isCurrent ? r.desc : isPast ? '✓ Superado' : 'Bloqueado';
 
     return `<div class="rank-row ${rowClass}">
-      <div class="rank-badge-xs" style="${badgeStyle}">${r.letter}</div>
+      <div class="rank-badge-xs" style="${svgStyle}">${r.svg}</div>
       <div class="rank-row-info">
         <div class="rank-row-name" style="${nameStyle}">${r.name}</div>
         <div class="rank-row-desc">${desc}</div>

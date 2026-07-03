@@ -7,39 +7,103 @@
 const RANGOS = [
   {
     letter: 'E', name: 'Novato',
-    color: '#c8956a', colorGlow: 'rgba(200,149,106,0.45)',
+    color: '#c8956a', colorGlow: 'rgba(200,149,106,0.5)',
     desc: 'El punto de partida. Reconoces el caos como oportunidad de cambio.',
     skills: ['El sistema te acepta tal como eres', 'Primera misión desbloqueada', 'Zona oscura desbloqueada'],
+    // Círculo bronce con chevron y acentos en los cuatro ejes
+    svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#c8956a" stroke-width="5"/>
+      <polygon points="50,7 54,15 46,15" fill="#c8956a"/>
+      <polygon points="50,93 54,85 46,85" fill="#c8956a"/>
+      <polygon points="7,50 15,46 15,54" fill="#c8956a"/>
+      <polygon points="93,50 85,46 85,54" fill="#c8956a"/>
+      <polyline points="28,67 50,41 72,67" fill="none" stroke="#c8956a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="50" cy="77" r="4.5" fill="#c8956a"/>
+    </svg>`,
   },
   {
     letter: 'D', name: 'Adepto',
-    color: '#9ab0c0', colorGlow: 'rgba(154,176,192,0.45)',
+    color: '#9ab0c0', colorGlow: 'rgba(154,176,192,0.5)',
     desc: 'Empiezas a ver tus patrones. La constancia comienza a formarse.',
     skills: ['Patrones de sabotaje identificados', 'Resistencia mental activada', 'Misiones avanzadas desbloqueadas'],
+    // Círculo acero con flecha apuntando arriba y diamante central
+    svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#8899aa" stroke-width="5"/>
+      <polygon points="50,18 70,63 50,55 30,63" fill="#9ab0c0"/>
+      <polygon points="50,53 55,58 50,63 45,58" fill="#d0e0ea"/>
+    </svg>`,
   },
   {
     letter: 'C', name: 'Experto',
-    color: '#e8c030', colorGlow: 'rgba(232,192,48,0.45)',
+    color: '#e8c030', colorGlow: 'rgba(232,192,48,0.5)',
     desc: 'Visión expandida. Actúas con intención real y disciplina inicial sólida.',
     skills: ['Rutinas establecidas', 'Rendimiento en ascenso', 'XP diario potenciado'],
+    // Estrella de 4 puntas (compás dorado) con cruceta interior
+    svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50,4 L56,44 L96,50 L56,56 L50,96 L44,56 L4,50 L44,44 Z" fill="#e8c030"/>
+      <circle cx="50" cy="50" r="13" fill="none" stroke="#fff8b0" stroke-width="1.5" opacity="0.65"/>
+      <line x1="50" y1="37" x2="50" y2="63" stroke="#fff8b0" stroke-width="1.5" opacity="0.65"/>
+      <line x1="37" y1="50" x2="63" y2="50" stroke="#fff8b0" stroke-width="1.5" opacity="0.65"/>
+    </svg>`,
   },
   {
     letter: 'B', name: 'Disciplinado',
-    color: '#9b59b6', colorGlow: 'rgba(155,89,182,0.5)',
+    color: '#9b59b6', colorGlow: 'rgba(155,89,182,0.55)',
     desc: 'Mente y cuerpo alineados. Control real sobre tus impulsos y hábitos.',
     skills: ['Alter Egos desbloqueados', 'Dominio de impulsos activo', 'Modo guerrero disponible'],
+    // Círculo violeta con espada y corona de laurel
+    svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="40" fill="none" stroke="#9b59b6" stroke-width="3.5"/>
+      <polygon points="50,14 54,52 50,58 46,52" fill="#c084f5"/>
+      <rect x="35" y="52" width="30" height="5.5" rx="2.5" fill="#9b59b6"/>
+      <rect x="47" y="57.5" width="6" height="13" rx="3" fill="#7c3ea8"/>
+      <circle cx="50" cy="74" r="4.5" fill="#9b59b6"/>
+      <path d="M37,74 C30,65 27,55 30,44" fill="none" stroke="#9b59b6" stroke-width="2.5"/>
+      <ellipse cx="27" cy="61" rx="7" ry="3.5" fill="#9b59b6" transform="rotate(-35,27,61)" opacity="0.9"/>
+      <ellipse cx="28.5" cy="52" rx="6.5" ry="3.5" fill="#9b59b6" transform="rotate(-50,28.5,52)" opacity="0.8"/>
+      <ellipse cx="31" cy="44" rx="6" ry="3" fill="#9b59b6" transform="rotate(-62,31,44)" opacity="0.7"/>
+      <path d="M63,74 C70,65 73,55 70,44" fill="none" stroke="#9b59b6" stroke-width="2.5"/>
+      <ellipse cx="73" cy="61" rx="7" ry="3.5" fill="#9b59b6" transform="rotate(35,73,61)" opacity="0.9"/>
+      <ellipse cx="71.5" cy="52" rx="6.5" ry="3.5" fill="#9b59b6" transform="rotate(50,71.5,52)" opacity="0.8"/>
+      <ellipse cx="69" cy="44" rx="6" ry="3" fill="#9b59b6" transform="rotate(62,69,44)" opacity="0.7"/>
+    </svg>`,
   },
   {
     letter: 'A', name: 'Liberado',
-    color: '#c8d8e8', colorGlow: 'rgba(200,216,232,0.5)',
+    color: '#c8d8e8', colorGlow: 'rgba(200,216,232,0.55)',
     desc: 'Renaces. Los hábitos fluyen naturalmente. Enseñas con el ejemplo.',
     skills: ['Fénix interior despertado', 'Flujo sostenido del guerrero', 'Guías con tu presencia'],
+    // Fénix plateado con alas desplegadas hacia arriba
+    svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="58" r="25" fill="none" stroke="#c8d8e8" stroke-width="2" opacity="0.3"/>
+      <path d="M44,53 C36,44 21,37 13,46 C21,42 36,49 44,59" fill="#c8d8e8"/>
+      <path d="M43,49 C32,35 17,27 20,40 C26,34 38,43 43,53" fill="#d8eaf8" opacity="0.75"/>
+      <path d="M56,53 C64,44 79,37 87,46 C79,42 64,49 56,59" fill="#c8d8e8"/>
+      <path d="M57,49 C68,35 83,27 80,40 C74,34 62,43 57,53" fill="#d8eaf8" opacity="0.75"/>
+      <ellipse cx="50" cy="61" rx="7.5" ry="11" fill="#c8d8e8"/>
+      <circle cx="50" cy="44" r="8" fill="#c8d8e8"/>
+      <polygon points="50,40 56,43 50,46" fill="#90a8b8"/>
+      <path d="M44,71 C40,81 42,89 50,85 C58,89 60,81 56,71" fill="#c8d8e8" opacity="0.85"/>
+    </svg>`,
   },
   {
     letter: 'S', name: 'Trascendente',
-    color: '#ffb833', colorGlow: 'rgba(255,184,51,0.6)',
+    color: '#ffb833', colorGlow: 'rgba(255,184,51,0.65)',
     desc: 'Dominio absoluto. La evolución personal es tu naturaleza permanente.',
     skills: ['Forma final desbloqueada', 'Poder absoluto desde adentro', 'Inspira y guía a otros'],
+    // Orbe dorado con anillo orbital y eje vertical radiante
+    svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="50" rx="44" ry="16" fill="none" stroke="#ffb833" stroke-width="3.5"/>
+      <polygon points="5,50 13,46 13,54" fill="#ffb833"/>
+      <polygon points="95,50 87,46 87,54" fill="#ffb833"/>
+      <line x1="50" y1="7" x2="50" y2="93" stroke="#ffb833" stroke-width="3"/>
+      <polygon points="50,5 54,14 46,14" fill="#ffb833"/>
+      <polygon points="50,95 54,86 46,86" fill="#ffb833"/>
+      <circle cx="50" cy="50" r="19" fill="none" stroke="#ffb833" stroke-width="1.5" opacity="0.35"/>
+      <circle cx="50" cy="50" r="13" fill="#ffb833" opacity="0.3"/>
+      <circle cx="50" cy="50" r="8" fill="#ffb833" opacity="0.75"/>
+      <circle cx="50" cy="50" r="4" fill="#fff5cc"/>
+    </svg>`,
   },
 ];
 
