@@ -162,7 +162,6 @@
 <div class="nav">
   <button class="nb on"  onclick="nav('inicio',this)">Inicio</button>
   <button class="nb"     onclick="nav('misiones',this)">Misiones</button>
-  <button class="nb"     onclick="nav('rangos',this)">Rangos</button>
   <button class="nb"     onclick="nav('calendario',this)">Calendario</button>
   <button class="nb"     onclick="nav('zona',this)">Zona Oscura</button>
   <button class="nb"     onclick="nav('ruta',this)">Ruta</button>
@@ -174,23 +173,18 @@
 
   <!-- ===== INICIO ===== -->
   <div class="sec on" id="sec-inicio">
-    <div id="rankupBanner"></div>
 
-    <div class="g2">
-      <div class="card">
-        <div class="slbl">Rango Hábitos</div>
-        <div style="margin-top:4px"><span class="pill pill-h" id="dRH">Ansioso</span></div>
-        <div class="stars" id="dSH">☆☆☆</div>
-        <div class="ssub" id="dSubH">0/20 días</div>
-        <div class="xbw"><div class="xb xb-p" id="dBH" style="width:0%"></div></div>
+    <!-- Rango (acordeón) -->
+    <div class="card rank-accord" style="margin-bottom:12px">
+      <div class="rank-accord-hdr" onclick="toggleRankAccord()">
+        <div class="rank-badge-hdr" id="dRankBadge">E</div>
+        <div style="flex:1">
+          <div class="slbl">Rango</div>
+          <div class="rank-hdr-name" id="dRankName">Novato</div>
+        </div>
+        <span class="rank-chevron" id="dRankChevron">▾</span>
       </div>
-      <div class="card">
-        <div class="slbl">Rango Técnico</div>
-        <div style="margin-top:4px"><span class="pill pill-t" id="dRT">Aprendiz</span></div>
-        <div class="stars" id="dST">☆☆☆</div>
-        <div class="ssub">Python fundamentos</div>
-        <div class="xbw"><div class="xb xb-g" id="dBT" style="width:0%"></div></div>
-      </div>
+      <div class="rank-accord-body" id="rankAccordBody"></div>
     </div>
 
     <div class="g3 attrs">
@@ -256,12 +250,6 @@
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:0">
-      <div class="slbl">Estado del guerrero</div>
-      <div style="font-size:14px;font-weight:700;margin-top:4px" id="dEst">Ansioso</div>
-      <div class="ssub" id="dEstS">Rango actual</div>
-    </div>
-
     <button class="settings-btn" onclick="showReset()">
       <i class="ti ti-refresh" aria-hidden="true"></i> Resetear progreso
     </button>
@@ -284,28 +272,6 @@
     <div class="card card2">
       <div class="stitle">Propósito</div>
       <div id="mPROPOSITO"></div>
-    </div>
-  </div>
-
-  <!-- ===== RANGOS ===== -->
-  <div class="sec" id="sec-rangos">
-    <div class="g2">
-      <div class="card card2">
-        <div class="stitle">Hábitos</div>
-        <div id="rH"></div>
-      </div>
-      <div class="card card2">
-        <div class="stitle">Técnico</div>
-        <div id="rT"></div>
-      </div>
-    </div>
-    <div class="card card2" style="margin-bottom:10px">
-      <div class="stitle">Recompensas — Hábitos</div>
-      <div id="rRewH"></div>
-    </div>
-    <div class="card card2">
-      <div class="stitle">Recompensas — Técnico</div>
-      <div id="rRewT"></div>
     </div>
   </div>
 

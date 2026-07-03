@@ -4,73 +4,52 @@
 // recompensas, etc., solo editar este archivo.
 // ============================================================
 
-const RANGOS_HABITOS = [
+const RANGOS = [
   {
-    name: 'Ansioso', emoji: '🐭', animal: 'Rata gris', color: '#ff2d55',
-    subs: ['Ansioso leve', 'Ansiedad activa', 'Ansiedad alta'],
-    skills: ['Reconoces el caos como punto de partida', 'El sistema te acepta tal como eres', 'Primera misión desbloqueada']
+    letter: 'E', name: 'Novato',
+    color: '#c8956a', colorGlow: 'rgba(200,149,106,0.45)',
+    desc: 'El punto de partida. Reconoces el caos como oportunidad de cambio.',
+    skills: ['El sistema te acepta tal como eres', 'Primera misión desbloqueada', 'Zona oscura desbloqueada'],
   },
   {
-    name: 'Inestable', emoji: '🐺', animal: 'Lobo joven', color: '#ff6b35',
-    subs: ['Inestabilidad leve', 'Cambios frecuentes', 'Sin rutina fija'],
-    skills: ['Empiezas a ver tus patrones de sabotaje', 'Resistencia mental +5', 'Zona oscura desbloqueada']
+    letter: 'D', name: 'Adepto',
+    color: '#9ab0c0', colorGlow: 'rgba(154,176,192,0.45)',
+    desc: 'Empiezas a ver tus patrones. La constancia comienza a formarse.',
+    skills: ['Patrones de sabotaje identificados', 'Resistencia mental activada', 'Misiones avanzadas desbloqueadas'],
   },
   {
-    name: 'Despierto', emoji: '🦅', animal: 'Águila emergiendo', color: '#ffd700',
-    subs: ['Empieza conciencia', 'Ve sus patrones', 'Intención real'],
-    skills: ['Visión expandida: ves desde arriba', 'Misiones secretas desbloqueadas', 'Resistencia mental +10']
+    letter: 'C', name: 'Experto',
+    color: '#e8c030', colorGlow: 'rgba(232,192,48,0.45)',
+    desc: 'Visión expandida. Actúas con intención real y disciplina inicial sólida.',
+    skills: ['Rutinas establecidas', 'Rendimiento en ascenso', 'XP diario potenciado'],
   },
   {
-    name: 'Enfocado', emoji: '🐯', animal: 'Tigre en ataque', color: '#00f5ff',
-    subs: ['Atención presente', 'Rutinas básicas', 'Disciplina inicial'],
-    skills: ['Modo concentración activado', 'Stacks de poder potenciados', 'XP diario aumentado +15%']
+    letter: 'B', name: 'Disciplinado',
+    color: '#9b59b6', colorGlow: 'rgba(155,89,182,0.5)',
+    desc: 'Mente y cuerpo alineados. Control real sobre tus impulsos y hábitos.',
+    skills: ['Alter Egos desbloqueados', 'Dominio de impulsos activo', 'Modo guerrero disponible'],
   },
   {
-    name: 'Equilibrado', emoji: '🦁', animal: 'León maduro', color: '#bf5fff',
-    subs: ['Control parcial', 'Hábitos estables', 'Mente y cuerpo'],
-    skills: ['Alter Egos desbloqueados', 'Dominio de impulsos +20', 'Flujo del guerrero disponible']
+    letter: 'A', name: 'Liberado',
+    color: '#c8d8e8', colorGlow: 'rgba(200,216,232,0.5)',
+    desc: 'Renaces. Los hábitos fluyen naturalmente. Enseñas con el ejemplo.',
+    skills: ['Fénix interior despertado', 'Flujo sostenido del guerrero', 'Guías con tu presencia'],
   },
   {
-    name: 'Dominio Interno', emoji: '🐉', animal: 'Dragón negro', color: '#39ff14',
-    subs: ['Estabilidad alta', 'Control fuerte', 'Integración total'],
-    skills: ['Forma final desbloqueada', 'Poder absoluto desde adentro', 'Puede enseñar a otros']
+    letter: 'S', name: 'Trascendente',
+    color: '#ffb833', colorGlow: 'rgba(255,184,51,0.6)',
+    desc: 'Dominio absoluto. La evolución personal es tu naturaleza permanente.',
+    skills: ['Forma final desbloqueada', 'Poder absoluto desde adentro', 'Inspira y guía a otros'],
   },
-];
-
-const RANGOS_TECNICO = [
-  { name: 'Aprendiz',        emoji: '🐢', animal: 'Tortuga',            color: '#888888', desc: 'Lento pero constante',        skills: ['Primeros pasos en el código', 'Mentalidad de crecimiento activada'] },
-  { name: 'Analista',        emoji: '🦝', animal: 'Mapache',             color: '#ff6b35', desc: 'Curioso, encuentra patrones', skills: ['Excel y SQL dominados', 'Ves datos donde otros ven ruido', 'Monedas de estudio +5/día'] },
-  { name: 'Desarrollador',   emoji: '🐙', animal: 'Pulpo',               color: '#00f5ff', desc: 'Multitarea, adaptable',        skills: ['Python fluido', 'Automatizaciones reales', 'Bonus XP estudio +10%'] },
-  { name: 'Ingeniero Datos', emoji: '🦈', animal: 'Tiburón',             color: '#bf5fff', desc: 'Preciso en aguas profundas',   skills: ['Pipelines de datos', 'Git dominado', 'Proyectos completos'] },
-  { name: 'Científico',      emoji: '🦑', animal: 'Calamar profundo',    color: '#39ff14', desc: 'Ve donde nadie llega',         skills: ['Machine Learning aplicado', 'Estadística sólida', 'Primer ingreso posible'] },
-  { name: 'Arquitecto IA',   emoji: '🦋', animal: 'Mantis con armadura', color: '#ffd700', desc: 'Calculadora, letal',           skills: ['Diseña agentes con Claude', 'n8n dominado', 'Sistemas autónomos'] },
-  { name: 'Maestro',         emoji: '🦅', animal: 'Fénix blanco',        color: '#ffffff', desc: 'Renace, ilumina a otros',      skills: ['Ingresos reales generados', 'Puede enseñar y vender', 'Caso de éxito completo'] },
-];
-
-const RECOMPENSAS_HABITOS = [
-  { rang: 'Inestable',      reward: '50 monedas + día libre' },
-  { rang: 'Despierto',      reward: '100 monedas + 1 serie completa' },
-  { rang: 'Enfocado',       reward: '150 monedas + comida especial' },
-  { rang: 'Equilibrado',    reward: '250 monedas + gadget o libro' },
-  { rang: 'Dominio Interno',reward: '500 monedas + salida especial + día libre' },
-];
-
-const RECOMPENSAS_TECNICO = [
-  { rang: 'Analista',      reward: '30 monedas + app premium 1 mes' },
-  { rang: 'Desarrollador', reward: '60 monedas + curso avanzado' },
-  { rang: 'Ingeniero Datos',reward: '100 monedas + equipo tech' },
-  { rang: 'Científico',    reward: '150 monedas + certificación' },
-  { rang: 'Arquitecto IA', reward: '250 monedas + herramienta pro' },
-  { rang: 'Maestro',       reward: '500 monedas + celebración especial' },
 ];
 
 const PENALIZACIONES = [
-  { rank: 0, name: 'Ansioso',        items: ['50 sentadillas', '1h extra estudio', 'Sin series ese día'] },
-  { rank: 1, name: 'Inestable',      items: ['100 sentadillas', '1.5h estudio', 'Sin series', 'Cardio 20 min'] },
-  { rank: 2, name: 'Despierto',      items: ['150 sentadillas', '2h estudio', 'Cardio 30 min', 'Ayuno hasta mediodía'] },
-  { rank: 3, name: 'Enfocado',       items: ['200 sentadillas', '2h estudio', 'Sin redes', 'Doble cardio', 'Ayuno hasta mediodía'] },
-  { rank: 4, name: 'Equilibrado',    items: ['200 sentadillas', '3h estudio', 'Sin redes 48h', 'Doble cardio', 'Ayuno todo el día'] },
-  { rank: 5, name: 'Dominio Interno',items: ['300 sentadillas', '4h estudio', 'Sin redes 72h', 'Triple cardio', 'Ayuno 24h'] },
+  { rank: 0, name: 'Novato',        items: ['50 sentadillas', '1h extra estudio', 'Sin series ese día'] },
+  { rank: 1, name: 'Adepto',        items: ['100 sentadillas', '1.5h estudio', 'Sin series', 'Cardio 20 min'] },
+  { rank: 2, name: 'Experto',       items: ['150 sentadillas', '2h estudio', 'Cardio 30 min', 'Ayuno hasta mediodía'] },
+  { rank: 3, name: 'Disciplinado',  items: ['200 sentadillas', '2h estudio', 'Sin redes', 'Doble cardio', 'Ayuno hasta mediodía'] },
+  { rank: 4, name: 'Liberado',      items: ['200 sentadillas', '3h estudio', 'Sin redes 48h', 'Doble cardio', 'Ayuno todo el día'] },
+  { rank: 5, name: 'Trascendente',  items: ['300 sentadillas', '4h estudio', 'Sin redes 72h', 'Triple cardio', 'Ayuno 24h'] },
 ];
 
 const MISIONES = {

@@ -7,19 +7,8 @@
 // ---- INICIO (Dashboard) ----
 
 function renderInicio() {
-  const rh = RANGOS_HABITOS[Math.min(ST.rankH, RANGOS_HABITOS.length - 1)];
-  const rt = RANGOS_TECNICO[Math.min(ST.rankT, RANGOS_TECNICO.length - 1)];
-
-  // Rango Hábitos
-  setText('dRH',   rh.emoji + ' ' + rh.name);
-  setText('dSH',   starsHTML(ST.starsH));
-  setText('dSubH', ST.dc + '/' + CONFIG.DIAS_POR_ESTRELLA + ' días');
-  setStyle('dBH', 'width', pct(ST.dc, CONFIG.DIAS_POR_ESTRELLA) + '%');
-
-  // Rango Técnico
-  setText('dRT', rt.emoji + ' ' + rt.name);
-  setText('dST', starsHTML(ST.starsT));
-  setStyle('dBT', 'width', pct(ST.rankT, RANGOS_TECNICO.length - 1) + '%');
+  // Acordeón de rango
+  renderRankAccord();
 
   // XP hoy
   const xp = xpHoy();
@@ -30,14 +19,6 @@ function renderInicio() {
   setText('dRC', ST.racha + ' días');
   setText('dBS', bonusLabel(ST.racha));
   setStyle('dBR', 'width', pct(ST.racha, 30) + '%');
-
-  // Estado del guerrero
-  const estadoEl = el('dEst');
-  if (estadoEl) {
-    estadoEl.textContent = rh.emoji + ' ' + rh.name;
-    estadoEl.style.color = rh.color;
-  }
-  setText('dEstS', rh.subs ? rh.subs[Math.min(ST.starsH, 2)] : rh.desc || '');
 
   // Stats (atributos)
   ['fuerza','agilidad','energia','serenidad','confianza','conocimiento','claridad','espiritualidad','disciplina']
@@ -59,7 +40,45 @@ function renderInicio() {
     const indicator = el(['b3', 'b7', 'b30'][i]);
     if (indicator) indicator.style.display = ST.racha >= dias ? 'inline' : 'none';
   });
+}
 
+function renderRankAccord() {
+  const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
+  const rh  = RANGOS[cur];
+
+  // Actualizar header
+  const badge = el('dRankBadge');
+  if (badge) {
+    badge.textContent    = rh.letter;
+    badge.style.color    = rh.color;
+    badge.style.borderColor = rh.color;
+    badge.style.boxShadow   = `0 0 14px ${rh.colorGlow}`;
+  }
+  setText('dRankName', rh.name);
+
+  // Construir lista de rangos
+  const body = el('rankAccordBody');
+  if (!body) return;
+
+  body.innerHTML = RANGOS.map((r, i) => {
+    const isCurrent = i === cur;
+    const isPast    = i < cur;
+    const rowClass  = isCurrent ? 'rank-cur' : isPast ? 'rank-past' : 'rank-fut';
+    const badgeStyle = isCurrent
+      ? `color:${r.color};border-color:${r.color};box-shadow:0 0 10px ${r.colorGlow}`
+      : '';
+    const nameStyle  = isCurrent ? `color:${r.color}` : '';
+    const desc       = isCurrent ? r.desc : isPast ? '✓ Superado' : 'Bloqueado';
+
+    return `<div class="rank-row ${rowClass}">
+      <div class="rank-badge-xs" style="${badgeStyle}">${r.letter}</div>
+      <div class="rank-row-info">
+        <div class="rank-row-name" style="${nameStyle}">${r.name}</div>
+        <div class="rank-row-desc">${desc}</div>
+      </div>
+      ${isCurrent ? `<span class="rank-cur-dot" style="color:${r.color}">◉</span>` : ''}
+    </div>`;
+  }).join('');
 }
 
 
@@ -131,85 +150,6 @@ function renderProposito(elId) {
   </div>`;
 }
 
-function showRankUp() {
-  const rh  = RANGOS_HABITOS[ST.rankH];
-  const rew = RECOMPENSAS_HABITOS.find(r => r.rang === rh.name);
-  const banner = el('rankupBanner');
-  if (!banner) return;
-
-  banner.innerHTML = `<div class="rankup">
-    <div class="rankup-animal">${rh.emoji}</div>
-    <div class="rankup-title">¡Rango superado!</div>
-    <div style="font-size:13px;color:var(--t1);margin-top:4px">
-      Ahora eres: <strong>${rh.name}</strong> — ${rh.animal}
-    </div>
-    <div class="rankup-skills">
-      <div style="font-size:10px;color:var(--t3);margin-bottom:4px">Habilidades desbloqueadas:</div>
-      ${rh.skills.map(s => `<div class="skill-item">${s}</div>`).join('')}
-    </div>
-    ${rew ? `<div class="rankup-reward">🎁 Recompensa: ${rew.reward}</div>` : ''}
-    <button class="secret-btn" style="margin-top:10px" onclick="this.closest('.rankup').remove()">
-      Continuar
-    </button>
-  </div>`;
-
-  Toast.show(`¡RANGO SUBIDO! ${rh.emoji} ${rh.name}`, '#ffd700');
-}
-
-
-// ---- RANGOS ----
-
-function renderRangos() {
-  buildRangList(RANGOS_HABITOS, 'rH',    ST.rankH, ST.starsH);
-  buildRangList(RANGOS_TECNICO, 'rT',    ST.rankT, ST.starsT);
-  buildRewList(RECOMPENSAS_HABITOS, 'rRewH', ST.rankH);
-  buildRewList(RECOMPENSAS_TECNICO, 'rRewT', ST.rankT);
-}
-
-function buildRangList(list, elId, curIdx, curStars) {
-  const container = el(elId);
-  if (!container) return;
-
-  container.innerHTML = list.map((r, i) => {
-    const isCurrent = i === curIdx;
-    const isPast    = i < curIdx;
-    const numClass  = isCurrent ? 'rn-cur' : isPast ? 'rn-past' : 'rn-fut';
-    const boxShadow = isCurrent ? `box-shadow:0 0 10px ${r.color}` : '';
-    const nameColor = isCurrent ? r.color : 'inherit';
-    const desc      = isCurrent
-      ? starsHTML(curStars) + ' ' + (r.subs ? r.subs[Math.min(curStars, 2)] : (r.desc || ''))
-      : (r.desc || r.subs?.[0] || '');
-
-    return `<div class="rrow">
-      <div class="rnum ${numClass}" style="${boxShadow}">${r.emoji}</div>
-      <div>
-        <div class="rname" style="color:${nameColor}">${r.name}</div>
-        <div class="rdesc">${desc}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function buildRewList(list, elId, curRank) {
-  const container = el(elId);
-  if (!container) return;
-
-  container.innerHTML = list.map((r, i) => {
-    const unlocked = curRank > i + 1;
-    const current  = curRank === i + 1;
-    const numClass = unlocked ? 'rn-past' : current ? 'rn-cur' : 'rn-fut';
-    const star     = (unlocked || current) ? '★' : '☆';
-    const rew      = (unlocked || current) ? 'color:var(--c5)' : '';
-
-    return `<div class="rrow">
-      <div class="rnum ${numClass}">${star}</div>
-      <div>
-        <div class="rname" style="font-size:11px">${r.rang}</div>
-        <div class="rdesc" style="${rew}">🎁 ${r.reward}</div>
-      </div>
-    </div>`;
-  }).join('');
-}
 
 
 // ---- CALENDARIO ----
@@ -292,7 +232,7 @@ function renderZona() {
     ? 'Penalización activada — cumple el castigo'
     : 'Toca si fallaste hoy');
 
-  const pd = PENALIZACIONES[Math.min(ST.rankH, PENALIZACIONES.length - 1)];
+  const pd = PENALIZACIONES[Math.min(ST.rank || 0, PENALIZACIONES.length - 1)];
   setText('punRank', pd.name);
 
   const punList = el('punList');
@@ -356,13 +296,13 @@ function renderTienda() {
 
 // ---- ALTER EGOS ----
 
-const ALTER_UNLOCK_RANK = 4; // Índice en RANGOS_HABITOS (Equilibrado = 4)
+const ALTER_UNLOCK_RANK = 3; // Índice en RANGOS (Disciplinado = 3)
 
 function renderAlter() {
   const container = el('alterContent');
   if (!container) return;
 
-  if (ST.rankH < ALTER_UNLOCK_RANK) {
+  if ((ST.rank || 0) < ALTER_UNLOCK_RANK) {
     container.innerHTML = buildAlterLocked();
     return;
   }
@@ -386,10 +326,10 @@ function buildAlterLocked() {
       ${siluetas}
     </div>
     <div style="font-size:12px;color:var(--t2)">
-      Se desbloquean al llegar a <strong style="color:var(--c2)">Equilibrado</strong>
+      Se desbloquean al llegar a <strong style="color:var(--c2)">Disciplinado</strong>
     </div>
     <div style="margin-top:10px">
-      <span class="pill pill-h">Progreso: Rango ${ST.rankH + 1}/${ALTER_UNLOCK_RANK}</span>
+      <span class="pill pill-h">Progreso: Rango ${(ST.rank || 0) + 1}/${ALTER_UNLOCK_RANK + 1}</span>
     </div>
   </div>`;
 }
@@ -439,7 +379,6 @@ function buildAlterMissions() {
 function renderAll() {
   renderInicio();
   renderMisiones();
-  renderRangos();
   renderCalendario();
   renderZona();
   renderRuta();

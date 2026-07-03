@@ -8,6 +8,7 @@
 let calMode = 'mark';
 let calY = new Date().getFullYear();
 let calM = new Date().getMonth();
+let rankAccordOpen = false;
 
 
 // ---- NAVEGACIÓN ----
@@ -23,7 +24,6 @@ function nav(id, btn) {
   const renders = {
     inicio:     renderInicio,
     misiones:   renderMisiones,
-    rangos:     renderRangos,
     calendario: renderCalendario,
     zona:       renderZona,
     ruta:       renderRuta,
@@ -49,7 +49,6 @@ function toggleMision(id, xp, statsStr, coins) {
     Toast.show(`+${xp} XP${coinsMsg}`, 'var(--c1)');
     const dayResult = applyDayCompletion();
     if (dayResult.completed) {
-      if (dayResult.rankUp) showRankUp();
       Toast.show('¡Día completo! 🔥 Racha: ' + ST.racha, '#39ff14');
     }
   }
@@ -57,6 +56,14 @@ function toggleMision(id, xp, statsStr, coins) {
   saveState();
   renderMisiones();
   renderInicio();
+}
+
+function toggleRankAccord() {
+  rankAccordOpen = !rankAccordOpen;
+  const body    = el('rankAccordBody');
+  const chevron = el('dRankChevron');
+  if (body)    body.classList.toggle('open', rankAccordOpen);
+  if (chevron) chevron.textContent = rankAccordOpen ? '▴' : '▾';
 }
 
 function saveProposito() {

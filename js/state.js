@@ -16,11 +16,7 @@ const DEFAULT_STATE = {
   mis: {},                    // { 'YYYY-MM-DD': { misionId: true/false } }
   zona: {},                   // { 'YYYY-MM-DD': { fell: bool } }
   dias: {},                   // { 'YYYY-MM-DD': 'green'|'red'|'gold'|'blue' }
-  rankH: 0,                   // Índice en RANGOS_HABITOS
-  starsH: 0,                  // 0-2 estrellas en rango actual
-  rankT: 0,                   // Índice en RANGOS_TECNICO
-  starsT: 0,
-  dc: 0,                      // Días completados en subnivel actual
+  rank: 0,                    // Índice en RANGOS (0=Novato … 5=Trascendente)
   proposito: '',              // Texto de la misión Propósito (configurable desde Ruta)
   alterActive: null,
   lastVisit: null,
@@ -110,9 +106,18 @@ const StateMigration = {
     }
 
     // v5 → v6: IDs de misiones renombrados (ph/mn/sp/pu) para evitar colisión
-    // con IDs del sistema anterior. Se limpia ST.mis para estado limpio.
     if (version < 6) {
       raw.mis = {};
+    }
+
+    // v6 → v7: elimina sistema de estrellas y rango técnico; unifica en rank
+    if (version < 7) {
+      raw.rank = raw.rankH || 0;
+      delete raw.rankH;
+      delete raw.starsH;
+      delete raw.rankT;
+      delete raw.starsT;
+      delete raw.dc;
     }
 
     raw.version = CONFIG.STATE_VERSION;

@@ -74,13 +74,6 @@ function setStyle(id, prop, value) {
 }
 
 /**
- * Renderiza N estrellas llenas y (max-N) vacías.
- */
-function starsHTML(n, max = 3) {
-  return '★'.repeat(Math.max(0, n)) + '☆'.repeat(Math.max(0, max - n));
-}
-
-/**
  * Calcula porcentaje clampeado a [0, 100].
  */
 function pct(value, total) {

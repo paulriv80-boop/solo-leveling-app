@@ -50,8 +50,7 @@ function applyMissionToggle(id, xp, stats, coins) {
 
 /**
  * Evalúa si se completaron TODAS las misiones hoy. Si es así, marca el
- * día verde y avanza racha/estrellas/rango. Devuelve si el día quedó
- * completo y si esto produjo una subida de rango.
+ * día verde y recalcula la racha.
  */
 function applyDayCompletion() {
   const today = DateUtils.today();
@@ -59,31 +58,13 @@ function applyDayCompletion() {
   const allMissions = Object.values(MISIONES).flat();
 
   if (!allMissions.every(m => todayMis[m.id])) {
-    return { completed: false, rankUp: false };
+    return { completed: false };
   }
 
-  // Día completado
   ST.dias[today] = 'green';
   ST.racha = DateUtils.calcRacha(ST.dias);
-  ST.dc    = (ST.dc || 0) + 1;
 
-  let rankUp = false;
-
-  // Progresión de rango
-  if (ST.dc >= CONFIG.DIAS_POR_ESTRELLA) {
-    ST.starsH++;
-    ST.dc = 0;
-
-    if (ST.starsH >= CONFIG.ESTRELLAS_POR_RANGO) {
-      ST.starsH = 0;
-      if (ST.rankH < RANGOS_HABITOS.length - 1) {
-        ST.rankH++;
-        rankUp = true;
-      }
-    }
-  }
-
-  return { completed: true, rankUp };
+  return { completed: true };
 }
 
 /**
