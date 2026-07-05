@@ -1,8 +1,9 @@
-# MASTER PROJECT — THE SYSTEM (Solo Leveling App)
+# MASTER PROJECT — Presence (Solo Leveling App)
 
 ## 1. Estado general
 
-- **Versión visible (UI):** v4.0 Alpha (badge del topbar en `index.html`).
+- **Nombre de la app:** **Presence** (anteriormente "THE SYSTEM").
+- **Versión visible (UI):** v4.0 Alpha.
 - **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 7` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
@@ -63,16 +64,13 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 ## 4. Módulos / features existentes
 
-| Módulo | Descripción |
+| Tab | Descripción |
 |---|---|
-| Inicio | Avatar animado (wallpaper con flotación, aura y partículas) + acordeón de rango SVG + XP del día, racha, 9 atributos 3×3, Operator Level |
-| Misiones | 4 categorías diarias (Físico / Mente / Espiritual / Propósito) — XP + coins + chips de atributos por misión |
-| Calendario | Calendario mensual con estados (verde/rojo/dorado/azul), racha y bonus por racha |
-| Zona Oscura | Registro diario de "caída" + penalizaciones graduales según rango actual |
-| Ruta | Ruta de estudio de 6 meses + campo configurable de Propósito personal |
-| Tienda | Canje de monedas de sombra por recompensas reales |
-| Alter Egos | Identidades secundarias desbloqueables desde Rango B (Disciplinado) |
-| Reset | Modal de confirmación para borrar todo el progreso |
+| **Misiones** (home) | Header con fecha + contador X/90 días; card XP del día; 4 categorías (Físico / Mente / Espiritual / Propósito); 3 collapsibles: Calendario, Zona Oscura, Ruta de Propósito |
+| **Stats** | Avatar placeholder SVG animado (o imagen de progresión cuando exista) + acordeón de rango SVG + 9 atributos 3×3 + Operator Level + XP/Racha |
+| **Comunidad** | Placeholder — arquitectura para rankings, eventos globales y desafíos cooperativos (futuro) |
+| **Tools** | Grid de herramientas Coming Soon: IA Mentor (destacado), Pomodoro, Respiración, Workout, Diario, Visualización, Temporizador, Meditación |
+| **Menú** | Tienda (canje de monedas de sombra) + Alter Egos (identidades desde Rango B) + Títulos placeholder + Reset |
 
 ## 5. Sistema de progresión (resumen)
 

@@ -1,5 +1,5 @@
 /* ============================================================
-   THE SYSTEM
+   PRESENCE
    Archivo principal de estilos.
    Importa todos los módulos CSS.
 ============================================================ */
@@ -8,7 +8,9 @@
 @import url("base.css");
 @import url("topbar.css");
 @import url("navigation.css");
+@import url("bottomnav.css");
 @import url("layout.css");
+@import url("placeholders.css");
 @import url("cards.css");
 @import url("components.css");
 @import url("missions.css");

@@ -2,6 +2,34 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-05 — sprint 3.0 NUEVA ARQUITECTURA MOBILE FIRST — Presence
+
+**Versión:** v4.0 Alpha — STATE_VERSION 7 (sin cambio)
+**Archivos:** `index.html`, `js/render.js`, `js/events.js`, `js/utils.js`, `css/style.css`, `css/bottomnav.css` (nuevo), `css/placeholders.css` (nuevo), `css/navigation.css`, `css/avatar.css`, `css/topbar.css`, `css/responsive.css`
+**Tipo:** Refactorización arquitectónica mayor + nueva UX
+
+### Cambios principales
+
+- **Nombre de la app:** "THE SYSTEM" → **Presence** (topbar, boot screen, `<title>`, meta description).
+- **Navegación:** 7 pestañas horizontales de texto eliminadas. Reemplazadas por **barra inferior fija** (`position: fixed; bottom: 0`) con 5 iconos Tabler (`ti-home`, `ti-chart-bar`, `ti-shield`, `ti-tools`, `ti-grid-dots`).
+- **5 secciones:**
+  - **Misiones** (home, por defecto): Header con fecha local + contador **X/90 días**, card XP del día, 4 categorías de misiones, 3 collapsibles (Calendario, Zona Oscura, Ruta de Propósito).
+  - **Stats**: Avatar placeholder SVG animado + acordeón de rango + 9 atributos + Operator Level + XP/Racha.
+  - **Comunidad**: Placeholder con lista de funcionalidades futuras (ranking, eventos, desafíos).
+  - **Tools**: Grid 2 columnas con 8 herramientas Coming Soon; IA Mentor destacado (span 2 cols).
+  - **Menú**: Tienda + Alter Egos + Títulos placeholder + Resetear.
+- **Topbar simplificado:** Solo logo SVG + nombre "Presence" + status dot. HUD (coins/XP/racha) retirado — esos datos viven en Stats.
+- **Collapsibles en Misiones:** CSS `max-height: 0 → 3000px` con transición. `toggleCollapse(bodyId, chevronId)` en events.js. Calendario, Zona Oscura y Ruta de Propósito ahora son secciones secundarias de la pantalla principal.
+- **Contador 90 días:** `calcDias90()` en utils.js cuenta los últimos 90 días donde el usuario completó ≥3 misiones. Usa fecha local (evita bug UTC).
+- **Avatar placeholder:** Cuando `RANGOS[i].avatar` es vacío, se muestra una silueta SVG tintada al color del rango con la misma animación `avatarFloat`. Código preparado para avatares de progresión futuros.
+- **render.js refactorizado:** `renderInicio()` → `renderStats()` (personaje); `renderMisiones()` ampliado con header; nuevas `renderMenu()`, `renderComunidad()`, `renderTools()`. `renderAll()` actualizado. `renderHUD()` eliminado (HUD removido de topbar).
+- **events.js refactorizado:** `nav()` apunta a `.bnav-item` y 5 IDs nuevos; `toggleCollapse()` nuevo; `toggleMision()` actualiza `renderMisiones()` + `renderCalendario()`; `buyReward()` solo llama `renderTienda()`.
+- **css/navigation.css:** Deprecado (solo comentario). Estilos `.nav` y `.nb` ya no se usan.
+- **css/bottomnav.css:** Nuevo. Estilos `.bottom-nav` y `.bnav-item`.
+- **css/placeholders.css:** Nuevo. `.missions-header`, `.collapsible`, `.ph-screen`, `.tools-grid`, `.tool-tile`, `.menu-section-title`, `.menu-grid`, `.menu-tile`.
+
+---
+
 ## 2026-07-04 — sprint 2.10 avatar animado en pantalla de inicio (`74eb480`)
 
 **Versión:** v4.0 Alpha — STATE_VERSION 7

@@ -1,13 +1,13 @@
 // ============================================================
-// MÓDULO: EVENTS — Solo Leveling
+// MÓDULO: EVENTS — Presence
 // Único lugar con funciones invocadas desde onclick="" en el
 // HTML. Orquesta: lógica de negocio → persistencia → render.
 // ============================================================
 
 // Variables de UI — no se persisten
 let calMode = 'mark';
-let calY = new Date().getFullYear();
-let calM = new Date().getMonth();
+let calY    = new Date().getFullYear();
+let calM    = new Date().getMonth();
 let rankAccordOpen = false;
 
 
@@ -17,18 +17,15 @@ function nav(id, btn) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
   const section = el('sec-' + id);
   if (section) section.classList.add('on');
-  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('on'));
   if (btn) btn.classList.add('on');
 
-  // Render lazy: solo renderizar la sección activa
   const renders = {
-    inicio:     renderInicio,
-    misiones:   renderMisiones,
-    calendario: renderCalendario,
-    zona:       renderZona,
-    ruta:       renderRuta,
-    tienda:     renderTienda,
-    alter:      renderAlter,
+    misiones:  renderMisiones,
+    stats:     renderStats,
+    comunidad: renderComunidad,
+    tools:     renderTools,
+    menu:      renderMenu,
   };
   if (renders[id]) renders[id]();
 }
@@ -36,10 +33,6 @@ function nav(id, btn) {
 
 // ---- MISIONES ----
 
-/**
- * Maneja el click de marcar/desmarcar una misión.
- * @param {string} statsStr - Stats separados por coma, ej: 'fuerza,claridad'
- */
 function toggleMision(id, xp, statsStr, coins) {
   const stats  = statsStr ? statsStr.split(',') : [];
   const result = applyMissionToggle(id, xp, stats, coins);
@@ -55,7 +48,19 @@ function toggleMision(id, xp, statsStr, coins) {
 
   saveState();
   renderMisiones();
-  renderInicio();
+  renderCalendario();
+}
+
+
+// ---- COLLAPSIBLES ----
+
+function toggleCollapse(bodyId, chevronId) {
+  const body    = el(bodyId);
+  const chevron = el(chevronId);
+  if (body) {
+    const isOpen = body.classList.toggle('open');
+    if (chevron) chevron.textContent = isOpen ? '▴' : '▾';
+  }
 }
 
 function toggleRankAccord() {
@@ -102,7 +107,7 @@ function clickDay(k) {
 
   saveState();
   renderCalendario();
-  renderInicio();
+  renderMisiones();
 }
 
 
@@ -114,7 +119,6 @@ function toggleZona() {
     fell ? '⚠️ Penalización activada' : '✦ Zona oscura limpia hoy',
     fell ? '#ff2d55' : 'var(--c3)'
   );
-
   saveState();
   renderZona();
 }
@@ -130,7 +134,6 @@ function buyReward(cost, name) {
   }
   Toast.show(`¡${name} desbloqueado! 🎉`, '#ffd700');
   saveState();
-  renderInicio();
   renderTienda();
 }
 

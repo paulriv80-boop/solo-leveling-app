@@ -87,3 +87,19 @@
   80%  { opacity: 0.3; }
   100% { transform: translateY(-100px) scale(0.2); opacity: 0; }
 }
+
+/* ---- AVATAR PLACEHOLDER (cuando no hay imagen de rango) ---- */
+
+.avatar-placeholder {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 24px;
+  animation: avatarFloat 4s ease-in-out infinite;
+  fill: currentColor;
+  opacity: 0.22;
+  will-change: transform;
+}

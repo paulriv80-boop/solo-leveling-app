@@ -4,5 +4,7 @@
   .g5 { grid-template-columns: repeat(3,1fr); }
   .g2 { grid-template-columns: 1fr 1fr; }
   .alter-grid { grid-template-columns: 1fr 1fr; }
-  .hud .hstat:last-child { display: none; }
+  .tools-grid { grid-template-columns: 1fr 1fr; }
+  .menu-grid  { grid-template-columns: 1fr 1fr; }
+  .ph-features { max-width: 100%; }
 }

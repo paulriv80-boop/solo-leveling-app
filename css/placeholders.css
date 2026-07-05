@@ -1,0 +1,209 @@
+/* ---- MISSIONS HEADER ---- */
+
+.missions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 2px 14px;
+}
+
+.missions-date {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t0);
+}
+
+.missions-days90 {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c1);
+  text-shadow: 0 0 8px rgba(0,245,255,.35);
+  letter-spacing: .5px;
+}
+
+
+/* ---- COLLAPSIBLES ---- */
+
+.collapsible { margin-bottom: 10px; }
+
+.collapsible-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--t1);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: border-color .15s;
+}
+
+.collapsible-hdr:hover { border-color: var(--bd2); }
+
+.collapsible-hdr i {
+  font-size: 14px;
+  margin-right: 6px;
+  color: var(--c1);
+  vertical-align: middle;
+}
+
+.collapsible-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .38s cubic-bezier(.4,0,.2,1);
+}
+
+.collapsible-body.open { max-height: 3000px; }
+
+.collapsible-content { padding-top: 10px; }
+
+
+/* ---- COMING SOON / PLACEHOLDER SCREENS ---- */
+
+.ph-screen {
+  text-align: center;
+  padding: 44px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ph-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--t0);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.ph-sub {
+  font-size: 12px;
+  color: var(--t2);
+  margin-bottom: 20px;
+}
+
+.ph-features {
+  width: 100%;
+  max-width: 320px;
+  text-align: left;
+}
+
+.ph-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  margin-bottom: 6px;
+  background: var(--bg2);
+  border: 1px solid var(--bd);
+  border-radius: 9px;
+  font-size: 12px;
+  color: var(--t1);
+}
+
+.ph-feature i {
+  color: var(--c2);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+
+/* ---- TOOLS GRID ---- */
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tool-tile {
+  background: var(--bg2);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 18px 12px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-tile--featured {
+  grid-column: span 2;
+  background: linear-gradient(135deg, var(--bg2), rgba(191,95,255,.08));
+  border-color: rgba(191,95,255,.3);
+}
+
+.tool-icon {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+.tool-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: .5px;
+}
+
+.badge-soon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: rgba(191,95,255,.18);
+  color: var(--c2);
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+
+/* ---- MENU SECTION ---- */
+
+.menu-section-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--t3);
+  margin-bottom: 10px;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.menu-tile {
+  background: var(--bg2);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 20px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu-tile:hover {
+  border-color: var(--bd2);
+  transform: translateY(-1px);
+}
+
+.menu-tile-icon { font-size: 28px; margin-bottom: 6px; }
+.menu-tile-name { font-size: 12px; font-weight: 700; color: var(--t1); }
+.menu-tile-sub  { font-size: 10px; color: var(--t2); margin-top: 2px; }

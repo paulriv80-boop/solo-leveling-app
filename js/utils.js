@@ -132,3 +132,22 @@ const Toast = {
 
 // Alias global para compatibilidad con llamadas existentes en HTML
 function showToast(msg, col) { Toast.show(msg, col); }
+
+
+// ============================================================
+// CONTADOR 90 DÍAS — Presence
+// Días en los últimos 90 donde el usuario completó ≥3 misiones.
+// Usa fecha local (evita bug UTC de calcRacha).
+// ============================================================
+
+function calcDias90() {
+  const now = new Date();
+  let count = 0;
+  for (let i = 0; i < 90; i++) {
+    const d   = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const dayMis = ST.mis[key];
+    if (dayMis && Object.values(dayMis).filter(v => v === true).length >= 3) count++;
+  }
+  return { count, total: 90 };
+}

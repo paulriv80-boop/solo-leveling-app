@@ -1,0 +1,52 @@
+/* ---- BOTTOM NAV — Presence ---- */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  background: rgba(8,16,24,.96);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(0,245,255,.15);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.bnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+  color: var(--t3);
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .15s;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.bnav-item i {
+  font-size: 22px;
+  line-height: 1;
+  transition: filter .15s;
+}
+
+.bnav-item.on {
+  color: var(--c1);
+  text-shadow: 0 0 8px rgba(0,245,255,.27);
+}
+
+.bnav-item.on i {
+  filter: drop-shadow(0 0 5px var(--c1));
+}

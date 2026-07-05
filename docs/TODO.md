@@ -9,6 +9,7 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
 - [x] Separar lógica de negocio de las funciones que tocan el DOM (parte del punto anterior).
 - [x] Refactorización sistema de rangos fase 1: eliminar Rango Técnico, estrellas, recompensas; 6 nuevos rangos con íconos SVG; acordeón en Inicio (sprint 2.9 + 2.9b).
 - [x] Avatar animado en pantalla de inicio: wallpaper estilo Solo Leveling con flotación, aura pulsante y partículas; glow dinámico por rango (sprint 2.10).
+- [x] **Sprint 3.0 — Arquitectura Mobile First:** nombre → Presence; bottom nav 5 tabs; Misiones como home con X/90 contador y 3 collapsibles; Stats con avatar placeholder; Comunidad/Tools placeholders; Menú con Tienda + Alter Egos + Títulos.
 - [ ] **Avatares de progresión:** generar y asignar imágenes distintas para cada uno de los 6 rangos (de persona corriente → con aura → transformado). Propiedad `avatar` ya preparada en `RANGOS`.
 - [ ] **Sistema de rangos fase 2:** definir lógica de avance de rango (cómo y cuándo sube `ST.rank`). La fase 1 dejó `applyDayCompletion()` sin progresión de rango — pendiente de diseño y aprobación del usuario antes de implementar.
 

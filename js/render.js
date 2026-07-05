@@ -1,19 +1,33 @@
 // ============================================================
-// MÓDULO: RENDER — Solo Leveling
+// MÓDULO: RENDER — Presence
 // Presentación pura: lee ST y data.js, escribe al DOM.
 // Nunca debe calcular reglas de negocio ni mutar ST.
 // ============================================================
 
-// ---- INICIO (Dashboard) ----
+
+// ---- AVATAR (usado por renderStats) ----
 
 function renderAvatar() {
-  const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
-  const r   = RANGOS[cur];
+  const cur         = Math.min(ST.rank || 0, RANGOS.length - 1);
+  const r           = RANGOS[cur];
+  const img         = el('avatarImg');
+  const placeholder = el('avatarPlaceholder');
+  const hasAvatar   = !!(r.avatar && r.avatar.trim());
 
-  const img = el('avatarImg');
   if (img) {
-    img.src           = r.avatar || 'assets/avatar.png';
-    img.style.filter  = `drop-shadow(0 0 22px ${r.color}) drop-shadow(0 0 8px ${r.color})`;
+    img.style.display = hasAvatar ? 'block' : 'none';
+    if (hasAvatar) {
+      img.src          = r.avatar;
+      img.style.filter = `drop-shadow(0 0 22px ${r.color}) drop-shadow(0 0 8px ${r.color})`;
+    }
+  }
+
+  if (placeholder) {
+    placeholder.style.display = hasAvatar ? 'none' : 'flex';
+    if (!hasAvatar) {
+      placeholder.style.color  = r.color;
+      placeholder.style.filter = `drop-shadow(0 0 18px ${r.color})`;
+    }
   }
 
   const aura = el('avatarAura');
@@ -31,11 +45,11 @@ function renderAvatar() {
   ).join('');
 }
 
-function renderInicio() {
-  // Avatar animado
-  renderAvatar();
 
-  // Acordeón de rango
+// ---- STATS (Tab personaje / avatar) ----
+
+function renderStats() {
+  renderAvatar();
   renderRankAccord();
 
   // XP hoy
@@ -48,33 +62,21 @@ function renderInicio() {
   setText('dBS', bonusLabel(ST.racha));
   setStyle('dBR', 'width', pct(ST.racha, 30) + '%');
 
-  // Stats (atributos)
+  // 9 atributos
   ['fuerza','agilidad','energia','serenidad','confianza','conocimiento','claridad','espiritualidad','disciplina']
     .forEach(k => setText('s' + k, ST.stats[k] || 0));
 
-  // Nivel del Operator
+  // Operator Level
   const lvl = getLevel(ST.totalXP);
   setText('dLvl', 'Nivel ' + lvl.level);
   setText('dLvlSub', lvl.xpInLevel + ' / ' + lvl.xpNeeded + ' XP al siguiente nivel');
   setStyle('dBLvl', 'width', pct(lvl.xpInLevel, lvl.xpNeeded) + '%');
-
-  // HUD superior
-  setText('hC', ST.coins);
-  setText('hX', ST.totalXP);
-  setText('hR', ST.racha);
-
-  // Indicadores de racha
-  CONFIG.RACHA_BONUS.forEach((dias, i) => {
-    const indicator = el(['b3', 'b7', 'b30'][i]);
-    if (indicator) indicator.style.display = ST.racha >= dias ? 'inline' : 'none';
-  });
 }
 
 function renderRankAccord() {
   const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
   const rh  = RANGOS[cur];
 
-  // Actualizar header con SVG
   const badge = el('dRankBadge');
   if (badge) {
     badge.innerHTML       = rh.svg;
@@ -84,7 +86,6 @@ function renderRankAccord() {
   }
   setText('dRankName', rh.name);
 
-  // Construir lista de rangos con SVG en cada fila
   const body = el('rankAccordBody');
   if (!body) return;
 
@@ -108,9 +109,25 @@ function renderRankAccord() {
 }
 
 
-// ---- MISIONES ----
+// ---- MISIONES (Tab home) ----
 
 function renderMisiones() {
+  // Header: fecha local + contador 90 días
+  const now   = new Date();
+  const dias  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio',
+                 'agosto','septiembre','octubre','noviembre','diciembre'];
+  setText('mDate', `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]}`);
+
+  const d90 = calcDias90();
+  setText('mDias90', `${d90.count}/90 días`);
+
+  // XP hoy
+  const xp = xpHoy();
+  setText('mXPHoy', xp);
+  setStyle('mBXPHoy', 'width', pct(xp, CONFIG.XP_DIA_MAXIMO) + '%');
+
+  // 4 categorías
   renderListaMisiones(MISIONES.FISICO,     'mFISICO');
   renderListaMisiones(MISIONES.MENTE,      'mMENTE');
   renderListaMisiones(MISIONES.ESPIRITUAL, 'mESPIRITUAL');
@@ -167,7 +184,7 @@ function renderProposito(elId) {
     </div>
     <div class="m-body">
       <span class="mtxt${done ? ' done' : ''}">${nombre}</span>
-      ${!ST.proposito ? '<span class="mdesc">Configúralo en la pestaña Ruta</span>' : ''}
+      ${!ST.proposito ? '<span class="mdesc">Configúralo en Ruta de Propósito ↓</span>' : ''}
       <div class="m-meta">
         <span class="mxp">+${m.xp} XP +${m.coins}c</span>
         ${statTags}
@@ -175,7 +192,6 @@ function renderProposito(elId) {
     </div>
   </div>`;
 }
-
 
 
 // ---- CALENDARIO ----
@@ -205,39 +221,29 @@ function renderCalGrid() {
   const gEl = el('cGrid');
   if (!gEl) return;
 
-  const today  = DateUtils.today();
-  const first  = new Date(calY, calM, 1).getDay();
-  const offset = (first + 6) % 7;   // Ajuste a lunes como primer día
+  const today       = DateUtils.today();
+  const first       = new Date(calY, calM, 1).getDay();
+  const offset      = (first + 6) % 7;
   const daysInMonth = new Date(calY, calM + 1, 0).getDate();
 
   let html = '';
-
-  // Celdas vacías del inicio
   for (let i = 0; i < offset; i++) {
     html += '<div class="cal-d" style="opacity:0;pointer-events:none"></div>';
   }
-
-  // Días del mes
   for (let d = 1; d <= daysInMonth; d++) {
-    const k       = `${calY}-${String(calM + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const k      = `${calY}-${String(calM + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const isToday = k === today;
     const status  = ST.dias[k] || '';
     const mCount  = ST.mis[k]
       ? Object.values(ST.mis[k]).filter(v => v === true).length
       : 0;
 
-    const classes = [
-      'cal-d',
-      isToday ? 'today' : '',
-      status,
-    ].filter(Boolean).join(' ');
-
+    const classes   = ['cal-d', isToday ? 'today' : '', status].filter(Boolean).join(' ');
     const bossIcon  = status === 'gold' ? '<span class="boss-mk">⚔</span>' : '';
     const mCountEl  = mCount > 0 ? `<span class="cal-mc">${mCount}m</span>` : '';
 
     html += `<div class="${classes}" onclick="clickDay('${k}')">${d}${bossIcon}${mCountEl}</div>`;
   }
-
   gEl.innerHTML = html;
 }
 
@@ -292,7 +298,12 @@ function renderRuta() {
 }
 
 
-// ---- TIENDA ----
+// ---- MENÚ (Tienda + Alter Egos) ----
+
+function renderMenu() {
+  renderTienda();
+  renderAlter();
+}
 
 function renderTienda() {
   setText('shopC', ST.coins);
@@ -301,8 +312,7 @@ function renderTienda() {
 
   container.innerHTML = TIENDA.map(r => {
     const canAfford = ST.coins >= r.cost;
-    // Escapar el nombre para uso seguro en el atributo onclick
-    const safeName = r.name.replace(/'/g, "\\'");
+    const safeName  = r.name.replace(/'/g, "\\'");
     return `<div class="reward-row">
       <div class="remoji">${r.emoji}</div>
       <div style="flex:1">
@@ -322,7 +332,7 @@ function renderTienda() {
 
 // ---- ALTER EGOS ----
 
-const ALTER_UNLOCK_RANK = 3; // Índice en RANGOS (Disciplinado = 3)
+const ALTER_UNLOCK_RANK = 3;
 
 function renderAlter() {
   const container = el('alterContent');
@@ -332,7 +342,6 @@ function renderAlter() {
     container.innerHTML = buildAlterLocked();
     return;
   }
-
   container.innerHTML = buildAlterUnlocked();
 }
 
@@ -398,16 +407,19 @@ function buildAlterMissions() {
 }
 
 
+// ---- PLACEHOLDERS ESTÁTICOS ----
+
+function renderComunidad() { /* HTML estático en sec-comunidad */ }
+function renderTools()     { /* HTML estático en sec-tools */ }
+
+
 // ---- RENDER COMPLETO ----
-// Render de todas las secciones en el primer load. Después, cada
-// módulo se renderiza de forma granular al navegar o interactuar.
 
 function renderAll() {
-  renderInicio();
+  renderStats();
   renderMisiones();
   renderCalendario();
   renderZona();
   renderRuta();
-  renderTienda();
-  renderAlter();
+  renderMenu();
 }
