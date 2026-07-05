@@ -4,6 +4,61 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-05 — Arquitectura Mobile First + nombre Presence (sprint 3.0)
+
+**Problema:** La app tenía 7 pestañas horizontales con texto en la parte superior, un HUD con datos en el topbar, y las secciones de Inicio y Misiones eran tabs separados. En móvil, la barra de pestañas ocupaba espacio valioso y era difícil de alcanzar con el pulgar.
+
+**Alternativas consideradas:**
+1. **Mantener la nav horizontal pero reducirla a 5 tabs.** Descartada: el problema fundamental de usabilidad con el pulgar no se resuelve; las pestañas superiores siguen siendo las menos accesibles en un teléfono.
+2. **Tab bar inferior con scroll horizontal** (como Instagram Stories). Descartada: el scroll horizontal no es intuitivo para navigación principal; Tabler Icons con texto corto caben perfectamente en 5 items fijos.
+3. **Bottom navigation fija con 5 tabs + íconos Tabler.** **Elegida.**
+
+**Solución elegida:** `<nav class="bottom-nav">` con `position: fixed; bottom: 0`, 5 `.bnav-item` con `flex: 1`. El contenido principal tiene `padding-bottom: 80px` para no quedar oculto bajo la nav. `env(safe-area-inset-bottom)` para compatibilidad con iPhone con notch.
+
+**Motivos:**
+- La zona de alcance cómodo del pulgar está en la parte inferior de la pantalla — el estándar de todas las apps móviles modernas.
+- 5 secciones caben sin necesitar scroll horizontal, lo que elimina un comportamiento confuso.
+- Simplificación del topbar (solo logo + status) maximiza el área de contenido.
+
+---
+
+## 2026-07-05 — Collapsibles en Misiones en lugar de secciones separadas (sprint 3.0)
+
+**Problema:** Calendario, Zona Oscura y Ruta eran pestañas independientes. El usuario debía navegar fuera de Misiones para acceder a información relacionada con sus hábitos del día.
+
+**Alternativas consideradas:**
+1. **Mantenerlas como tabs separados** (reduciendo de 7 a 5, dos de ellas ya no existen). Descartada: obliga al usuario a salir del contexto de misiones para ver el calendario del día.
+2. **Pestañas secundarias dentro de Misiones** (sub-nav). Descartada: añade una capa de navegación extra, ocupa espacio y complica el código.
+3. **Collapsibles CSS (`max-height: 0 → 3000px`).** **Elegida.**
+
+**Solución elegida:** Tres `<div class="collapsible">` al final de `sec-misiones`. `toggleCollapse(bodyId, chevronId)` en events.js hace `classList.toggle('open')`. CSS controla la visibilidad con `max-height` y transición `cubic-bezier`. Los IDs del DOM de Calendario/Zona/Ruta son idénticos a los anteriores — los render functions existentes funcionan sin cambios.
+
+**Motivos:**
+- Todos los datos del día (misiones, calendario, zona oscura, propósito) están en una sola pantalla. Un scroll vertical es más intuitivo que cambiar de tab.
+- `max-height` CSS es la técnica estándar para acordeones suaves sin JS para la animación.
+- Cero migración de código: los IDs del DOM se preservan completamente.
+
+---
+
+## 2026-07-05 — Contador X/90 días como indicador principal (sprint 3.0)
+
+**Problema:** La racha (días consecutivos) es el único indicador de consistencia, pero es frágil: un solo día fallido la rompe. Un usuario que falla un día después de 60 pierde toda su métrica de progreso visual.
+
+**Alternativas consideradas:**
+1. **Racha con "vidas"** (permite N días de fallo). Descartada: desnaturaliza el concepto de racha y añade lógica compleja.
+2. **Contador total de días verdes** (todos los días completados históricamente). Descartada: crece ilimitadamente y no refleja la consistencia reciente.
+3. **Contador de días en los últimos 90 con ≥3 misiones completadas.** **Elegida.**
+
+**Solución elegida:** `calcDias90()` en utils.js: itera los 90 días anteriores al día actual usando `new Date(y, m, d-i)` (fecha local, evita el bug UTC de `calcRacha`). Cuenta días donde `Object.values(ST.mis[key]).filter(v => v===true).length >= 3`.
+
+**Motivos:**
+- 90 días es un horizonte temporal de hábitos ampliamente usado (trimestre). Tiene significado práctico.
+- El umbral de 3 misiones evita que días "ligeros" cuenten como éxito, sin exigir perfección total.
+- La ventana deslizante hace que la métrica nunca llegue a 0 por un fallo reciente — es forgiving pero honesta.
+- Usa fecha local como `DateUtils.today()`, sin el bug UTC que tiene `calcRacha`.
+
+---
+
 ## 2026-07-04 — Avatar animado como wallpaper en Inicio (sprint 2.10)
 
 **Problema:** La pantalla de Inicio era una lista de cards sin personalidad visual. Se quería una experiencia de "fondo de pantalla de celular" con el personaje animado, preparada para una progresión visual de avatares por rango.

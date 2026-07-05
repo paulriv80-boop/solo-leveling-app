@@ -1,6 +1,6 @@
-# THE SYSTEM — Solo Leveling App
+# Presence — Solo Leveling App
 
-Plataforma de evolución personal gamificada inspirada en Solo Leveling. Convierte hábitos diarios y estudio técnico (datos/IA) en un sistema de progresión tipo RPG: misiones, XP, monedas, rangos, rachas, stacks de poder y recompensas reales.
+Plataforma de evolución personal gamificada inspirada en Solo Leveling. Convierte hábitos diarios y estudio técnico (datos/IA) en un sistema de progresión tipo RPG: misiones, XP, monedas, rangos, rachas y recompensas reales.
 
 ## Cómo ejecutar el proyecto
 
@@ -15,19 +15,21 @@ Producción: https://paulriv80-boop.github.io/solo-leveling-app (GitHub Pages, s
 ## Estructura
 
 ```
-index.html        — estructura completa de la app (todas las secciones)
+index.html        — estructura completa de la app (5 tabs + bottom nav)
 css/               — estilos modulares (ver style.css como entry point)
+  bottomnav.css    — barra inferior fija (5 tabs)
+  placeholders.css — collapsibles, tools-grid, menu, coming soon
 js/
   data.js          — datos del juego (rangos, misiones, recompensas, etc.)
   config.js        — constantes centralizadas
   state.js         — estado global, persistencia y migraciones
-  utils.js         — utilidades de fecha/formateo/DOM y Toast
-  logic.js         — reglas de negocio (XP, stacks, rachas, rangos)
-  render.js         — funciones de presentación
+  utils.js         — utilidades de fecha/formateo/DOM, Toast y calcDias90()
+  logic.js         — reglas de negocio (XP, monedas, rachas, rangos)
+  render.js         — funciones de presentación (renderStats, renderMisiones, renderMenu…)
   events.js         — handlers conectados a los onclick="" del HTML
   app.js            — arranque de la aplicación
-docs/              — documentación del proyecto (este archivo, roadmap, decisiones, changelog)
-assets/            — recursos estáticos futuros (vacío por ahora)
+docs/              — documentación del proyecto
+assets/            — imágenes de avatar por rango
 ```
 
 ## Tecnologías
