@@ -6,7 +6,35 @@
 
 // ---- INICIO (Dashboard) ----
 
+function renderAvatar() {
+  const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
+  const r   = RANGOS[cur];
+
+  const img = el('avatarImg');
+  if (img) {
+    img.src           = r.avatar || 'assets/avatar.png';
+    img.style.filter  = `drop-shadow(0 0 22px ${r.color}) drop-shadow(0 0 8px ${r.color})`;
+  }
+
+  const aura = el('avatarAura');
+  if (aura) {
+    aura.style.background = `radial-gradient(ellipse 55% 55% at 50% 62%, ${r.color}55 0%, ${r.color}22 45%, transparent 70%)`;
+  }
+
+  const pContainer = el('avatarParticles');
+  if (!pContainer) return;
+  const lx   = [14, 24, 36, 50, 64, 76, 42, 58, 30, 68];
+  const dls  = [0, 0.5, 1.1, 0.3, 0.8, 1.4, 1.7, 0.2, 1.0, 0.6];
+  const durs = [2.4, 2.8, 2.2, 3.0, 2.6, 2.9, 2.3, 2.7, 3.1, 2.5];
+  pContainer.innerHTML = lx.map((x, i) =>
+    `<div class="av-particle" style="left:${x}%;animation-delay:${dls[i]}s;animation-duration:${durs[i]}s;background:${r.color};box-shadow:0 0 5px ${r.color}"></div>`
+  ).join('');
+}
+
 function renderInicio() {
+  // Avatar animado
+  renderAvatar();
+
   // Acordeón de rango
   renderRankAccord();
 

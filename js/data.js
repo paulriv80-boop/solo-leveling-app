@@ -10,6 +10,7 @@ const RANGOS = [
     color: '#c8956a', colorGlow: 'rgba(200,149,106,0.5)',
     desc: 'El punto de partida. Reconoces el caos como oportunidad de cambio.',
     skills: ['El sistema te acepta tal como eres', 'Primera misión desbloqueada', 'Zona oscura desbloqueada'],
+    avatar: 'assets/avatar.png',
     // Círculo bronce con chevron y acentos en los cuatro ejes
     svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="40" fill="none" stroke="#c8956a" stroke-width="5"/>
@@ -26,6 +27,7 @@ const RANGOS = [
     color: '#9ab0c0', colorGlow: 'rgba(154,176,192,0.5)',
     desc: 'Empiezas a ver tus patrones. La constancia comienza a formarse.',
     skills: ['Patrones de sabotaje identificados', 'Resistencia mental activada', 'Misiones avanzadas desbloqueadas'],
+    avatar: 'assets/avatar.png',
     // Círculo acero con flecha apuntando arriba y diamante central
     svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="40" fill="none" stroke="#8899aa" stroke-width="5"/>
@@ -38,6 +40,7 @@ const RANGOS = [
     color: '#e8c030', colorGlow: 'rgba(232,192,48,0.5)',
     desc: 'Visión expandida. Actúas con intención real y disciplina inicial sólida.',
     skills: ['Rutinas establecidas', 'Rendimiento en ascenso', 'XP diario potenciado'],
+    avatar: 'assets/avatar.png',
     // Estrella de 4 puntas (compás dorado) con cruceta interior
     svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <path d="M50,4 L56,44 L96,50 L56,56 L50,96 L44,56 L4,50 L44,44 Z" fill="#e8c030"/>
@@ -51,6 +54,7 @@ const RANGOS = [
     color: '#9b59b6', colorGlow: 'rgba(155,89,182,0.55)',
     desc: 'Mente y cuerpo alineados. Control real sobre tus impulsos y hábitos.',
     skills: ['Alter Egos desbloqueados', 'Dominio de impulsos activo', 'Modo guerrero disponible'],
+    avatar: 'assets/avatar.png',
     // Círculo violeta con espada y corona de laurel
     svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="40" fill="none" stroke="#9b59b6" stroke-width="3.5"/>
@@ -73,6 +77,7 @@ const RANGOS = [
     color: '#c8d8e8', colorGlow: 'rgba(200,216,232,0.55)',
     desc: 'Renaces. Los hábitos fluyen naturalmente. Enseñas con el ejemplo.',
     skills: ['Fénix interior despertado', 'Flujo sostenido del guerrero', 'Guías con tu presencia'],
+    avatar: 'assets/avatar.png',
     // Fénix plateado con alas desplegadas hacia arriba
     svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="58" r="25" fill="none" stroke="#c8d8e8" stroke-width="2" opacity="0.3"/>
@@ -91,6 +96,7 @@ const RANGOS = [
     color: '#ffb833', colorGlow: 'rgba(255,184,51,0.65)',
     desc: 'Dominio absoluto. La evolución personal es tu naturaleza permanente.',
     skills: ['Forma final desbloqueada', 'Poder absoluto desde adentro', 'Inspira y guía a otros'],
+    avatar: 'assets/avatar.png',
     // Orbe dorado con anillo orbital y eje vertical radiante
     svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="50" cy="50" rx="44" ry="16" fill="none" stroke="#ffb833" stroke-width="3.5"/>

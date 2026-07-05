@@ -1,0 +1,89 @@
+/* ---- AVATAR STAGE (Inicio — fondo de pantalla animado) ---- */
+
+.avatar-stage {
+  position: relative;
+  margin: -14px -14px 16px;
+  overflow: hidden;
+  height: 62vh;
+  min-height: 320px;
+  max-height: 560px;
+  background: var(--bg0);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* Aura de fondo — color dinámico por rango vía JS */
+.avatar-aura {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: auraBreath 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Partículas flotantes — generadas por renderAvatar() */
+.avatar-particles {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 65%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.av-particle {
+  position: absolute;
+  bottom: 8%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleRise 2.5s ease-out infinite;
+}
+
+/* Imagen del avatar */
+#avatarImg {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  animation: avatarFloat 4s ease-in-out infinite;
+  will-change: transform;
+  display: block;
+}
+
+/* Fade inferior — fusiona el avatar con el fondo de las cards */
+.avatar-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 130px;
+  background: linear-gradient(to bottom, transparent, var(--bg0));
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* ---- Animaciones ---- */
+
+@keyframes avatarFloat {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes auraBreath {
+  0%, 100% { opacity: 0.5;  transform: scale(1); }
+  50%       { opacity: 0.95; transform: scale(1.07); }
+}
+
+@keyframes particleRise {
+  0%   { transform: translateY(0)     scale(1);   opacity: 0; }
+  10%  { opacity: 0.9; }
+  80%  { opacity: 0.3; }
+  100% { transform: translateY(-100px) scale(0.2); opacity: 0; }
+}
