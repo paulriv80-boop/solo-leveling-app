@@ -36,7 +36,7 @@ css/
   style.css        — entry point, @import del resto
   variables.css     — design tokens (colores, glows)
   base.css, topbar.css, navigation.css, layout.css, cards.css, components.css
-  missions.css, ranks.css, calendar.css, darkzone.css,
+  missions.css, ranks.css, avatar.css, calendar.css, darkzone.css,
   route.css, shop.css, alteregos.css, reset.css   — un archivo por feature
   animations.css, responsive.css
 js/
@@ -49,7 +49,7 @@ js/
   events.js         — handlers invocados desde onclick="" en el HTML
   app.js            — bootstrap: loadState() + renderAll() + bootSystem()
 docs/               — documentación obligatoria del proyecto
-assets/             — reservado para recursos futuros (vacío)
+assets/             — imágenes del juego (avatar.png y futuros avatares de progresión por rango)
 ```
 
 Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Presentación / Utilidades):
@@ -65,7 +65,7 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 | Módulo | Descripción |
 |---|---|
-| Inicio | Dashboard: acordeón de rango (SVG + acordeón expandible), XP del día, racha, 9 atributos 3×3, Operator Level |
+| Inicio | Avatar animado (wallpaper con flotación, aura y partículas) + acordeón de rango SVG + XP del día, racha, 9 atributos 3×3, Operator Level |
 | Misiones | 4 categorías diarias (Físico / Mente / Espiritual / Propósito) — XP + coins + chips de atributos por misión |
 | Calendario | Calendario mensual con estados (verde/rojo/dorado/azul), racha y bonus por racha |
 | Zona Oscura | Registro diario de "caída" + penalizaciones graduales según rango actual |

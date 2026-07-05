@@ -2,6 +2,23 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-04 — sprint 2.10 avatar animado en pantalla de inicio (`74eb480`)
+
+**Versión:** v4.0 Alpha — STATE_VERSION 7
+**Archivos:** `css/avatar.css` (nuevo), `css/style.css`, `index.html`, `js/data.js`, `js/render.js`
+**Tipo:** Nueva funcionalidad visual
+
+- **Avatar wallpaper:** sección `.avatar-stage` en Inicio ocupa ~62vh de la pantalla, estilo fondo de pantalla de celular.
+- **Animaciones CSS puras:**
+  - Flotación: `avatarFloat` — sube/baja 10px cada 4s, suave y continua.
+  - Aura pulsante: `auraBreath` — gradiente radial detrás del personaje que respira (escala + opacidad).
+  - Partículas: 10 puntos de energía con posiciones y duraciones variadas que ascienden y se desvanecen.
+- **Dinámica por rango:** `renderAvatar()` en `render.js` aplica `drop-shadow` y color de aura del rango actual (`RANGOS[ST.rank].color`). Al cambiar de rango el glow cambia automáticamente.
+- **Preparado para avatares de progresión:** propiedad `avatar` en cada objeto de `RANGOS`. Para agregar un nuevo avatar basta con poner la ruta en `data.js`.
+- **Fade inferior:** gradiente de 130px que funde el avatar con el fondo oscuro donde aparecen las cards.
+
+---
+
 ## 2026-07-02 — sprint 2.9b iconos SVG rangos (`4580ffc`)
 
 **Versión:** v4.0 Alpha — STATE_VERSION 7
@@ -127,5 +144,6 @@ Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendent
 
 ## Próximo sprint (propuesto)
 
-- Sistema de rangos fase 2: definir lógica de avance de rango (cómo y cuándo sube el jugador).
+- Avatares de progresión: generar imagen por rango (E→S) y asignarlas en `RANGOS[i].avatar`.
+- Sistema de rangos fase 2: definir lógica de avance de rango (cómo y cuándo sube `ST.rank`).
 - Convertir a PWA: `manifest.json` + `service-worker.js`, soporte offline, instalable en pantalla de inicio.

@@ -4,6 +4,24 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-04 — Avatar animado como wallpaper en Inicio (sprint 2.10)
+
+**Problema:** La pantalla de Inicio era una lista de cards sin personalidad visual. Se quería una experiencia de "fondo de pantalla de celular" con el personaje animado, preparada para una progresión visual de avatares por rango.
+
+**Alternativas consideradas:**
+1. **GIF animado.** Descartado: tamaño de archivo grande, calidad fija, difícil de personalizar por rango.
+2. **Lottie / animación JSON.** Descartado: requiere biblioteca externa y encontrar animaciones que encajen con el estilo Solo Leveling.
+3. **Imagen PNG + animaciones CSS puras.** **Elegida.**
+
+**Solución elegida:** `.avatar-stage` con `position: relative`, imagen centrada con `animation: avatarFloat`, aura radial vía `background` dinámico en `#avatarAura`, y partículas `.av-particle` generadas en JS con posiciones y duraciones deterministas. El color del glow (`drop-shadow` + aura) se lee de `RANGOS[ST.rank].color` en cada render. Propiedad `avatar` añadida a cada rango en `data.js` para que la imagen cambie al subir de rango.
+
+**Motivos:**
+- Cero dependencias externas. Todo en CSS y JS vanilla, coherente con la arquitectura del proyecto.
+- Las animaciones CSS (`will-change: transform`, `filter`) están aceleradas por GPU — sin impacto en rendimiento.
+- El modelo data-driven del proyecto (cada rango es un objeto con sus propiedades) hace trivial agregar avatares nuevos: una línea en `data.js` por rango.
+
+---
+
 ## 2026-07-02 — Íconos SVG en lugar de letras para los rangos (sprint 2.9b)
 
 **Problema:** La primera versión del acordeón de rango usaba letras (E, D, C, B, A, S) en badges circulares con borde de color. No reflejaba la identidad visual del diseño de referencia.
