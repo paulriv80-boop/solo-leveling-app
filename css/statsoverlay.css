@@ -4,18 +4,36 @@
   height: calc(100vh - 130px);
   min-height: 480px;
   max-height: none;
+  overflow: hidden;
 }
 
-/* Breathing wrapper */
+/* Breathing wrapper — absoluto, cubre todo el stage */
 #avatarBreath {
-  position: relative;
-  z-index: 3;
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  animation: avatarBreathe 5s ease-in-out infinite;
-  transform-origin: bottom center;
+  z-index: 3;
+  display: block;
+}
+
+/* Imagen cubre toda la pantalla — sin bordes laterales */
+.avatar-stage--full #avatarImg {
+  position: absolute;
+  width: 100%;
+  height: 110%;
+  top: -5%;
+  left: 0;
+  object-fit: cover;
+  object-position: center 12%;
+  animation: avatarFloat 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Ocultar aura y partículas — la imagen los tapa, el aura causaba el resplandor lateral */
+.avatar-stage--full .avatar-aura,
+.avatar-stage--full .avatar-particles {
+  display: none;
 }
 
 /* ---- RANK OVERLAY (top of avatar) ---- */
@@ -164,9 +182,9 @@
   position: fixed;
   inset: 0;
   z-index: 500;
-  background: rgba(5,5,15,.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(5,5,15,.50);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   display: flex;
   flex-direction: column;
   transform: translateY(100%);

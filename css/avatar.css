@@ -52,7 +52,7 @@
   max-width: 100%;
   object-fit: contain;
   object-position: center bottom;
-  animation: avatarFloat 4.5s ease-in-out infinite;
+  animation: avatarFloat 6s ease-in-out infinite;
   will-change: transform;
   display: block;
 }
@@ -72,11 +72,10 @@
 /* ---- Animaciones ---- */
 
 @keyframes avatarFloat {
-  0%   { transform: translateY(0px)   skewX(0deg); }
-  20%  { transform: translateY(-3px)  skewX(.35deg); }
-  50%  { transform: translateY(-10px) skewX(-.2deg); }
-  75%  { transform: translateY(-5px)  skewX(.4deg); }
-  100% { transform: translateY(0px)   skewX(0deg); }
+  0%, 100% { transform: translateY(0px)   scale(1.000); }
+  35%       { transform: translateY(-8px)  scale(1.012); }
+  60%       { transform: translateY(-14px) scale(1.020); }
+  80%       { transform: translateY(-5px)  scale(1.007); }
 }
 
 @keyframes auraBreath {
