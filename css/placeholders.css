@@ -14,11 +14,12 @@
 }
 
 .missions-days90 {
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   color: var(--c1);
-  text-shadow: 0 0 8px rgba(0,245,255,.35);
-  letter-spacing: .5px;
+  text-shadow: 0 0 12px rgba(0,245,255,.45);
+  letter-spacing: 1px;
+  line-height: 1;
 }
 
 

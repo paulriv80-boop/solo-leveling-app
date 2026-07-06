@@ -10,7 +10,7 @@ const RANGOS = [
     color: '#c8956a', colorGlow: 'rgba(200,149,106,0.5)',
     desc: 'El punto de partida. Reconoces el caos como oportunidad de cambio.',
     skills: ['El sistema te acepta tal como eres', 'Primera misión desbloqueada', 'Zona oscura desbloqueada'],
-    avatar: 'assets/avatar.png',
+    avatar: 'assets/Avatar_Rango_E_neutro.png',
     // Círculo bronce con chevron y acentos en los cuatro ejes
     svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle cx="50" cy="50" r="40" fill="none" stroke="#c8956a" stroke-width="5"/>

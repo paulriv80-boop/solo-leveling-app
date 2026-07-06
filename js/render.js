@@ -46,64 +46,119 @@ function renderAvatar() {
 }
 
 
-// ---- STATS (Tab personaje / avatar) ----
+// ---- STATS (Tab personaje — avatar full-screen) ----
 
 function renderStats() {
   renderAvatar();
-  renderRankAccord();
 
-  // XP hoy
-  const xp = xpHoy();
-  setText('dXH', xp);
-  setStyle('dBX', 'width', pct(xp, CONFIG.XP_DIA_MAXIMO) + '%');
+  const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
+  const r   = RANGOS[cur];
 
-  // Racha
-  setText('dRC', ST.racha + ' días');
-  setText('dBS', bonusLabel(ST.racha));
-  setStyle('dBR', 'width', pct(ST.racha, 30) + '%');
+  // Rank overlay encima del avatar
+  const avBadge = el('avRankBadge');
+  if (avBadge) {
+    avBadge.innerHTML    = r.svg;
+    avBadge.style.filter = `drop-shadow(0 0 6px ${r.color})`;
+  }
+  setText('avRankName', r.name);
+  setText('avRankDesc', r.desc);
 
-  // 9 atributos
-  ['fuerza','agilidad','energia','serenidad','confianza','conocimiento','claridad','espiritualidad','disciplina']
-    .forEach(k => setText('s' + k, ST.stats[k] || 0));
-
-  // Operator Level
+  // Level + XP bar
   const lvl = getLevel(ST.totalXP);
-  setText('dLvl', 'Nivel ' + lvl.level);
-  setText('dLvlSub', lvl.xpInLevel + ' / ' + lvl.xpNeeded + ' XP al siguiente nivel');
-  setStyle('dBLvl', 'width', pct(lvl.xpInLevel, lvl.xpNeeded) + '%');
+  setText('avLevel', 'Nivel ' + lvl.level);
+  setStyle('avLvlBar', 'width', pct(lvl.xpInLevel, lvl.xpNeeded) + '%');
+  setText('avXPSub', lvl.xpInLevel + '/' + lvl.xpNeeded + ' XP');
+
+  // Racha y XP hoy
+  setText('avRacha', ST.racha + ' días');
+  setText('avXPHoy', xpHoy() + ' XP hoy');
 }
 
-function renderRankAccord() {
-  const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
-  const rh  = RANGOS[cur];
 
-  const badge = el('dRankBadge');
-  if (badge) {
-    badge.innerHTML       = rh.svg;
-    badge.style.filter    = `drop-shadow(0 0 7px ${rh.color})`;
-    badge.style.boxShadow = '';
-    badge.style.border    = '';
-  }
-  setText('dRankName', rh.name);
+// ---- OVERLAY ATRIBUTOS (full-screen slide-up) ----
 
-  const body = el('rankAccordBody');
-  if (!body) return;
+const ATTR_KEYS   = ['fuerza','agilidad','energia','serenidad','confianza','conocimiento','claridad','espiritualidad','disciplina'];
+const ATTR_LABELS = ['Fuerza','Agilidad','Energía','Serenidad','Confianza','Conocimiento','Claridad','Espiritualidad','Disciplina'];
+const ATTR_COLORS = ['#ff5555','#44ddff','#ffaa00','#55aaff','#ff88cc','#aa88ff','#00dd88','#ff7733','#cc44ff'];
 
-  body.innerHTML = RANGOS.map((r, i) => {
-    const isCurrent = i === cur;
-    const isPast    = i < cur;
-    const rowClass  = isCurrent ? 'rank-cur' : isPast ? 'rank-past' : 'rank-fut';
-    const svgStyle  = isCurrent ? `filter:drop-shadow(0 0 4px ${r.color})` : '';
-    const nameStyle = isCurrent ? `color:${r.color}` : '';
-    const desc      = isCurrent ? r.desc : isPast ? '✓ Superado' : 'Bloqueado';
+function renderAtributosOverlay() {
+  const values = ATTR_KEYS.map(k => ST.stats[k] || 0);
+  const maxVal = Math.max(...values, 10);
+  const cur    = Math.min(ST.rank || 0, RANGOS.length - 1);
 
-    return `<div class="rank-row ${rowClass}">
-      <div class="rank-badge-xs" style="${svgStyle}">${r.svg}</div>
-      <div class="rank-row-info">
-        <div class="rank-row-name" style="${nameStyle}">${r.name}</div>
-        <div class="rank-row-desc">${desc}</div>
+  const radarEl = el('radarChart');
+  if (radarEl) radarEl.innerHTML = buildRadarSVG(values, ATTR_LABELS, RANGOS[cur].color);
+
+  const barsEl = el('attrBars');
+  if (barsEl) {
+    barsEl.innerHTML = ATTR_KEYS.map((k, i) => `
+      <div class="attr-bar-row">
+        <div class="attr-bar-lbl">${ATTR_LABELS[i]}</div>
+        <div class="attr-bar-track">
+          <div class="attr-bar-fill" style="width:${pct(values[i], maxVal)}%;background:${ATTR_COLORS[i]}"></div>
+        </div>
+        <div class="attr-bar-num">${values[i]}</div>
       </div>
-      ${isCurrent ? `<span class="rank-cur-dot" style="color:${r.color}">◉</span>` : ''}
+    `).join('');
+  }
+}
+
+function buildRadarSVG(values, labels, color) {
+  const cx = 130, cy = 130, r = 100, n = values.length;
+  const maxVal = Math.max(...values, 10);
+  const ang    = i => (Math.PI * 2 * i / n) - Math.PI / 2;
+  const px     = (i, sc) => cx + r * sc * Math.cos(ang(i));
+  const py     = (i, sc) => cy + r * sc * Math.sin(ang(i));
+
+  const rings = [.25,.5,.75,1].map(sc => {
+    const pts = Array.from({length:n}, (_,i) => `${px(i,sc)},${py(i,sc)}`).join(' ');
+    return `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;
+  }).join('');
+
+  const axes = Array.from({length:n}, (_,i) =>
+    `<line x1="${cx}" y1="${cy}" x2="${px(i,1)}" y2="${py(i,1)}" stroke="rgba(255,255,255,.1)" stroke-width="1"/>`
+  ).join('');
+
+  const scales  = values.map(v => Math.min(v / maxVal, 1));
+  const dataPts = Array.from({length:n}, (_,i) => `${px(i,scales[i])},${py(i,scales[i])}`).join(' ');
+
+  const lbls = Array.from({length:n}, (_,i) => {
+    const lx     = cx + (r + 18) * Math.cos(ang(i));
+    const ly     = cy + (r + 18) * Math.sin(ang(i));
+    const anchor = lx < cx - 4 ? 'end' : lx > cx + 4 ? 'start' : 'middle';
+    return `<text x="${lx}" y="${ly+4}" text-anchor="${anchor}" fill="rgba(255,255,255,.55)" font-size="9" font-family="inherit">${labels[i].substring(0,3).toUpperCase()}</text>`;
+  }).join('');
+
+  const dots = Array.from({length:n}, (_,i) =>
+    `<circle cx="${px(i,scales[i])}" cy="${py(i,scales[i])}" r="3.5" fill="${color}" stroke="rgba(5,5,15,.9)" stroke-width="1.5"/>`
+  ).join('');
+
+  return `<svg viewBox="0 0 260 260" width="100%" height="100%">
+    ${rings}${axes}
+    <polygon points="${dataPts}" fill="${color}30" stroke="${color}" stroke-width="2"/>
+    ${dots}${lbls}
+  </svg>`;
+}
+
+
+// ---- BOTTOM SHEET DE RANGO ----
+
+function renderRangoSheet() {
+  const cur       = Math.min(ST.rank || 0, RANGOS.length - 1);
+  const container = el('rangoSheetContent');
+  if (!container) return;
+
+  container.innerHTML = RANGOS.map((r, i) => {
+    const isCur  = i === cur;
+    const isPast = i < cur;
+    const cls    = isCur ? 'rs-row rs-cur' : isPast ? 'rs-row rs-past' : 'rs-row rs-fut';
+    return `<div class="${cls}">
+      <div class="rs-badge" style="${isCur ? `filter:drop-shadow(0 0 5px ${r.color})` : ''}">${r.svg}</div>
+      <div style="flex:1">
+        <div class="rs-name" style="${isCur ? `color:${r.color}` : ''}">${r.name}</div>
+        <div class="rs-desc">${isCur ? r.desc : isPast ? '✓ Superado' : '🔒 Bloqueado'}</div>
+      </div>
+      ${isCur ? `<span class="rs-dot" style="color:${r.color}">◉</span>` : ''}
     </div>`;
   }).join('');
 }

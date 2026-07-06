@@ -147,6 +147,36 @@ function selectAlter(id) {
 }
 
 
+// ---- OVERLAY ATRIBUTOS ----
+
+function openAtributosOverlay() {
+  renderAtributosOverlay();
+  el('attrsOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAtributosOverlay() {
+  el('attrsOverlay')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
+// ---- BOTTOM SHEET RANGO ----
+
+function openRangoSheet() {
+  renderRangoSheet();
+  el('rangoSheet')?.classList.add('open');
+  el('rangoBackdrop')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRangoSheet() {
+  el('rangoSheet')?.classList.remove('open');
+  el('rangoBackdrop')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
 // ---- RESET ----
 
 function showReset() {

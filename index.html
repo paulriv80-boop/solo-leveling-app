@@ -229,104 +229,69 @@
 
 
   <!-- ===== TAB 2: STATS / PERSONAJE ===== -->
-  <div class="sec" id="sec-stats">
+  <div class="sec" id="sec-stats" style="padding:0;overflow:hidden">
 
-    <!-- Avatar stage -->
-    <div class="avatar-stage">
+    <!-- Avatar stage full-screen -->
+    <div class="avatar-stage avatar-stage--full" style="margin:0">
       <div class="avatar-aura" id="avatarAura"></div>
       <div class="avatar-particles" id="avatarParticles"></div>
-      <div id="avatarPlaceholder" class="avatar-placeholder">
-        <svg viewBox="0 0 80 200" width="110" height="275" aria-hidden="true">
-          <ellipse cx="40" cy="22" rx="16" ry="18"/>
-          <rect x="28" y="42" width="24" height="8" rx="4"/>
-          <rect x="18" y="52" width="44" height="68" rx="10"/>
-          <rect x="4"  y="52" width="12" height="52" rx="6"/>
-          <rect x="64" y="52" width="12" height="52" rx="6"/>
-          <rect x="20" y="122" width="18" height="70" rx="9"/>
-          <rect x="42" y="122" width="18" height="70" rx="9"/>
-        </svg>
-      </div>
-      <img id="avatarImg" src="" alt="Avatar" style="display:none">
-      <div class="avatar-fade"></div>
-    </div>
 
-    <!-- Rango (acordeón) -->
-    <div class="card rank-accord" style="margin-bottom:12px">
-      <div class="rank-accord-hdr" onclick="toggleRankAccord()">
-        <div class="rank-badge-hdr" id="dRankBadge"></div>
-        <div style="flex:1">
-          <div class="slbl">Rango</div>
-          <div class="rank-hdr-name" id="dRankName">Novato</div>
+      <!-- Breathing wrapper -->
+      <div id="avatarBreath">
+        <div id="avatarPlaceholder" class="avatar-placeholder">
+          <svg viewBox="0 0 80 200" width="110" height="275" aria-hidden="true">
+            <ellipse cx="40" cy="22" rx="16" ry="18"/>
+            <rect x="28" y="42" width="24" height="8" rx="4"/>
+            <rect x="18" y="52" width="44" height="68" rx="10"/>
+            <rect x="4"  y="52" width="12" height="52" rx="6"/>
+            <rect x="64" y="52" width="12" height="52" rx="6"/>
+            <rect x="20" y="122" width="18" height="70" rx="9"/>
+            <rect x="42" y="122" width="18" height="70" rx="9"/>
+          </svg>
         </div>
-        <span class="rank-chevron" id="dRankChevron">▾</span>
+        <img id="avatarImg" src="" alt="Avatar" style="display:none">
       </div>
-      <div class="rank-accord-body" id="rankAccordBody"></div>
-    </div>
 
-    <!-- 9 Atributos -->
-    <div class="g3 attrs">
-      <div class="card attr-card">
-        <div class="orb oFuerza"><span class="onum" id="sfuerza">0</span></div>
-        <div class="olbl">Fuerza</div>
+      <!-- Rank overlay — tap abre el bottom sheet de rangos -->
+      <div class="av-rank-overlay" onclick="openRangoSheet()">
+        <div class="av-rank-badge" id="avRankBadge"></div>
+        <div>
+          <div class="av-rank-name" id="avRankName">Novato</div>
+          <div class="av-rank-desc" id="avRankDesc"></div>
+        </div>
       </div>
-      <div class="card attr-card">
-        <div class="orb oAgilidad"><span class="onum" id="sagilidad">0</span></div>
-        <div class="olbl">Agilidad</div>
-      </div>
-      <div class="card attr-card">
-        <div class="orb oEnergia"><span class="onum" id="senergia">0</span></div>
-        <div class="olbl">Energía</div>
-      </div>
-      <div class="card attr-card">
-        <div class="orb oSerenidad"><span class="onum" id="sserenidad">0</span></div>
-        <div class="olbl">Serenidad</div>
-      </div>
-      <div class="card attr-card">
-        <div class="orb oConfianza"><span class="onum" id="sconfianza">0</span></div>
-        <div class="olbl">Confianza</div>
-      </div>
-      <div class="card attr-card">
-        <div class="orb oConocimiento"><span class="onum" id="sconocimiento">0</span></div>
-        <div class="olbl">Conocimiento</div>
-      </div>
-      <div class="card attr-card">
-        <div class="orb oClaridad"><span class="onum" id="sclaridad">0</span></div>
-        <div class="olbl">Claridad</div>
-      </div>
-      <div class="card attr-card">
-        <div class="orb oEspiritualidad"><span class="onum" id="sespiritualidad">0</span></div>
-        <div class="olbl">Espiritualidad</div>
-      </div>
-      <div class="card attr-card">
-        <div class="orb oDisciplina"><span class="onum" id="sdisciplina">0</span></div>
-        <div class="olbl">Disciplina</div>
-      </div>
-    </div>
 
-    <!-- Operator Level -->
-    <div class="card" style="margin-bottom:12px">
-      <div class="slbl">Operator Level</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
-        <div class="sval" id="dLvl">Nivel 1</div>
-        <div class="ssub" id="dLvlSub">0 / 200 XP al siguiente nivel</div>
+      <!-- Bottom overlay: level + racha + botones -->
+      <div class="av-bottom-overlay">
+        <div class="av-stat-row">
+          <div class="av-level-lbl" id="avLevel">Nivel 1</div>
+          <div class="av-xp-track">
+            <div class="av-xp-fill" id="avLvlBar" style="width:0%"></div>
+          </div>
+          <div class="av-xp-sub" id="avXPSub">0/200 XP</div>
+        </div>
+        <div class="av-meta-row">
+          <div class="av-meta-chip">
+            <i class="ti ti-flame" aria-hidden="true" style="color:#ff7733"></i>
+            <span id="avRacha">0 días</span>
+          </div>
+          <div class="av-meta-chip">
+            <i class="ti ti-bolt" aria-hidden="true" style="color:var(--c1)"></i>
+            <span id="avXPHoy">0 XP hoy</span>
+          </div>
+        </div>
+        <div class="av-actions">
+          <button class="av-btn" onclick="openAtributosOverlay()">
+            <i class="ti ti-chart-radar" aria-hidden="true"></i>
+            Atributos
+          </button>
+          <button class="av-btn" onclick="openRangoSheet()">
+            <i class="ti ti-shield" aria-hidden="true"></i>
+            Rango
+          </button>
+        </div>
       </div>
-      <div class="xbw"><div class="xb xb-p" id="dBLvl" style="width:0%"></div></div>
-    </div>
 
-    <!-- XP y Racha -->
-    <div class="g2">
-      <div class="card">
-        <div class="slbl">XP Hoy</div>
-        <div class="sval" id="dXH">0</div>
-        <div class="ssub">de 177 posibles</div>
-        <div class="xbw"><div class="xb xb-c" id="dBX" style="width:0%"></div></div>
-      </div>
-      <div class="card">
-        <div class="slbl">Racha</div>
-        <div class="sval" id="dRC">0 días</div>
-        <div class="ssub" id="dBS">Sigue adelante</div>
-        <div class="xbw"><div class="xb xb-g" id="dBR" style="width:0%"></div></div>
-      </div>
     </div>
 
   </div>
@@ -451,6 +416,30 @@
   </div>
 
 </div><!-- /content -->
+
+
+<!-- OVERLAY ATRIBUTOS (full-screen slide-up) -->
+<div class="attrs-overlay" id="attrsOverlay">
+  <div class="attrs-overlay-scroll">
+    <div class="attrs-overlay-hdr">
+      <div class="attrs-overlay-title">Atributos</div>
+      <button class="attrs-close-btn" onclick="closeAtributosOverlay()">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="radar-wrap" id="radarChart"></div>
+    <div id="attrBars"></div>
+  </div>
+</div>
+
+
+<!-- RANGO BACKDROP + BOTTOM SHEET -->
+<div class="rango-backdrop" id="rangoBackdrop" onclick="closeRangoSheet()"></div>
+<div class="rango-sheet" id="rangoSheet">
+  <div class="rango-sheet-handle"></div>
+  <div class="rango-sheet-title">Rangos</div>
+  <div class="rango-sheet-scroll" id="rangoSheetContent"></div>
+</div>
 
 
 <!-- RESET MODAL -->
