@@ -54,14 +54,16 @@ function renderStats() {
   const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
   const r   = RANGOS[cur];
 
-  // Rank overlay encima del avatar
+  // Badge de rango — solo ícono + letra encima
   const avBadge = el('avRankBadge');
   if (avBadge) {
-    avBadge.innerHTML    = r.svg;
-    avBadge.style.filter = `drop-shadow(0 0 6px ${r.color})`;
+    avBadge.innerHTML    = r.svg + `<span class="av-rank-letter">${r.letter}</span>`;
+    avBadge.style.filter = `drop-shadow(0 0 5px ${r.color})`;
   }
-  setText('avRankName', r.name);
-  setText('avRankDesc', r.desc);
+
+  // X/90 contador
+  const d90 = calcDias90();
+  setText('avX90', d90.count + '/90');
 
   // Level + XP bar
   const lvl = getLevel(ST.totalXP);
@@ -141,7 +143,7 @@ function buildRadarSVG(values, labels, color) {
 }
 
 
-// ---- BOTTOM SHEET DE RANGO ----
+// ---- OVERLAY DE RANGO (full-screen) ----
 
 function renderRangoSheet() {
   const cur       = Math.min(ST.rank || 0, RANGOS.length - 1);
@@ -155,12 +157,55 @@ function renderRangoSheet() {
     return `<div class="${cls}">
       <div class="rs-badge" style="${isCur ? `filter:drop-shadow(0 0 5px ${r.color})` : ''}">${r.svg}</div>
       <div style="flex:1">
-        <div class="rs-name" style="${isCur ? `color:${r.color}` : ''}">${r.name}</div>
+        <div class="rs-name" style="${isCur ? `color:${r.color}` : ''}">
+          <span style="font-size:11px;font-weight:900;opacity:.7;margin-right:5px">${r.letter}</span>${r.name}
+        </div>
         <div class="rs-desc">${isCur ? r.desc : isPast ? '✓ Superado' : '🔒 Bloqueado'}</div>
       </div>
       ${isCur ? `<span class="rs-dot" style="color:${r.color}">◉</span>` : ''}
     </div>`;
   }).join('');
+}
+
+
+// ---- ALTER EGO OVERLAY (full-screen) ----
+
+function renderAlterOverlay() {
+  const container = el('alterOverlayContent');
+  if (!container) return;
+
+  const lvl        = getLevel(ST.totalXP);
+  const curRank    = ST.rank || 0;
+  const isUnlocked = lvl.level >= 100 && curRank >= 5;
+
+  container.innerHTML = `
+    <div class="alter-unlock-note">
+      Desbloqueados en <strong>Nivel 100</strong> + <strong>Rango S</strong>
+      ${isUnlocked ? '' : ` — (Nivel actual: ${lvl.level}, Rango: ${RANGOS[curRank].letter})`}
+    </div>
+    <div class="alter-grid-full">
+      ${ALTER_EGOS.map(a => {
+        const locked = !isUnlocked;
+        const cls    = locked ? 'alter-card-full locked' : 'alter-card-full unlocked';
+        const style  = locked ? '' : `style="--alter-color:${a.color};border-color:${a.color}44"`;
+        const iconColor = locked ? 'rgba(255,255,255,.2)' : a.color;
+        return `<div class="${cls}" ${style}>
+          ${locked ? `<span class="alter-lock-icon"><i class="ti ti-lock"></i></span>` : ''}
+          <div class="alter-silhouette" style="color:${iconColor}">${a.svg}</div>
+          <div class="alter-archetype">${a.archetype}</div>
+          <div class="alter-name-full" style="${locked ? '' : `color:${a.color}`}">${a.name}</div>
+          <div class="alter-desc-full">${locked ? 'Desbloquea en Nivel 100 + Rango S' : a.desc}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+}
+
+
+// ---- TROFEO OVERLAY ----
+
+function renderTrofeoOverlay() {
+  // Contenido estático por ahora — Títulos y Logros placeholder
 }
 
 

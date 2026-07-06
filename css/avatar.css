@@ -52,7 +52,7 @@
   max-width: 100%;
   object-fit: contain;
   object-position: center bottom;
-  animation: avatarFloat 6s ease-in-out infinite;
+  /* animation removed — avatar estático */
   will-change: transform;
   display: block;
 }

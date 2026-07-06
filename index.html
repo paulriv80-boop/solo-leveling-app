@@ -12,20 +12,7 @@
 <body>
 
 <div id="bootScreen" class="boot-screen">
-  <div class="boot-logo">
-    <svg viewBox="0 0 100 100" width="90" height="90">
-      <ellipse cx="50" cy="50" rx="40" ry="22" fill="none" stroke="#00F5FF" stroke-width="5"/>
-      <circle cx="50" cy="50" r="10" fill="#00F5FF"/>
-      <circle cx="50" cy="50" r="4" fill="#081018"/>
-    </svg>
-  </div>
-  <h1>Presence</h1>
-  <p>Inicializando protocolo de evolución...</p>
-  <div class="boot-status">
-    <div>✓ Identidad verificada</div>
-    <div>✓ Núcleo de evolución activo</div>
-    <div>✓ Vínculo neural estable</div>
-  </div>
+  <img src="assets/design-system/logo/logo.png" alt="Presence" class="boot-logo-img">
   <div class="boot-operator">BIENVENIDO, GUERRERO</div>
 </div>
 
@@ -33,14 +20,7 @@
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <div class="system-eye">
-      <svg viewBox="0 0 100 100" width="32" height="32">
-        <ellipse cx="50" cy="50" rx="40" ry="22" fill="none" stroke="#00F5FF" stroke-width="5"/>
-        <circle cx="50" cy="50" r="10" fill="#00F5FF"/>
-        <circle cx="50" cy="50" r="4" fill="#081018"/>
-      </svg>
-    </div>
-    <span class="logo-txt">Presence</span>
+    <img src="assets/design-system/logo/logo.png" alt="Presence" class="logo-img">
   </div>
   <div class="system-status">
     <span class="status-dot"></span>
@@ -252,14 +232,25 @@
         <img id="avatarImg" src="" alt="Avatar" style="display:none">
       </div>
 
-      <!-- Rank overlay — tap abre el bottom sheet de rangos -->
-      <div class="av-rank-overlay" onclick="openRangoSheet()">
+      <!-- Rank badge top-left: solo ícono, más transparente -->
+      <div class="av-rank-overlay av-rank-overlay--icon" onclick="openRangoSheet()">
         <div class="av-rank-badge" id="avRankBadge"></div>
-        <div>
-          <div class="av-rank-name" id="avRankName">Novato</div>
-          <div class="av-rank-desc" id="avRankDesc"></div>
-        </div>
       </div>
+
+      <!-- X/90 contador top-right -->
+      <div class="av-x90" id="avX90">0/90</div>
+
+      <!-- Trofeo botón middle-right -->
+      <button class="av-trophy-btn" onclick="openTrofeoOverlay()" aria-label="Trofeos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,184,51,.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9H3.5a2.5 2.5 0 0 1 0-5H6"/>
+          <path d="M18 9h2.5a2.5 2.5 0 0 0 0-5H18"/>
+          <path d="M4 22h16"/>
+          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+        </svg>
+      </button>
 
       <!-- Bottom overlay: level + racha + botones -->
       <div class="av-bottom-overlay">
@@ -285,9 +276,9 @@
             <i class="ti ti-chart-radar" aria-hidden="true"></i>
             Atributos
           </button>
-          <button class="av-btn" onclick="openRangoSheet()">
-            <i class="ti ti-shield" aria-hidden="true"></i>
-            Rango
+          <button class="av-btn" onclick="openAlterOverlay()">
+            <i class="ti ti-user-star" aria-hidden="true"></i>
+            Alter Egos
           </button>
         </div>
       </div>
@@ -433,12 +424,56 @@
 </div>
 
 
-<!-- RANGO BACKDROP + BOTTOM SHEET -->
-<div class="rango-backdrop" id="rangoBackdrop" onclick="closeRangoSheet()"></div>
-<div class="rango-sheet" id="rangoSheet">
-  <div class="rango-sheet-handle"></div>
-  <div class="rango-sheet-title">Rangos</div>
-  <div class="rango-sheet-scroll" id="rangoSheetContent"></div>
+<!-- RANGO OVERLAY (full-screen) -->
+<div class="rango-overlay" id="rangoOverlay">
+  <div class="attrs-overlay-scroll">
+    <div class="attrs-overlay-hdr">
+      <div class="attrs-overlay-title">Rangos</div>
+      <button class="attrs-close-btn" onclick="closeRangoSheet()">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="rangoSheetContent"></div>
+  </div>
+</div>
+
+
+<!-- ALTER EGO OVERLAY (full-screen) -->
+<div class="alter-overlay" id="alterOverlay">
+  <div class="alter-overlay-scroll">
+    <div class="attrs-overlay-hdr">
+      <div class="attrs-overlay-title">Alter Egos</div>
+      <button class="attrs-close-btn" onclick="closeAlterOverlay()">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div id="alterOverlayContent"></div>
+  </div>
+</div>
+
+
+<!-- TROFEO OVERLAY (full-screen) -->
+<div class="trofeo-overlay" id="trofeoOverlay">
+  <div class="attrs-overlay-scroll">
+    <div class="attrs-overlay-hdr">
+      <div class="attrs-overlay-title">Trofeos</div>
+      <button class="attrs-close-btn" onclick="closeTrofeoOverlay()">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="trofeo-slots">
+      <div class="trofeo-slot">
+        <div class="trofeo-slot-icon">🏅</div>
+        <div class="trofeo-slot-name">Títulos</div>
+        <div class="trofeo-slot-sub">Próximamente</div>
+      </div>
+      <div class="trofeo-slot">
+        <div class="trofeo-slot-icon">🎖️</div>
+        <div class="trofeo-slot-name">Logros</div>
+        <div class="trofeo-slot-sub">Próximamente</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 

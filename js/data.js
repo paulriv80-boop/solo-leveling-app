@@ -184,26 +184,152 @@ const TIENDA = [
 
 const ALTER_EGOS = [
   {
-    id: 'social', name: 'Relaciones Sociales', emoji: '👥', color: '#ff44aa',
-    desc: 'Habilidades sociales y seducción',
-    missions: [
-      'Entabla conversación con un desconocido',
-      'Practica contacto visual consciente 5 min',
-      'Sal a socializar sin propósito fijo',
-      'Escucha activa — 30 min sin hablar de ti',
-      'Aprende el nombre de alguien nuevo hoy',
-    ]
+    id: 'leonidas',
+    name: 'Leónidas',
+    archetype: 'El Guerrero Espartano',
+    desc: 'Eligió la gloria sobre la vida. La disciplina absoluta es su única ley.',
+    color: '#e8c060',
+    unlockLevel: 100, unlockRank: 5,
+    svg: `<svg viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Casco corintio con penacho -->
+      <ellipse cx="30" cy="18" rx="11" ry="10" fill="currentColor"/>
+      <path d="M19,14 Q14,8 16,4 Q22,10 30,12" fill="currentColor"/>
+      <path d="M19,16 L14,16 Q11,16 11,13 Q14,9 19,12" fill="currentColor"/>
+      <!-- Protector de nariz -->
+      <rect x="27.5" y="13" width="5" height="12" rx="2.5" fill="currentColor" opacity=".6"/>
+      <!-- Cuerpo con armadura -->
+      <rect x="19" y="30" width="22" height="26" rx="3" fill="currentColor"/>
+      <!-- Faldilla -->
+      <path d="M19,56 L22,68 L27,62 L30,70 L33,62 L38,68 L41,56 Z" fill="currentColor" opacity=".85"/>
+      <!-- Brazo con escudo -->
+      <rect x="6" y="31" width="11" height="18" rx="5" fill="currentColor"/>
+      <ellipse cx="8" cy="40" rx="7" ry="9" fill="currentColor" opacity=".7"/>
+      <!-- Brazo con lanza -->
+      <rect x="43" y="28" width="6" height="20" rx="3" fill="currentColor"/>
+      <rect x="45" y="4" width="3" height="26" rx="1" fill="currentColor" opacity=".85"/>
+      <polygon points="46.5,2 44,8 49,8" fill="currentColor"/>
+      <!-- Piernas -->
+      <rect x="21" y="68" width="8" height="20" rx="4" fill="currentColor"/>
+      <rect x="31" y="68" width="8" height="20" rx="4" fill="currentColor"/>
+    </svg>`,
   },
   {
-    id: 'musashi', name: 'Musashi', emoji: '⚔️', color: '#00f5ff',
-    desc: 'Quietud mental del guerrero',
-    missions: [
-      'Silencio activo 20 min sin distracciones',
-      'Escribe tus pensamientos durante 10 min',
-      'Contemplación de un objetivo futuro',
-      'Lee filosofía del guerrero (10 páginas)',
-      'Meditación en movimiento — caminar consciente',
-    ]
+    id: 'kenshin',
+    name: 'Kenshin',
+    archetype: 'El Samurái Sin Igual',
+    desc: 'La espada como extensión del alma. Cada acción es un corte limpio y preciso.',
+    color: '#60c8e8',
+    unlockLevel: 100, unlockRank: 5,
+    svg: `<svg viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Moño samurái -->
+      <ellipse cx="30" cy="13" rx="9" ry="9" fill="currentColor"/>
+      <rect x="26" y="4" width="8" height="7" rx="2" fill="currentColor" opacity=".7"/>
+      <!-- Kimono/armadura -->
+      <path d="M14,32 L20,28 L30,30 L40,28 L46,32 L44,62 L16,62 Z" fill="currentColor"/>
+      <!-- Solapas del kimono -->
+      <path d="M24,30 L30,44 L36,30 L30,34 Z" fill="currentColor" opacity=".5"/>
+      <!-- Brazos con katana -->
+      <rect x="6" y="30" width="10" height="18" rx="4" fill="currentColor"/>
+      <rect x="44" y="26" width="10" height="18" rx="4" fill="currentColor"/>
+      <!-- Katana diagonal -->
+      <rect x="46" y="10" width="3" height="40" rx="1.5" fill="currentColor" opacity=".9" transform="rotate(-20,48,30)"/>
+      <polygon points="55,4 52,10 58,10" fill="currentColor" transform="rotate(-20,55,7)"/>
+      <rect x="44" y="26" width="10" height="4" rx="2" fill="currentColor" opacity=".6"/>
+      <!-- Hakama / falda -->
+      <path d="M16,62 L18,80 L28,72 L30,82 L32,72 L42,80 L44,62 Z" fill="currentColor" opacity=".9"/>
+      <!-- Pies -->
+      <ellipse cx="23" cy="88" rx="6" ry="4" fill="currentColor"/>
+      <ellipse cx="37" cy="88" rx="6" ry="4" fill="currentColor"/>
+    </svg>`,
+  },
+  {
+    id: 'baldwinus',
+    name: 'Baldwinus',
+    archetype: 'El Rey de Jerusalén',
+    desc: 'Gobernó con hierro y fe desde su dolor. La corona más pesada, la voluntad más fuerte.',
+    color: '#c0a040',
+    unlockLevel: 100, unlockRank: 5,
+    svg: `<svg viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Corona -->
+      <path d="M18,16 L18,8 L24,13 L30,6 L36,13 L42,8 L42,16 Z" fill="currentColor"/>
+      <rect x="17" y="14" width="26" height="5" rx="2" fill="currentColor" opacity=".8"/>
+      <!-- Cabeza -->
+      <ellipse cx="30" cy="26" rx="10" ry="11" fill="currentColor"/>
+      <!-- Capa real -->
+      <path d="M10,40 L20,34 L30,36 L40,34 L50,40 L48,68 L30,72 L12,68 Z" fill="currentColor"/>
+      <!-- Cruz en el pecho -->
+      <rect x="28" y="40" width="4" height="16" rx="1" fill="currentColor" opacity=".4"/>
+      <rect x="22" y="46" width="16" height="4" rx="1" fill="currentColor" opacity=".4"/>
+      <!-- Brazos con espada -->
+      <rect x="6" y="38" width="12" height="20" rx="5" fill="currentColor"/>
+      <rect x="42" y="38" width="12" height="20" rx="5" fill="currentColor"/>
+      <!-- Espada vertical -->
+      <rect x="28.5" y="58" width="3" height="30" rx="1.5" fill="currentColor" opacity=".9"/>
+      <rect x="22" y="58" width="16" height="3" rx="1.5" fill="currentColor" opacity=".8"/>
+      <!-- Manto / falda -->
+      <path d="M12,68 L15,88 L30,80 L45,88 L48,68 Z" fill="currentColor" opacity=".85"/>
+    </svg>`,
+  },
+  {
+    id: 'magnus',
+    name: 'Magnus',
+    archetype: 'El Estratega Rico',
+    desc: 'Convierte la visión en riqueza y la riqueza en poder real. Cada movimiento es calculado.',
+    color: '#88dd88',
+    unlockLevel: 100, unlockRank: 5,
+    svg: `<svg viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Cabeza con cabello hacia atrás -->
+      <ellipse cx="30" cy="15" rx="10" ry="11" fill="currentColor"/>
+      <path d="M20,10 Q30,5 40,10 Q38,8 30,7 Q22,8 20,10" fill="currentColor" opacity=".5"/>
+      <!-- Traje impecable — hombros anchos -->
+      <path d="M12,30 L18,26 L30,28 L42,26 L48,30 L46,64 L14,64 Z" fill="currentColor"/>
+      <!-- Solapa del traje -->
+      <path d="M22,28 L26,44 L30,36 Z" fill="currentColor" opacity=".45"/>
+      <path d="M38,28 L34,44 L30,36 Z" fill="currentColor" opacity=".45"/>
+      <!-- Brazos de traje -->
+      <rect x="6" y="30" width="10" height="24" rx="4" fill="currentColor"/>
+      <rect x="44" y="30" width="10" height="24" rx="4" fill="currentColor"/>
+      <!-- Pieza de ajedrez (torre) en mano derecha -->
+      <rect x="46" y="47" width="8" height="3" rx="1" fill="currentColor" opacity=".7"/>
+      <rect x="48" y="42" width="4" height="6" rx="1" fill="currentColor" opacity=".7"/>
+      <path d="M46,42 L48,40 L50,42 L52,40 L54,42" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".7"/>
+      <!-- Pantalón -->
+      <rect x="18" y="64" width="10" height="24" rx="4" fill="currentColor"/>
+      <rect x="32" y="64" width="10" height="24" rx="4" fill="currentColor"/>
+      <!-- Corbata -->
+      <path d="M28,28 L30,42 L32,28 L30,32 Z" fill="currentColor" opacity=".55"/>
+    </svg>`,
+  },
+  {
+    id: 'ananda',
+    name: 'Ananda',
+    archetype: 'El Monje Interior',
+    desc: 'La quietud como fuente de todo poder. En el silencio absoluto nace la claridad suprema.',
+    color: '#cc88ff',
+    unlockLevel: 100, unlockRank: 5,
+    svg: `<svg viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Cabeza rapada -->
+      <ellipse cx="30" cy="14" rx="10" ry="11" fill="currentColor"/>
+      <!-- Túnica con capucha bajada -->
+      <path d="M10,32 Q20,26 30,28 Q40,26 50,32 L52,70 L8,70 Z" fill="currentColor"/>
+      <!-- Pliegues de la túnica -->
+      <line x1="22" y1="32" x2="20" y2="68" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
+      <line x1="30" y1="30" x2="30" y2="70" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
+      <line x1="38" y1="32" x2="40" y2="68" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
+      <!-- Brazos en posición de oración -->
+      <path d="M10,34 Q8,46 16,50 L22,46 Q18,42 18,36 Z" fill="currentColor"/>
+      <path d="M50,34 Q52,46 44,50 L38,46 Q42,42 42,36 Z" fill="currentColor"/>
+      <!-- Manos unidas en oración -->
+      <ellipse cx="30" cy="50" rx="8" ry="5" fill="currentColor" opacity=".9"/>
+      <!-- Rosario o mala -->
+      <circle cx="22" cy="54" r="2" fill="currentColor" opacity=".6"/>
+      <circle cx="26" cy="57" r="2" fill="currentColor" opacity=".6"/>
+      <circle cx="30" cy="58" r="2" fill="currentColor" opacity=".6"/>
+      <circle cx="34" cy="57" r="2" fill="currentColor" opacity=".6"/>
+      <circle cx="38" cy="54" r="2" fill="currentColor" opacity=".6"/>
+      <!-- Hábito / falda -->
+      <path d="M8,70 L10,90 L28,82 L30,92 L32,82 L50,90 L52,70 Z" fill="currentColor" opacity=".9"/>
+    </svg>`,
   },
 ];
 

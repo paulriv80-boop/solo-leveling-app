@@ -17,7 +17,7 @@
   display: block;
 }
 
-/* Imagen cubre toda la pantalla — sin bordes laterales */
+/* Imagen cubre toda la pantalla — estática, sin animación */
 .avatar-stage--full #avatarImg {
   position: absolute;
   width: 100%;
@@ -26,8 +26,6 @@
   left: 0;
   object-fit: cover;
   object-position: center 12%;
-  animation: avatarFloat 6s ease-in-out infinite;
-  will-change: transform;
 }
 
 /* Ocultar aura y partículas — la imagen los tapa, el aura causaba el resplandor lateral */
@@ -364,7 +362,259 @@
 .rs-dot { font-size: 18px; margin-left: auto; }
 
 
-/* ---- BREATHING ANIMATION ---- */
+/* ---- RANK OVERLAY — solo ícono, más transparente ---- */
+
+.av-rank-overlay--icon {
+  padding: 8px 10px;
+  background: rgba(8,16,24,.45);
+  gap: 0;
+}
+.av-rank-overlay--icon .av-rank-name,
+.av-rank-overlay--icon .av-rank-desc { display: none; }
+.av-rank-overlay--icon .av-rank-badge { width: 38px; height: 38px; }
+
+/* Letra del rango sobre el badge */
+.av-rank-letter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 6px rgba(0,0,0,.8);
+  pointer-events: none;
+  letter-spacing: 0;
+}
+.av-rank-badge { position: relative; }
+
+
+/* ---- X/90 CONTADOR top-right ---- */
+
+.av-x90 {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .5px;
+  color: #e8f4ff;
+  text-shadow: 0 0 10px rgba(200,240,255,.7), 0 0 22px rgba(200,240,255,.3);
+  background: rgba(0,0,0,.55);
+  border: 1.5px solid rgba(255,255,255,.25);
+  border-radius: 20px;
+  padding: 5px 12px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: default;
+  user-select: none;
+}
+
+
+/* ---- TROFEO — botón flotante derecho-centro ---- */
+
+.av-trophy-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  background: rgba(8,16,24,.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .15s, background .15s;
+}
+.av-trophy-btn:hover { border-color: rgba(255,184,51,.4); background: rgba(8,16,24,.65); }
+.av-trophy-btn svg   { width: 22px; height: 22px; }
+
+
+/* ---- RANGO OVERLAY — full-screen (igual que Atributos) ---- */
+
+.rango-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(5,5,15,.50);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform .36s cubic-bezier(.4,0,.2,1);
+}
+.rango-overlay.open { transform: translateY(0); }
+
+/* Reutiliza .attrs-overlay-scroll, .attrs-overlay-hdr, .attrs-overlay-title, .attrs-close-btn */
+
+/* Rank letter badge en la lista de rangos */
+.rs-letter {
+  font-size: 10px;
+  font-weight: 900;
+  color: rgba(255,255,255,.5);
+  margin-left: 4px;
+}
+.rs-cur .rs-letter { color: rgba(255,255,255,.9); }
+
+
+/* ---- ALTER EGO OVERLAY — full-screen ---- */
+
+.alter-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(5,5,15,.50);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform .36s cubic-bezier(.4,0,.2,1);
+}
+.alter-overlay.open { transform: translateY(0); }
+
+.alter-overlay-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 18px 100px;
+}
+
+.alter-unlock-note {
+  font-size: 11px;
+  color: var(--t2);
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: .5px;
+}
+.alter-unlock-note strong { color: var(--c2); }
+
+.alter-grid-full {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.alter-card-full {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 18px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  transition: border-color .15s;
+}
+.alter-card-full.locked { opacity: .55; }
+.alter-card-full.unlocked { border-color: var(--alter-color, rgba(255,255,255,.2)); cursor: pointer; }
+.alter-card-full.unlocked:hover { border-color: var(--alter-color, rgba(0,245,255,.3)); }
+
+.alter-silhouette {
+  width: 60px;
+  height: 90px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.alter-lock-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 13px;
+  color: var(--t3);
+}
+
+.alter-archetype {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--t3);
+  text-align: center;
+}
+
+.alter-name-full {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--t0);
+  text-align: center;
+}
+
+.alter-desc-full {
+  font-size: 10px;
+  color: var(--t2);
+  text-align: center;
+  line-height: 1.5;
+}
+
+
+/* ---- TROFEO OVERLAY — full-screen ---- */
+
+.trofeo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(5,5,15,.50);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform .36s cubic-bezier(.4,0,.2,1);
+}
+.trofeo-overlay.open { transform: translateY(0); }
+
+.trofeo-slots {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.trofeo-slot {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 24px 14px;
+  text-align: center;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.trofeo-slot-icon {
+  font-size: 36px;
+  opacity: .4;
+}
+
+.trofeo-slot-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: .5px;
+}
+
+.trofeo-slot-sub {
+  font-size: 10px;
+  color: var(--t3);
+}
+
+
+/* ---- BREATHING ANIMATION (reservada) ---- */
 
 @keyframes avatarBreathe {
   0%,  100% { transform: scaleY(1.000); }

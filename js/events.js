@@ -161,18 +161,44 @@ function closeAtributosOverlay() {
 }
 
 
-// ---- BOTTOM SHEET RANGO ----
+// ---- OVERLAY RANGO (full-screen) ----
 
 function openRangoSheet() {
   renderRangoSheet();
-  el('rangoSheet')?.classList.add('open');
-  el('rangoBackdrop')?.classList.add('open');
+  el('rangoOverlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
 function closeRangoSheet() {
-  el('rangoSheet')?.classList.remove('open');
-  el('rangoBackdrop')?.classList.remove('open');
+  el('rangoOverlay')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
+// ---- ALTER EGO OVERLAY ----
+
+function openAlterOverlay() {
+  renderAlterOverlay();
+  el('alterOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAlterOverlay() {
+  el('alterOverlay')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
+// ---- TROFEO OVERLAY ----
+
+function openTrofeoOverlay() {
+  renderTrofeoOverlay();
+  el('trofeoOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTrofeoOverlay() {
+  el('trofeoOverlay')?.classList.remove('open');
   document.body.style.overflow = '';
 }
 
