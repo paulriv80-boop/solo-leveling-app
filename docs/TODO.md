@@ -10,8 +10,19 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
 - [x] Refactorización sistema de rangos fase 1: eliminar Rango Técnico, estrellas, recompensas; 6 nuevos rangos con íconos SVG; acordeón en Inicio (sprint 2.9 + 2.9b).
 - [x] Avatar animado en pantalla de inicio: wallpaper estilo Solo Leveling con flotación, aura pulsante y partículas; glow dinámico por rango (sprint 2.10).
 - [x] **Sprint 3.0 — Arquitectura Mobile First:** nombre → Presence; bottom nav 5 tabs; Misiones como home con X/90 contador y 3 collapsibles; Stats con avatar placeholder; Comunidad/Tools placeholders; Menú con Tienda + Alter Egos + Títulos.
-- [ ] **Avatares de progresión:** generar y asignar imágenes distintas para cada uno de los 6 rangos (de persona corriente → con aura → transformado). Propiedad `avatar` ya preparada en `RANGOS`.
-- [ ] **Sistema de rangos fase 2:** definir lógica de avance de rango (cómo y cuándo sube `ST.rank`). La fase 1 dejó `applyDayCompletion()` sin progresión de rango — pendiente de diseño y aprobación del usuario antes de implementar.
+- [x] **Sprint 3.1/3.2 — Stats rediseño:** avatar full-screen estático, badge rango con letra (E/D/C/B/A/S), X/90 top-right, trofeo SVG middle-right, overlay rango semitransparente, Alter Egos con 5 siluetas SVG (Leónidas/Kenshin/Baldwinus/Magnus/Ananda, desbloqueo nivel 100 + Rango S), logo `trasparente.png`.
+- [x] **Sprint 4.0 — Refactorización mayor Misiones + Stats + Atributos:**
+  - Atributos renombrados: `energia→vitalidad`, `conocimiento→intelecto`, `espiritualidad→conexion`.
+  - 5 categorías: ⚔ Cuerpo / 🧠 Mente / 🧘 Presencia / 🎯 Enfoque / 🤝 Vínculo.
+  - 20 misiones fijas (m01–m10 default, m11–m20 opcionales con botón +).
+  - Sistema Propósito: array de misiones personalizadas con modal CRUD.
+  - Tarjetas swipe (swipe→ Hecho/Saltar, swipe← info XP/cats) + 3 tabs (To-dos/Hecho/Saltar).
+  - Radar pentagonal 5 ejes + barras luminosas 5-segmentos en overlay Atributos.
+  - STATE_VERSION 7→8 con migración automática.
+- [ ] **Imágenes para tarjetas de misiones:** asignar fondos anime/estilo Solo Leveling a cada una de las 20 misiones. La estructura de `background-image` en `.mc-bg` ya está preparada.
+- [ ] **Avatares de progresión:** generar y asignar imágenes distintas para cada uno de los 6 rangos. Propiedad `avatar` ya preparada en `RANGOS`.
+- [ ] **Sistema de rangos fase 2:** definir lógica de avance de rango (cómo y cuándo sube `ST.rank`). Pendiente de diseño y aprobación antes de implementar.
+- [ ] **Ruta de Propósito:** conectar `ST.propositos[]` al módulo de roadmap (Ruta de Propósito collapsible). Preparar estructura de hitos/progreso visual.
 
 ## Media prioridad
 

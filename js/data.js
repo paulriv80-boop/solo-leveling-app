@@ -122,30 +122,72 @@ const PENALIZACIONES = [
   { rank: 5, name: 'Trascendente',  items: ['300 sentadillas', '4h estudio', 'Sin redes 72h', 'Triple cardio', 'Ayuno 24h'] },
 ];
 
-const MISIONES = {
-  FISICO: [
-    { id: 'ph1', t: 'Ejercicio de fuerza',   desc: 'Mínimo 45 minutos',   xp: 20, coins: 3, stats: ['fuerza'] },
-    { id: 'ph2', t: 'Ejercicio de cardio',    desc: 'Mínimo 30 minutos',   xp: 15, coins: 2, stats: ['agilidad'] },
-    { id: 'ph3', t: 'Hidratación',            desc: '2 a 3 litros',        xp: 8,  coins: 1, stats: ['energia'] },
-    { id: 'ph4', t: 'Alimentación saludable', desc: '',                    xp: 8,  coins: 1, stats: ['energia'] },
-    { id: 'ph5', t: 'Sueño de calidad',       desc: '6 a 8 horas',        xp: 10, coins: 2, stats: ['energia', 'claridad'] },
-  ],
-  MENTE: [
-    { id: 'mn1', t: 'Meditación',         desc: 'Mínimo 10 minutos',      xp: 10, coins: 1, stats: ['serenidad', 'claridad'] },
-    { id: 'mn2', t: 'Autoconfirmación',   desc: '5 a 10 minutos',         xp: 8,  coins: 1, stats: ['confianza'] },
-    { id: 'mn3', t: 'Informarse',         desc: 'Leer titulares del día', xp: 5,  coins: 0, stats: ['conocimiento'] },
-    { id: 'mn4', t: 'Estudiar inglés',    desc: '30 minutos',             xp: 15, coins: 3, stats: ['conocimiento', 'disciplina'] },
-    { id: 'mn5', t: 'Lectura',            desc: 'Mínimo 5 páginas',       xp: 10, coins: 2, stats: ['conocimiento'] },
-    { id: 'mn6', t: 'Journaling',         desc: '',                       xp: 8,  coins: 1, stats: ['claridad', 'confianza'] },
-  ],
-  ESPIRITUAL: [
-    { id: 'sp1', t: 'Lectura y reflexión espiritual', desc: '', xp: 15, coins: 2, stats: ['espiritualidad', 'conocimiento'] },
-    { id: 'sp2', t: 'Oración',                        desc: '', xp: 10, coins: 1, stats: ['espiritualidad', 'serenidad'] },
-    { id: 'sp3', t: 'Gratitud',                       desc: '', xp: 10, coins: 1, stats: ['espiritualidad'] },
-  ],
-  PROPOSITO: [
-    { id: 'pu1', t: 'Propósito', desc: '', xp: 25, coins: 5, stats: ['disciplina'], dynamic: true },
-  ],
+// Misiones fijas: m01–m10 visibles por defecto, m11–m20 opcionales (hidden:true)
+// cats: array de { cat: id de CATEGORIES, stars: 1|2|3 } — solo visual, no afecta XP
+const MISIONES = [
+  { id:'m01', name:'Meditación',            desc:'Mínimo 10 minutos',         xp:10, coins:1, hidden:false,
+    cats:[{cat:'presencia',stars:3},{cat:'mente',stars:2},{cat:'enfoque',stars:1}] },
+  { id:'m02', name:'Oración / Gratitud',    desc:'5 a 10 minutos',            xp:10, coins:1, hidden:false,
+    cats:[{cat:'presencia',stars:3},{cat:'vinculo',stars:2}] },
+  { id:'m03', name:'Levantar Pesas',        desc:'Mínimo 45 minutos',         xp:20, coins:2, hidden:false,
+    cats:[{cat:'cuerpo',stars:3},{cat:'enfoque',stars:2}] },
+  { id:'m04', name:'Correr',                desc:'Mínimo 30 minutos',         xp:15, coins:2, hidden:false,
+    cats:[{cat:'cuerpo',stars:3},{cat:'enfoque',stars:2},{cat:'presencia',stars:1}] },
+  { id:'m05', name:'Hidratación',           desc:'2 a 3 litros de agua',      xp:8,  coins:1, hidden:false,
+    cats:[{cat:'cuerpo',stars:2}] },
+  { id:'m06', name:'Nutrición',             desc:'Alimentación limpia',       xp:8,  coins:1, hidden:false,
+    cats:[{cat:'cuerpo',stars:2},{cat:'presencia',stars:1}] },
+  { id:'m07', name:'Dormir 7–8h',           desc:'Sueño completo y reparador',xp:10, coins:1, hidden:false,
+    cats:[{cat:'cuerpo',stars:3},{cat:'mente',stars:2}] },
+  { id:'m08', name:'Afirmaciones',          desc:'5 a 10 minutos',            xp:8,  coins:1, hidden:false,
+    cats:[{cat:'mente',stars:3},{cat:'enfoque',stars:2},{cat:'presencia',stars:1}] },
+  { id:'m09', name:'Lectura',               desc:'Mínimo 5 páginas',          xp:12, coins:1, hidden:false,
+    cats:[{cat:'mente',stars:3},{cat:'enfoque',stars:2}] },
+  { id:'m10', name:'Journal',               desc:'Escribir reflexiones del día',xp:8, coins:1, hidden:false,
+    cats:[{cat:'mente',stars:3},{cat:'presencia',stars:2}] },
+
+  { id:'m11', name:'Caminar',               desc:'Mínimo 20 minutos al aire libre',xp:10, coins:1, hidden:true,
+    cats:[{cat:'cuerpo',stars:3},{cat:'presencia',stars:1}] },
+  { id:'m12', name:'Ciclismo',              desc:'Mínimo 30 minutos',            xp:15, coins:2, hidden:true,
+    cats:[{cat:'cuerpo',stars:3},{cat:'enfoque',stars:1}] },
+  { id:'m13', name:'Socializar',            desc:'Conversación real y profunda',  xp:8,  coins:1, hidden:true,
+    cats:[{cat:'vinculo',stars:3},{cat:'presencia',stars:1}] },
+  { id:'m14', name:'Estiramiento',          desc:'10 a 20 minutos',              xp:8,  coins:1, hidden:true,
+    cats:[{cat:'cuerpo',stars:2},{cat:'presencia',stars:1}] },
+  { id:'m15', name:'Levantarse Temprano',   desc:'Antes de las 6am',             xp:10, coins:1, hidden:true,
+    cats:[{cat:'enfoque',stars:3},{cat:'cuerpo',stars:1}] },
+  { id:'m16', name:'Ducha Fría',            desc:'Al menos 2 minutos fría',      xp:10, coins:1, hidden:true,
+    cats:[{cat:'enfoque',stars:3},{cat:'cuerpo',stars:2}] },
+  { id:'m17', name:'Luz Solar',             desc:'10 minutos directos de sol',   xp:8,  coins:1, hidden:true,
+    cats:[{cat:'cuerpo',stars:2},{cat:'presencia',stars:1}] },
+  { id:'m18', name:'Higiene',               desc:'Rutina completa de aseo',      xp:5,  coins:1, hidden:true,
+    cats:[{cat:'cuerpo',stars:1}] },
+  { id:'m19', name:'Ordenar Entorno',       desc:'Espacio limpio y organizado',  xp:8,  coins:1, hidden:true,
+    cats:[{cat:'enfoque',stars:2},{cat:'presencia',stars:1}] },
+  { id:'m20', name:'Planificar el Día Sig.',desc:'Revisar y preparar el mañana', xp:10, coins:1, hidden:true,
+    cats:[{cat:'enfoque',stars:3},{cat:'mente',stars:1}] },
+];
+
+// Categorías principales: agrupan atributos para el radar y la vista de stats
+const CATEGORIES = [
+  { id:'cuerpo',    name:'Cuerpo',    icon:'⚔',  attrs:['fuerza','agilidad','vitalidad'] },
+  { id:'mente',     name:'Mente',     icon:'🧠', attrs:['intelecto'] },
+  { id:'presencia', name:'Presencia', icon:'🧘', attrs:['claridad','serenidad'] },
+  { id:'enfoque',   name:'Enfoque',   icon:'🎯', attrs:['disciplina'] },
+  { id:'vinculo',   name:'Vínculo',   icon:'🤝', attrs:['confianza','conexion'] },
+];
+
+// Metadatos de atributos: color + etiqueta display
+const ATTR_META = {
+  fuerza:     { label:'Fuerza',    color:'#ff4466' },
+  agilidad:   { label:'Agilidad',  color:'#ff8c00' },
+  vitalidad:  { label:'Vitalidad', color:'#00f5ff' },
+  intelecto:  { label:'Intelecto', color:'#4da6ff' },
+  claridad:   { label:'Claridad',  color:'#88ccff' },
+  serenidad:  { label:'Serenidad', color:'#00ddaa' },
+  disciplina: { label:'Disciplina',color:'#39ff14' },
+  confianza:  { label:'Confianza', color:'#bf5fff' },
+  conexion:   { label:'Conexión',  color:'#ffd700' },
 };
 
 const ZONA_OSCURA_ITEMS = [

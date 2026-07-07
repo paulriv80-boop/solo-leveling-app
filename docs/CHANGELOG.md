@@ -2,6 +2,46 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-06 — sprint 4.0 Refactorización Mayor: Misiones + Stats + Atributos
+
+**Versión:** v5.0 Alpha — STATE_VERSION 8
+**Archivos:** `js/data.js`, `js/config.js`, `js/state.js`, `js/logic.js`, `js/render.js`, `js/events.js`, `css/missions.css`, `css/statsoverlay.css`, `index.html`
+**Tipo:** Refactorización mayor de datos + rediseño completo de UI
+
+### Cambios principales
+
+**Renombres de atributos (claves de estado):**
+- `energia` → `vitalidad`
+- `conocimiento` → `intelecto`
+- `espiritualidad` → `conexion`
+
+**Categorías de atributos (nuevo sistema de 5 grupos):**
+- ⚔ Cuerpo: Fuerza, Agilidad, Vitalidad
+- 🧠 Mente: Intelecto
+- 🧘 Presencia: Claridad, Serenidad
+- 🎯 Enfoque: Disciplina
+- 🤝 Vínculo: Confianza, Conexión
+
+**Lógica de barras:** `attr % 5` = barras llenas; `floor(attr/5)` = puntaje de categoría. Ciclos de 5 puntos.
+
+**20 misiones fijas:** m01–m10 visibles (XP total 109), m11–m20 opcionales (botón +). Sistema `cats:[{cat,stars}]` reemplaza `stats:[]` para mapeo visual y de atributos.
+
+**Sistema Propósito:** `ST.proposito: ''` → `ST.propositos: []`. Array de objetos `{id, name, desc, objetivo, frecuencia, progreso, created}`. CRUD completo vía modal.
+
+**Misiones swipe cards:** Nuevo diseño. Swipe derecha → botones Hecho / Saltar. Swipe izquierda → info XP + categorías.
+
+**Tabs de misiones:** To-dos / Hecho / Saltar con contadores. Estado `ST.mis[fecha][id]`: `'done'` | `'skip'` | `undefined`.
+
+**Radar pentagonal (5 ejes):** `buildRadarSVG(catValues)` reemplaza radar de 9 ejes. Ejes con icono emoji + nombre.
+
+**Overlay Atributos:** Categorías numeradas 1-5, puntaje por categoría, 5 barras verticales luminosas por atributo.
+
+**Logo:** Boot + topbar ahora usan `trasparente.png`.
+
+**STATE_VERSION 7 → 8:** Migración automática preserva valores de fuerza/agilidad/serenidad/confianza/claridad/disciplina; traduce energia→vitalidad, conocimiento→intelecto, espiritualidad→conexion. Limpia `ST.mis` (IDs cambian). Inicializa `propositos: []`, `activeMissions: [m01-m10]`.
+
+---
+
 ## 2026-07-05 — sprint 3.0 NUEVA ARQUITECTURA MOBILE FIRST — Presence
 
 **Versión:** v4.0 Alpha — STATE_VERSION 7 (sin cambio)

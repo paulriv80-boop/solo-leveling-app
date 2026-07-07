@@ -77,67 +77,86 @@ function renderStats() {
 }
 
 
-// ---- OVERLAY ATRIBUTOS (full-screen slide-up) ----
-
-const ATTR_KEYS   = ['fuerza','agilidad','energia','serenidad','confianza','conocimiento','claridad','espiritualidad','disciplina'];
-const ATTR_LABELS = ['Fuerza','Agilidad','Energía','Serenidad','Confianza','Conocimiento','Claridad','Espiritualidad','Disciplina'];
-const ATTR_COLORS = ['#ff5555','#44ddff','#ffaa00','#55aaff','#ff88cc','#aa88ff','#00dd88','#ff7733','#cc44ff'];
+// ---- OVERLAY ATRIBUTOS (full-screen slide-up) — 5 CATEGORÍAS ----
 
 function renderAtributosOverlay() {
-  const values = ATTR_KEYS.map(k => ST.stats[k] || 0);
-  const maxVal = Math.max(...values, 10);
-  const cur    = Math.min(ST.rank || 0, RANGOS.length - 1);
+  // Puntaje de categoría = suma de floor(attr/5) para cada attr en la categoría
+  const catValues = CATEGORIES.map(cat =>
+    cat.attrs.reduce((sum, attr) => sum + Math.floor((ST.stats[attr] || 0) / 5), 0)
+  );
 
   const radarEl = el('radarChart');
-  if (radarEl) radarEl.innerHTML = buildRadarSVG(values, ATTR_LABELS, RANGOS[cur].color);
+  if (radarEl) radarEl.innerHTML = buildRadarSVG(catValues);
 
   const barsEl = el('attrBars');
-  if (barsEl) {
-    barsEl.innerHTML = ATTR_KEYS.map((k, i) => `
-      <div class="attr-bar-row">
-        <div class="attr-bar-lbl">${ATTR_LABELS[i]}</div>
-        <div class="attr-bar-track">
-          <div class="attr-bar-fill" style="width:${pct(values[i], maxVal)}%;background:${ATTR_COLORS[i]}"></div>
-        </div>
-        <div class="attr-bar-num">${values[i]}</div>
+  if (!barsEl) return;
+
+  barsEl.innerHTML = CATEGORIES.map((cat, ci) => {
+    const catScore = catValues[ci];
+    const attrRows = cat.attrs.map(attr => {
+      const val  = ST.stats[attr] || 0;
+      const fill = val % 5;   // barras llenas dentro del ciclo actual
+      const meta = ATTR_META[attr] || { label: attr, color: '#00f5ff' };
+      const bars = Array.from({ length: 5 }, (_, b) =>
+        `<div class="ao-bar${b < fill ? ' ao-bar--lit' : ''}" ${b < fill ? `style="background:${meta.color};border-color:${meta.color};box-shadow:0 0 6px ${meta.color}"` : ''}></div>`
+      ).join('');
+      return `<div class="ao-attr-row">
+        <span class="ao-attr-name">${meta.label}</span>
+        <span class="ao-attr-num" style="color:${meta.color}">${val}</span>
+        <div class="ao-bars">${bars}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="ao-cat-block">
+      <div class="ao-cat-header">
+        <span class="ao-cat-num">${ci + 1}</span>
+        <span class="ao-cat-icon">${cat.icon}</span>
+        <span class="ao-cat-name">${cat.name}</span>
+        <span class="ao-cat-score">${catScore}</span>
       </div>
-    `).join('');
-  }
+      ${attrRows}
+    </div>`;
+  }).join('');
 }
 
-function buildRadarSVG(values, labels, color) {
-  const cx = 130, cy = 130, r = 100, n = values.length;
-  const maxVal = Math.max(...values, 10);
+// Radar pentagonal con 5 ejes (uno por categoría)
+function buildRadarSVG(catValues) {
+  const cx = 130, cy = 130, r = 100, n = 5;
+  const maxVal = Math.max(...catValues, 1);
   const ang    = i => (Math.PI * 2 * i / n) - Math.PI / 2;
   const px     = (i, sc) => cx + r * sc * Math.cos(ang(i));
   const py     = (i, sc) => cy + r * sc * Math.sin(ang(i));
 
-  const rings = [.25,.5,.75,1].map(sc => {
-    const pts = Array.from({length:n}, (_,i) => `${px(i,sc)},${py(i,sc)}`).join(' ');
-    return `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;
+  const rings = [.25, .5, .75, 1].map(sc => {
+    const pts = Array.from({ length: n }, (_, i) => `${px(i, sc)},${py(i, sc)}`).join(' ');
+    return `<polygon points="${pts}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1"/>`;
   }).join('');
 
-  const axes = Array.from({length:n}, (_,i) =>
-    `<line x1="${cx}" y1="${cy}" x2="${px(i,1)}" y2="${py(i,1)}" stroke="rgba(255,255,255,.1)" stroke-width="1"/>`
+  const axes = Array.from({ length: n }, (_, i) =>
+    `<line x1="${cx}" y1="${cy}" x2="${px(i, 1)}" y2="${py(i, 1)}" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>`
   ).join('');
 
-  const scales  = values.map(v => Math.min(v / maxVal, 1));
-  const dataPts = Array.from({length:n}, (_,i) => `${px(i,scales[i])},${py(i,scales[i])}`).join(' ');
+  const scales  = catValues.map(v => Math.min(v / maxVal, 1));
+  const dataPts = Array.from({ length: n }, (_, i) => `${px(i, scales[i])},${py(i, scales[i])}`).join(' ');
 
-  const lbls = Array.from({length:n}, (_,i) => {
-    const lx     = cx + (r + 18) * Math.cos(ang(i));
-    const ly     = cy + (r + 18) * Math.sin(ang(i));
-    const anchor = lx < cx - 4 ? 'end' : lx > cx + 4 ? 'start' : 'middle';
-    return `<text x="${lx}" y="${ly+4}" text-anchor="${anchor}" fill="rgba(255,255,255,.55)" font-size="9" font-family="inherit">${labels[i].substring(0,3).toUpperCase()}</text>`;
+  const cur   = Math.min(ST.rank || 0, RANGOS.length - 1);
+  const color = RANGOS[cur].color;
+
+  const lbls = CATEGORIES.map((cat, i) => {
+    const lx  = cx + (r + 24) * Math.cos(ang(i));
+    const ly  = cy + (r + 24) * Math.sin(ang(i));
+    const anc = lx < cx - 4 ? 'end' : lx > cx + 4 ? 'start' : 'middle';
+    return `<text x="${lx}" y="${ly - 5}" text-anchor="${anc}" fill="rgba(255,255,255,.9)" font-size="15" font-family="inherit">${cat.icon}</text>
+      <text x="${lx}" y="${ly + 9}" text-anchor="${anc}" fill="rgba(255,255,255,.45)" font-size="8" font-family="inherit" letter-spacing=".5">${cat.name.toUpperCase()}</text>`;
   }).join('');
 
-  const dots = Array.from({length:n}, (_,i) =>
-    `<circle cx="${px(i,scales[i])}" cy="${py(i,scales[i])}" r="3.5" fill="${color}" stroke="rgba(5,5,15,.9)" stroke-width="1.5"/>`
+  const dots = Array.from({ length: n }, (_, i) =>
+    `<circle cx="${px(i, scales[i])}" cy="${py(i, scales[i])}" r="4" fill="${color}" stroke="rgba(5,5,15,.9)" stroke-width="1.5"/>`
   ).join('');
 
   return `<svg viewBox="0 0 260 260" width="100%" height="100%">
     ${rings}${axes}
-    <polygon points="${dataPts}" fill="${color}30" stroke="${color}" stroke-width="2"/>
+    <polygon points="${dataPts}" fill="${color}28" stroke="${color}" stroke-width="2"/>
     ${dots}${lbls}
   </svg>`;
 }
@@ -209,85 +228,93 @@ function renderTrofeoOverlay() {
 }
 
 
-// ---- MISIONES (Tab home) ----
+// ---- MISIONES (Tab home) — swipe cards + 3 tabs ----
+
+let _mActiveTab = 'todos';
 
 function renderMisiones() {
-  // Header: fecha local + contador 90 días
   const now   = new Date();
   const dias  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const meses = ['enero','febrero','marzo','abril','mayo','junio','julio',
                  'agosto','septiembre','octubre','noviembre','diciembre'];
-  setText('mDate', `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]}`);
-
+  setText('mDate',  `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]}`);
   const d90 = calcDias90();
   setText('mDias90', `${d90.count}/90 días`);
-
-  // XP hoy
   const xp = xpHoy();
   setText('mXPHoy', xp);
   setStyle('mBXPHoy', 'width', pct(xp, CONFIG.XP_DIA_MAXIMO) + '%');
 
-  // 4 categorías
-  renderListaMisiones(MISIONES.FISICO,     'mFISICO');
-  renderListaMisiones(MISIONES.MENTE,      'mMENTE');
-  renderListaMisiones(MISIONES.ESPIRITUAL, 'mESPIRITUAL');
-  renderProposito('mPROPOSITO');
-}
-
-function renderListaMisiones(list, elId) {
-  const container = el(elId);
-  if (!container) return;
-
   const today    = DateUtils.today();
   const todayMis = ST.mis[today] || {};
 
-  container.innerHTML = list.map(m => {
-    const done     = !!todayMis[m.id];
-    const statsStr = m.stats.join(',');
-    const statTags = m.stats.map(s =>
-      `<span class="mstat-tag">${s}</span>`
-    ).join('');
+  // Lista combinada: misiones activas + propósitos
+  const active = MISIONES.filter(m => (ST.activeMissions || []).includes(m.id));
+  const propMissions = (ST.propositos || []).map(p => ({
+    id: 'pu_' + p.id, name: p.name || 'Propósito', desc: p.objetivo || '',
+    xp: 25, coins: 2, isProp: true, propId: p.id,
+    cats: [{ cat:'mente', stars:3 }, { cat:'enfoque', stars:2 }, { cat:'vinculo', stars:1 }],
+  }));
+  const all = [...active, ...propMissions];
 
-    return `<div class="mrow">
-      <div class="mchk${done ? ' done' : ''}"
-           onclick="toggleMision('${m.id}',${m.xp},'${statsStr}',${m.coins || 0})">
-        ${done ? '✓' : ''}
-      </div>
-      <div class="m-body">
-        <span class="mtxt${done ? ' done' : ''}">${m.t}</span>
-        ${m.desc ? `<span class="mdesc">${m.desc}</span>` : ''}
-        <div class="m-meta">
-          <span class="mxp">+${m.xp} XP${m.coins ? ' +' + m.coins + 'c' : ''}</span>
-          ${statTags}
-        </div>
-      </div>
-    </div>`;
+  const todos   = all.filter(m => !todayMis[m.id]);
+  const done    = all.filter(m => todayMis[m.id] === 'done');
+  const skipped = all.filter(m => todayMis[m.id] === 'skip');
+
+  const list = _mActiveTab === 'done' ? done : _mActiveTab === 'skip' ? skipped : todos;
+
+  const container = el('mListaMisiones');
+  if (container) {
+    container.innerHTML = list.length
+      ? list.map(m => buildMisionCard(m)).join('')
+      : `<div class="m-empty">No hay misiones en esta sección</div>`;
+    if (typeof attachSwipeHandlers === 'function') attachSwipeHandlers();
+  }
+
+  // Actualizar contadores de tabs
+  setText('mTabTodosCount',  todos.length);
+  setText('mTabDoneCount',   done.length);
+  setText('mTabSkipCount',   skipped.length);
+}
+
+function buildMisionCard(m) {
+  const gradMap = {
+    cuerpo:   '#180008,#28081a',
+    mente:    '#000e1a,#00182e',
+    presencia:'#071a0e,#00100e',
+    enfoque:  '#181200,#0e0a00',
+    vinculo:  '#10001a,#1a0028',
+  };
+  const primaryCat = m.cats && m.cats[0] ? m.cats[0].cat : 'cuerpo';
+  const grad = gradMap[primaryCat] || '#0a0a1a,#1a1040';
+
+  const catsJson   = JSON.stringify(m.cats || []);
+  const catsPreview = (m.cats || []).slice(0, 2).map(c => {
+    const cat = CATEGORIES.find(x => x.id === c.cat);
+    return cat ? `<span class="mc-star-tag">${'★'.repeat(c.stars)}${cat.icon}</span>` : '';
   }).join('');
-}
 
-function renderProposito(elId) {
-  const container = el(elId);
-  if (!container) return;
+  const infoCats = (m.cats || []).map(c => {
+    const cat = CATEGORIES.find(x => x.id === c.cat);
+    if (!cat) return '';
+    return `<div class="mc-info-cat">${cat.icon} ${cat.name} ${'★'.repeat(c.stars)}</div>`;
+  }).join('');
 
-  const today    = DateUtils.today();
-  const todayMis = ST.mis[today] || {};
-  const m        = MISIONES.PROPOSITO[0];
-  const done     = !!todayMis[m.id];
-  const nombre   = ST.proposito || 'Sin propósito configurado';
-  const statsStr = m.stats.join(',');
-  const statTags = m.stats.map(s => `<span class="mstat-tag">${s}</span>`).join('');
-
-  container.innerHTML = `<div class="mrow">
-    <div class="mchk${done ? ' done' : ''}"
-         onclick="toggleMision('${m.id}',${m.xp},'${statsStr}',${m.coins || 0})">
-      ${done ? '✓' : ''}
+  return `<div class="mc-wrap" data-id="${m.id}" data-xp="${m.xp}" data-coins="${m.coins}" data-cats='${catsJson}'>
+    <div class="mc-panel-left">
+      <button class="mc-btn-done" onclick="misionHecho(this)">✓ Hecho</button>
+      <button class="mc-btn-skip" onclick="misionSaltar(this)">✕ Saltar</button>
     </div>
-    <div class="m-body">
-      <span class="mtxt${done ? ' done' : ''}">${nombre}</span>
-      ${!ST.proposito ? '<span class="mdesc">Configúralo en Ruta de Propósito ↓</span>' : ''}
-      <div class="m-meta">
-        <span class="mxp">+${m.xp} XP +${m.coins}c</span>
-        ${statTags}
+    <div class="mc-panel-right">
+      <div class="mc-info-xp">+${m.xp} XP</div>
+      <div class="mc-info-coins">+${m.coins} 🪙</div>
+      ${infoCats}
+    </div>
+    <div class="mc-front">
+      <div class="mc-bg" style="background:linear-gradient(135deg,${grad})"></div>
+      <div class="mc-body">
+        <div class="mc-name">${m.name}</div>
+        ${m.desc ? `<div class="mc-desc">${m.desc}</div>` : ''}
+        <div class="mc-cats-preview">${catsPreview}</div>
       </div>
     </div>
   </div>`;
@@ -335,7 +362,7 @@ function renderCalGrid() {
     const isToday = k === today;
     const status  = ST.dias[k] || '';
     const mCount  = ST.mis[k]
-      ? Object.values(ST.mis[k]).filter(v => v === true).length
+      ? Object.values(ST.mis[k]).filter(v => v === 'done').length
       : 0;
 
     const classes   = ['cal-d', isToday ? 'today' : '', status].filter(Boolean).join(' ');
@@ -379,9 +406,6 @@ function renderZona() {
 // ---- RUTA DE ESTUDIO ----
 
 function renderRuta() {
-  const propInput = el('propositoInput');
-  if (propInput) propInput.value = ST.proposito || '';
-
   const container = el('rutaList');
   if (!container) return;
 
@@ -446,25 +470,15 @@ function renderAlter() {
 }
 
 function buildAlterLocked() {
-  const siluetas = ALTER_EGOS.map(a => `
-    <div style="text-align:center">
-      <div class="alter-silhouette">${a.emoji}</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:4px">???</div>
-    </div>
-  `).join('');
-
   return `<div class="alter-locked">
     <div style="font-size:11px;color:var(--t3);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px">
       Alter Egos — Bloqueados
-    </div>
-    <div style="display:flex;gap:20px;justify-content:center;margin-bottom:16px">
-      ${siluetas}
     </div>
     <div style="font-size:12px;color:var(--t2)">
       Se desbloquean al llegar a <strong style="color:var(--c2)">Disciplinado</strong>
     </div>
     <div style="margin-top:10px">
-      <span class="pill pill-h">Progreso: Rango ${(ST.rank || 0) + 1}/${ALTER_UNLOCK_RANK + 1}</span>
+      <span class="pill pill-h">Ver en Stats → Alter Egos</span>
     </div>
   </div>`;
 }
@@ -473,37 +487,15 @@ function buildAlterUnlocked() {
   const cards = ALTER_EGOS.map(a => `
     <div class="alter-card${ST.alterActive === a.id ? ' active' : ''}"
          onclick="selectAlter('${a.id}')">
-      <div class="alter-icon">${a.emoji}</div>
       <div class="alter-name" style="color:${a.color}">${a.name}</div>
-      <div class="alter-desc">${a.desc}</div>
+      <div class="alter-desc">${a.archetype}</div>
     </div>
   `).join('');
 
-  return `
-    <div style="font-size:11px;color:var(--t2);margin-bottom:10px">
-      Elige tu identidad secundaria de hoy:
+  return `<div style="font-size:11px;color:var(--t2);margin-bottom:10px">
+      Elige tu Alter Ego activo:
     </div>
-    <div class="alter-grid">${cards}</div>
-    ${ST.alterActive ? buildAlterMissions() : ''}
-  `;
-}
-
-function buildAlterMissions() {
-  const a = ALTER_EGOS.find(x => x.id === ST.alterActive);
-  if (!a) return '';
-
-  const misionRows = a.missions.map(m => `
-    <div class="mrow">
-      <div class="mchk" style="border-color:${a.color}">&nbsp;</div>
-      <span class="mtxt">${m}</span>
-      <span class="mxp" style="color:${a.color}">+20 XP</span>
-    </div>
-  `).join('');
-
-  return `<div class="card card2">
-    <div class="stitle" style="color:${a.color}">${a.emoji} Misiones — ${a.name}</div>
-    ${misionRows}
-  </div>`;
+    <div class="alter-grid">${cards}</div>`;
 }
 
 

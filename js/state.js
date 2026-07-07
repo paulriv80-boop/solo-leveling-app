@@ -8,16 +8,17 @@ const DEFAULT_STATE = {
   version: CONFIG.STATE_VERSION,
   coins: 0,
   totalXP: 0,
-  racha: 0,                   // Días verdes consecutivos reales (calculado)
+  racha: 0,
   stats: {
-    fuerza: 0, agilidad: 0, energia: 0, serenidad: 0,
-    confianza: 0, conocimiento: 0, claridad: 0, espiritualidad: 0, disciplina: 0,
+    fuerza: 0, agilidad: 0, vitalidad: 0, serenidad: 0,
+    confianza: 0, intelecto: 0, claridad: 0, conexion: 0, disciplina: 0,
   },
-  mis: {},                    // { 'YYYY-MM-DD': { misionId: true/false } }
-  zona: {},                   // { 'YYYY-MM-DD': { fell: bool } }
-  dias: {},                   // { 'YYYY-MM-DD': 'green'|'red'|'gold'|'blue' }
-  rank: 0,                    // Índice en RANGOS (0=Novato … 5=Trascendente)
-  proposito: '',              // Texto de la misión Propósito (configurable desde Ruta)
+  mis: {},            // { 'YYYY-MM-DD': { misionId: 'done'|'skip' } }
+  zona: {},           // { 'YYYY-MM-DD': { fell: bool } }
+  dias: {},           // { 'YYYY-MM-DD': 'green'|'red'|'gold'|'blue' }
+  rank: 0,
+  activeMissions: ['m01','m02','m03','m04','m05','m06','m07','m08','m09','m10'],
+  propositos: [],     // [{ id, name, desc, objetivo, frecuencia, progreso, created }]
   alterActive: null,
   lastVisit: null,
 };
@@ -118,6 +119,22 @@ const StateMigration = {
       delete raw.rankT;
       delete raw.starsT;
       delete raw.dc;
+    }
+
+    // v7 → v8: renombra atributos, sistema de misiones nuevo, propositos como array
+    if (version < 8) {
+      if (raw.stats) {
+        raw.stats.vitalidad  = raw.stats.energia        || 0;
+        raw.stats.intelecto  = raw.stats.conocimiento   || 0;
+        raw.stats.conexion   = raw.stats.espiritualidad || 0;
+        delete raw.stats.energia;
+        delete raw.stats.conocimiento;
+        delete raw.stats.espiritualidad;
+      }
+      raw.propositos     = [];
+      raw.activeMissions = ['m01','m02','m03','m04','m05','m06','m07','m08','m09','m10'];
+      raw.mis            = {};   // IDs de misiones cambian, limpiar historial
+      delete raw.proposito;
     }
 
     raw.version = CONFIG.STATE_VERSION;

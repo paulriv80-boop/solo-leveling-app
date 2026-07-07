@@ -236,41 +236,94 @@
 
 .radar-wrap svg { overflow: visible; }
 
-.attr-bar-row {
+/* ---- Bloque de categoría ---- */
+.ao-cat-block {
+  margin-bottom: 20px;
+}
+
+.ao-cat-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0,245,255,.1);
 }
 
-.attr-bar-lbl {
-  width: 96px;
-  font-size: 11px;
-  color: var(--t1);
-  font-weight: 600;
+.ao-cat-num {
+  font-size: 10px;
+  font-weight: 900;
+  color: rgba(0,245,255,.4);
+  width: 14px;
+  text-align: center;
 }
 
-.attr-bar-track {
+.ao-cat-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.ao-cat-name {
   flex: 1;
-  height: 6px;
-  background: rgba(255,255,255,.07);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.attr-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width .5s ease;
-  min-width: 2px;
-}
-
-.attr-bar-num {
-  width: 26px;
   font-size: 12px;
   font-weight: 700;
   color: var(--t0);
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+.ao-cat-score {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--c1);
+  text-shadow: 0 0 8px var(--c1);
+  min-width: 28px;
   text-align: right;
+}
+
+/* ---- Fila de atributo individual ---- */
+.ao-attr-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0 5px 22px;
+}
+
+.ao-attr-name {
+  width: 80px;
+  font-size: 11px;
+  color: var(--t2);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.ao-attr-num {
+  font-size: 13px;
+  font-weight: 800;
+  min-width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ---- 5 barras verticales luminosas ---- */
+.ao-bars {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  margin-left: 6px;
+}
+
+.ao-bar {
+  width: 6px;
+  height: 20px;
+  border-radius: 3px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.1);
+  transition: background .2s, box-shadow .2s;
+}
+
+.ao-bar--lit {
+  /* color/shadow injected inline from ATTR_META */
 }
 
 

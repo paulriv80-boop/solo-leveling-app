@@ -3,8 +3,8 @@
 ## 1. Estado general
 
 - **Nombre de la app:** **Presence** (anteriormente "THE SYSTEM").
-- **Versión visible (UI):** v4.0 Alpha.
-- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 7` (`js/config.js`).
+- **Versión visible (UI):** v5.0 Alpha.
+- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 8` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
   - Repo: https://github.com/paulriv80-boop/solo-leveling-app
@@ -66,18 +66,22 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 | Tab | Descripción |
 |---|---|
-| **Misiones** (home) | Header con fecha + contador X/90 días; card XP del día; 4 categorías (Físico / Mente / Espiritual / Propósito); 3 collapsibles: Calendario, Zona Oscura, Ruta de Propósito |
-| **Stats** | Avatar placeholder SVG animado (o imagen de progresión cuando exista) + acordeón de rango SVG + 9 atributos 3×3 + Operator Level + XP/Racha |
+| **Misiones** (home) | Header con fecha + X/90 días; barra XP; 3 tabs (To-dos/Hecho/Saltar); tarjetas swipe (swipe→ Hecho/Saltar, swipe← info XP/cats); panel misiones opcionales (+); botón Agregar Propósito; collapsibles: Calendario, Zona Oscura, Ruta de Propósito |
+| **Stats** | Avatar full-screen; badge rango (letra); X/90 top-right; trofeo middle-right; overlay Atributos: radar pentagonal (5 categorías) + barras luminosas 5-segmentos por atributo; overlay Alter Egos; overlay Rangos |
 | **Comunidad** | Placeholder — arquitectura para rankings, eventos globales y desafíos cooperativos (futuro) |
 | **Tools** | Grid de herramientas Coming Soon: IA Mentor (destacado), Pomodoro, Respiración, Workout, Diario, Visualización, Temporizador, Meditación |
-| **Menú** | Tienda (canje de monedas de sombra) + Alter Egos (identidades desde Rango B) + Títulos placeholder + Reset |
+| **Menú** | Tienda (canje de monedas de sombra) + Alter Egos + Títulos placeholder + Reset |
 
 ## 5. Sistema de progresión (resumen)
 
 - Racha (`ST.racha`) = días verdes consecutivos reales, recalculada desde el calendario (`DateUtils.calcRacha`), nunca un contador acumulativo simple.
 - Bonus de racha en `CONFIG.RACHA_BONUS = [3, 7, 30]` días.
 - **Rango (`ST.rank`):** índice 0–5 en `RANGOS`. La lógica de avance (cuándo sube) está pendiente de diseño en fase 2. El rango se muestra en Inicio como card acordeón con ícono SVG del rango actual.
-- **9 atributos** (`ST.stats`): Fuerza, Agilidad, Energía, Serenidad, Confianza, Conocimiento, Claridad, Espiritualidad, Disciplina. Cada misión especifica cuáles incrementa mediante `stats: ['attr1', 'attr2']`.
+- **9 atributos** (`ST.stats`): Fuerza, Agilidad, Vitalidad, Serenidad, Confianza, Intelecto, Claridad, Conexión, Disciplina. Organizados en 5 categorías (`CATEGORIES` en `data.js`): Cuerpo / Mente / Presencia / Enfoque / Vínculo.
+- **Lógica de barras:** `attr_value % 5` = barras llenas del atributo (ciclos de 5). Puntaje de categoría = `sum(floor(attr/5))` para attrs en esa categoría.
+- **20 misiones fijas** (`MISIONES` array en `data.js`): m01–m10 visibles, m11–m20 opcionales. Propiedad `cats:[{cat, stars}]` (visual + mapeo de atributos).
+- **Sistema Propósito:** `ST.propositos[]` = array de objetos `{id, name, desc, objetivo, frecuencia, progreso, created}`. Cada propósito genera una tarjeta swipe diaria con XP=25.
+- **Estado de misión:** `ST.mis[fecha][id]` = `'done'` | `'skip'` | `undefined`.
 - **Monedas (`ST.coins`):** máx. 26c/día según misiones completadas. Se gastan en la Tienda.
 - **Operator Level:** `getLevel(totalXP)` calcula nivel con progresión escalada (Nivel 1→2: 200 XP, +150 XP por cada nivel adicional). Se muestra en Inicio con barra de progreso.
 - **Misiones auto-reset:** cada nuevo día local (no UTC) el día actual empieza desde cero. Almacenamiento: `ST.mis['YYYY-MM-DD']`.

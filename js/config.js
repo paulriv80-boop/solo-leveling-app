@@ -6,7 +6,7 @@
 
 const CONFIG = {
   STORAGE_KEY: 'sl_v3',
-  STATE_VERSION: 7,          // Incrementar cuando cambie la forma del estado
-  XP_DIA_MAXIMO: 177,       // Suma de todos los XP posibles en misiones diarias
+  STATE_VERSION: 8,          // v8: attrs renombrados, misiones array, propositos[]
+  XP_DIA_MAXIMO: 109,       // Suma XP de las 10 misiones default (m01–m10)
   RACHA_BONUS: [3, 7, 30],  // Umbrales de racha para bonificaciones
 };

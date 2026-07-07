@@ -12,7 +12,7 @@
 <body>
 
 <div id="bootScreen" class="boot-screen">
-  <img src="assets/design-system/logo/logo.png" alt="Presence" class="boot-logo-img">
+  <img src="assets/design-system/logo/trasparente.png" alt="Presence" class="boot-logo-img">
   <div class="boot-operator">BIENVENIDO, GUERRERO</div>
 </div>
 
@@ -20,7 +20,7 @@
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <img src="assets/design-system/logo/logo.png" alt="Presence" class="logo-img">
+    <img src="assets/design-system/logo/trasparente.png" alt="Presence" class="logo-img">
   </div>
   <div class="system-status">
     <span class="status-dot"></span>
@@ -70,28 +70,40 @@
       <div class="slbl">XP Hoy</div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
         <div class="sval" id="mXPHoy">0</div>
-        <div class="ssub">de 177 posibles</div>
+        <div class="ssub">de 109 posibles</div>
       </div>
       <div class="xbw"><div class="xb xb-c" id="mBXPHoy" style="width:0%"></div></div>
     </div>
 
-    <!-- 4 categorías de misiones -->
-    <div class="card card2" style="margin-bottom:10px">
-      <div class="stitle">Físico</div>
-      <div id="mFISICO"></div>
+    <!-- Tabs: To-dos / Hecho / Saltar -->
+    <div class="m-tabs">
+      <button class="m-tab on" onclick="switchMisionTab('todos',this)">
+        To-dos <span class="m-tab-count" id="mTabTodosCount">0</span>
+      </button>
+      <button class="m-tab" onclick="switchMisionTab('done',this)">
+        Hecho <span class="m-tab-count" id="mTabDoneCount">0</span>
+      </button>
+      <button class="m-tab" onclick="switchMisionTab('skip',this)">
+        Saltar <span class="m-tab-count" id="mTabSkipCount">0</span>
+      </button>
     </div>
-    <div class="card card2" style="margin-bottom:10px">
-      <div class="stitle">Mente</div>
-      <div id="mMENTE"></div>
+
+    <!-- Lista de misiones (inyectada por renderMisiones) -->
+    <div id="mListaMisiones"></div>
+
+    <!-- Panel misiones opcionales (m11-m20) -->
+    <div class="m-optional-panel" style="margin-top:16px">
+      <div class="m-optional-hdr" onclick="toggleOpcionalesPanel()">
+        <span>+ Misiones opcionales</span>
+        <span id="mOpcionalesChevron">▾</span>
+      </div>
+      <div class="collapsible-body" id="mOpcionalesBody" style="padding:0"></div>
     </div>
-    <div class="card card2" style="margin-bottom:10px">
-      <div class="stitle">Espiritual</div>
-      <div id="mESPIRITUAL"></div>
-    </div>
-    <div class="card card2" style="margin-bottom:14px">
-      <div class="stitle">Propósito</div>
-      <div id="mPROPOSITO"></div>
-    </div>
+
+    <!-- Botón agregar propósito -->
+    <button class="m-add-prop-btn" onclick="openPropositoForm()" style="margin-top:8px">
+      + Agregar Propósito
+    </button>
 
     <!-- Collapsible: Calendario -->
     <div class="collapsible">
@@ -192,12 +204,11 @@
       <div class="collapsible-body" id="rutaBody">
         <div class="collapsible-content">
           <div class="card card2" style="margin-bottom:12px">
-            <div class="stitle">Mi propósito</div>
-            <div class="proposito-row">
-              <input id="propositoInput" class="proposito-input" placeholder="ej: Estudiar Python, Crear empresa...">
-              <button class="secret-btn" onclick="saveProposito()">Guardar</button>
+            <div class="stitle">Mis Propósitos</div>
+            <div style="font-size:11px;color:var(--t2);margin-bottom:8px">
+              Crea misiones de propósito personalizadas. Aparecen como tarjetas diarias.
             </div>
-            <div class="proposito-hint">Aparece como misión diaria en Misiones</div>
+            <button class="secret-btn" onclick="openPropositoForm()">+ Nuevo Propósito</button>
           </div>
           <div class="stitle" style="margin-bottom:10px">Ruta de estudio — 6 meses</div>
           <div id="rutaList"></div>
@@ -472,6 +483,45 @@
         <div class="trofeo-slot-name">Logros</div>
         <div class="trofeo-slot-sub">Próximamente</div>
       </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- PROPÓSITO MODAL (slide-up) -->
+<div class="attrs-overlay" id="propositoModal" style="z-index:600">
+  <div class="attrs-overlay-scroll">
+    <div class="attrs-overlay-hdr">
+      <div class="attrs-overlay-title">Nuevo Propósito</div>
+      <button class="attrs-close-btn" onclick="closePropositoForm()">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div>
+        <div class="slbl" style="margin-bottom:6px">Nombre *</div>
+        <input id="propNombreInput" class="proposito-input" placeholder="ej: Aprender Python">
+      </div>
+      <div>
+        <div class="slbl" style="margin-bottom:6px">Descripción</div>
+        <input id="propDescInput" class="proposito-input" placeholder="ej: Curso completo de Python">
+      </div>
+      <div>
+        <div class="slbl" style="margin-bottom:6px">Objetivo / Meta</div>
+        <input id="propObjetivoInput" class="proposito-input" placeholder="ej: Completar 1 módulo por semana">
+      </div>
+      <div>
+        <div class="slbl" style="margin-bottom:6px">Frecuencia</div>
+        <select id="propFrecSelect" class="proposito-input" style="padding:10px 12px;appearance:none">
+          <option value="diario">Diario</option>
+          <option value="semanal">Semanal</option>
+          <option value="libre">Libre</option>
+        </select>
+      </div>
+      <button class="av-btn" style="margin-top:4px" onclick="saveProposito()">
+        <i class="ti ti-check" aria-hidden="true"></i>
+        Guardar Propósito
+      </button>
     </div>
   </div>
 </div>

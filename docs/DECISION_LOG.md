@@ -4,6 +4,48 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-06 — Sprint 4: Categorías, barras de atributo y sistema de misiones
+
+**Problema 1 — Nombres de atributos inconsistentes con la visión.**
+`energia`, `conocimiento`, `espiritualidad` eran nombres técnicos genéricos que no reflejaban la identidad RPG del producto.
+
+**Solución:** Renombrar claves JS (`vitalidad`, `intelecto`, `conexion`). Migración v7→v8 automática conserva los valores acumulados del usuario.
+
+---
+
+**Problema 2 — 9 atributos planos sin jerarquía visual.**
+El radar de 9 ejes resultaba difícil de leer. El usuario necesitaba ver el progreso a nivel de "categoría de vida" antes que el detalle por atributo.
+
+**Alternativas consideradas:**
+1. Mantener el radar de 9 ejes pero añadir colores por grupo. Descartada: demasiado denso para móvil.
+2. Eliminar el radar y mostrar solo barras. Descartada: el radar da una lectura visual rápida del balance de vida.
+3. **5 categorías en el radar + detalle de atributos debajo.** Elegida.
+
+**Categorías finales:** ⚔ Cuerpo (Fuerza/Agilidad/Vitalidad) · 🧠 Mente (Intelecto) · 🧘 Presencia (Claridad/Serenidad) · 🎯 Enfoque (Disciplina) · 🤝 Vínculo (Confianza/Conexión).
+
+---
+
+**Problema 3 — Lógica de barras de atributo.**
+El usuario pidió que "al completar 5 puntos suba la categoría y se reinicie como un ciclo".
+
+**Solución elegida:** `attr_value` = total bruto acumulado (nunca se resetea). Las barras muestran `attr_value % 5` de 5 segmentos. El puntaje de categoría = `sum(floor(attr/5))`. Esto permite calcular todo desde un único número sin estado adicional.
+
+---
+
+**Problema 4 — MISIONES como objeto con 4 claves vs. array plano.**
+El objeto `{FISICO:[], MENTE:[], ...}` requería `Object.values().flat()` en cada lugar que iteraba misiones, y hacía difícil agregar propiedades globales (ej. `hidden`).
+
+**Solución:** Array plano con campo `hidden: true/false` y `cats:[{cat, stars}]`. Las categorías de UI (`CATEGORIES`) viven separadas en `data.js`. Más fácil de filtrar y extender.
+
+---
+
+**Problema 5 — `ST.mis[fecha][id]` como boolean vs. string.**
+El sistema solo sabía si una misión estaba hecha o no. El nuevo diseño necesita tres estados: pendiente / hecho / saltada.
+
+**Solución:** `undefined` = to-do · `'done'` = completada · `'skip'` = saltada. La migración v7→v8 limpia `ST.mis = {}` (los IDs de misiones cambiaron completamente de ph/mn/sp → m01-m20).
+
+---
+
 ## 2026-07-05 — Arquitectura Mobile First + nombre Presence (sprint 3.0)
 
 **Problema:** La app tenía 7 pestañas horizontales con texto en la parte superior, un HUD con datos en el topbar, y las secciones de Inicio y Misiones eran tabs separados. En móvil, la barra de pestañas ocupaba espacio valioso y era difícil de alcanzar con el pulgar.

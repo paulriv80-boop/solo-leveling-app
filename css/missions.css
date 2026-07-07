@@ -1,29 +1,294 @@
-/* ---- MISIONES ---- */
-.mrow {
-  display: flex; align-items: flex-start; gap: 8px;
-  padding: 10px 0; border-bottom: 1px solid var(--bd);
+/* ====================================================
+   MISSIONS — Swipe Cards + Tabs (Sprint 4)
+   ==================================================== */
+
+/* ---- TABS ---- */
+.m-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(0,245,255,.12);
+  margin-bottom: 12px;
+  gap: 0;
 }
-.mrow:last-child { border-bottom: none; }
-.mchk {
-  width: 18px; height: 18px; min-width: 18px; border: 1.5px solid var(--bd2); border-radius: 4px;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all .15s; background: var(--bg3); color: var(--c3); font-size: 11px;
-  margin-top: 2px;
+.m-tab {
+  flex: 1;
+  padding: 10px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--t3);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .15s, border-color .15s;
 }
-.mchk.done { background: #001a08; border-color: var(--c3); box-shadow: var(--glow3); }
-.m-body { flex: 1; min-width: 0; }
-.mtxt { display: block; font-size: 12px; color: var(--t1); line-height: 1.4; }
-.mtxt.done { color: var(--t3); text-decoration: line-through; }
-.mdesc { display: block; font-size: 10px; color: var(--t3); margin-top: 1px; }
-.m-meta { display: flex; align-items: center; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
-.mxp { font-size: 10px; color: var(--c2); font-weight: 600; white-space: nowrap; }
-.mstat-tag {
-  font-size: 9px; padding: 1px 6px; border-radius: 4px;
-  background: var(--bg3); border: 1px solid var(--bd2); color: var(--t2);
-  text-transform: capitalize; white-space: nowrap;
+.m-tab.on {
+  color: var(--c1);
+  border-bottom-color: var(--c1);
+}
+.m-tab-count {
+  display: inline-block;
+  background: rgba(0,245,255,.12);
+  border-radius: 8px;
+  padding: 1px 5px;
+  font-size: 9px;
+  margin-left: 3px;
+}
+.m-tab.on .m-tab-count {
+  background: rgba(0,245,255,.25);
 }
 
-/* ---- BOTÓN GENÉRICO RPG (usado en rank-up, ruta) ---- */
+/* ---- SWIPE CARD WRAPPER ---- */
+.mc-wrap {
+  position: relative;
+  height: 82px;
+  margin: 6px 0;
+  border-radius: 14px;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+/* ---- PANEL IZQUIERDO: Hecho / Saltar (revelado al swipe derecha) ---- */
+.mc-panel-left {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 20px;
+  gap: 12px;
+  background: linear-gradient(90deg, #002210 0%, #001808 100%);
+}
+
+/* ---- PANEL DERECHO: Info XP / Cats (revelado al swipe izquierda) ---- */
+.mc-panel-right {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 20px;
+  gap: 4px;
+  background: linear-gradient(270deg, #001230 0%, #000820 100%);
+}
+.mc-info-xp {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--c1);
+  text-shadow: 0 0 8px var(--c1);
+}
+.mc-info-coins {
+  font-size: 12px;
+  color: #ffd700;
+}
+.mc-info-cat {
+  font-size: 10px;
+  color: rgba(255,255,255,.55);
+}
+
+/* ---- BOTONES ACCIÓN ---- */
+.mc-btn-done {
+  background: #004422;
+  color: #00ff88;
+  border: 1px solid #00ff8844;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 0 12px #00ff4422;
+  transition: background .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mc-btn-done:active { background: #006633; }
+
+.mc-btn-skip {
+  background: #3a0808;
+  color: #ff6644;
+  border: 1px solid #ff664422;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mc-btn-skip:active { background: #5a1010; }
+
+/* ---- FRENTE DE LA TARJETA ---- */
+.mc-front {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  will-change: transform;
+  transition: transform .25s cubic-bezier(.22,.68,0,1.2);
+}
+
+.mc-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.mc-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0,0,0,.1) 0%, rgba(0,0,0,.5) 100%);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+}
+
+.mc-body {
+  position: relative;
+  z-index: 1;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  gap: 3px;
+}
+
+.mc-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.8);
+  line-height: 1.2;
+}
+
+.mc-desc {
+  font-size: 10px;
+  color: rgba(255,255,255,.6);
+  line-height: 1.3;
+}
+
+.mc-cats-preview {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.mc-star-tag {
+  font-size: 9px;
+  color: rgba(255,255,255,.7);
+  letter-spacing: 1px;
+}
+
+/* ---- MISIÓN PROPÓSITO — variante especial ---- */
+.mc-wrap[data-id^="pu_"] .mc-front {
+  border: 1px solid rgba(191,95,255,.3);
+}
+
+/* ---- EMPTY STATE ---- */
+.m-empty {
+  text-align: center;
+  padding: 32px 16px;
+  font-size: 12px;
+  color: var(--t3);
+  letter-spacing: .5px;
+}
+
+/* ---- SECCIÓN DE MISIONES OPCIONALES (panel +) ---- */
+.m-optional-panel {
+  margin-top: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.m-optional-hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-opt-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-top: 1px solid var(--bd);
+}
+.m-opt-name {
+  flex: 1;
+  font-size: 12px;
+  color: var(--t1);
+}
+.m-opt-xp {
+  font-size: 10px;
+  color: var(--c1);
+  font-weight: 600;
+}
+.m-opt-toggle {
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--bg3);
+  border: 1px solid var(--bd2);
+  cursor: pointer;
+  position: relative;
+  transition: background .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-opt-toggle::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--t3);
+  top: 2px;
+  left: 2px;
+  transition: transform .2s, background .2s;
+}
+.m-opt-toggle.on {
+  background: rgba(0,245,255,.2);
+  border-color: var(--c1);
+}
+.m-opt-toggle.on::after {
+  transform: translateX(14px);
+  background: var(--c1);
+}
+
+/* ---- BOTÓN AGREGAR PROPÓSITO ---- */
+.m-add-prop-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  background: rgba(191,95,255,.08);
+  border: 1px dashed rgba(191,95,255,.3);
+  border-radius: 10px;
+  color: #bf5fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .15s;
+}
+.m-add-prop-btn:active { background: rgba(191,95,255,.15); }
+
+/* ---- BOTÓN GENÉRICO RPG ---- */
 .secret-btn {
   font-size: 11px; padding: 6px 14px; background: var(--bg3);
   border: 1px solid var(--c5); border-radius: 8px; cursor: pointer;
