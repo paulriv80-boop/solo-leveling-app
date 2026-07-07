@@ -6,7 +6,7 @@
 
 const CONFIG = {
   STORAGE_KEY: 'sl_v3',
-  STATE_VERSION: 8,          // v8: attrs renombrados, misiones array, propositos[]
+  STATE_VERSION: 9,          // v9: atributo empatia añadido a Vínculo
   XP_DIA_MAXIMO: 109,       // Suma XP de las 10 misiones default (m01–m10)
   RACHA_BONUS: [3, 7, 30],  // Umbrales de racha para bonificaciones
 };

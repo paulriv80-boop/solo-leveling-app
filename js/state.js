@@ -11,7 +11,7 @@ const DEFAULT_STATE = {
   racha: 0,
   stats: {
     fuerza: 0, agilidad: 0, vitalidad: 0, serenidad: 0,
-    confianza: 0, intelecto: 0, claridad: 0, conexion: 0, disciplina: 0,
+    confianza: 0, intelecto: 0, claridad: 0, conexion: 0, disciplina: 0, empatia: 0,
   },
   mis: {},            // { 'YYYY-MM-DD': { misionId: 'done'|'skip' } }
   zona: {},           // { 'YYYY-MM-DD': { fell: bool } }
@@ -135,6 +135,11 @@ const StateMigration = {
       raw.activeMissions = ['m01','m02','m03','m04','m05','m06','m07','m08','m09','m10'];
       raw.mis            = {};   // IDs de misiones cambian, limpiar historial
       delete raw.proposito;
+    }
+
+    // v8 → v9: atributo empatia añadido a Vínculo
+    if (version < 9) {
+      if (raw.stats && raw.stats.empatia === undefined) raw.stats.empatia = 0;
     }
 
     raw.version = CONFIG.STATE_VERSION;

@@ -200,15 +200,24 @@ function deleteProposito(propId) {
 
 // ---- SWIPE HANDLERS estilo Tinder ----
 
-function attachSwipeHandlers() {
+function attachSwipeHandlers(activeTab) {
   const THRESHOLD = 80;
 
   document.querySelectorAll('.mc-wrap').forEach(card => {
     if (card._swipeAttached) return;
     card._swipeAttached = true;
 
-    const front       = card.querySelector('.mc-front');
+    const front = card.querySelector('.mc-front');
     if (!front) return;
+
+    if (activeTab !== 'todos') {
+      card.addEventListener('click', e => {
+        if (e.target.closest('.mc-confirm-ov')) return;
+        front.classList.toggle('show-confirm');
+      });
+      return;
+    }
+
     const overlayDone = card.querySelector('.mc-overlay--done');
     const overlaySkip = card.querySelector('.mc-overlay--skip');
 
@@ -238,7 +247,7 @@ function attachSwipeHandlers() {
 
       e.preventDefault();
       currentX = dx;
-      front.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.04}deg)`;
+      front.style.transform = `translateX(${currentX}px)`;
 
       if (currentX > 0) {
         if (overlayDone) overlayDone.style.opacity = Math.min(currentX / THRESHOLD, 1);
@@ -264,23 +273,46 @@ function attachSwipeHandlers() {
       if (overlaySkip) overlaySkip.style.transition = 'opacity .3s ease';
 
       if (currentX > THRESHOLD) {
-        front.style.transform = 'translateX(420px) rotate(15deg)';
+        front.style.transform = 'translateX(420px)';
         front.style.opacity   = '0';
         if (overlayDone) overlayDone.style.opacity = '1';
         setTimeout(() => misionHechoById(id, xp, cats, coins), 310);
       } else if (currentX < -THRESHOLD) {
-        front.style.transform = 'translateX(-420px) rotate(-15deg)';
+        front.style.transform = 'translateX(-420px)';
         front.style.opacity   = '0';
         if (overlaySkip) overlaySkip.style.opacity = '1';
         setTimeout(() => misionSaltarById(id), 310);
       } else {
-        front.style.transform = 'translateX(0) rotate(0)';
+        front.style.transform = 'translateX(0)';
         if (overlayDone) overlayDone.style.opacity = '0';
         if (overlaySkip) overlaySkip.style.opacity = '0';
       }
       currentX = 0;
     });
   });
+}
+
+function devolverMision(id, event) {
+  if (event) event.stopPropagation();
+  const today = DateUtils.today();
+  if (!ST.mis[today]) return;
+  const status = ST.mis[today][id];
+  if (status === 'done') {
+    let m = MISIONES.find(x => x.id === id);
+    if (!m && id.startsWith('pu_')) {
+      m = { xp: 25, coins: 2, cats: [{cat:'mente',stars:3},{cat:'enfoque',stars:2},{cat:'vinculo',stars:1}] };
+    }
+    if (m) applyMissionToggle(id, m.xp, m.cats, m.coins);
+  } else if (status === 'skip') {
+    delete ST.mis[today][id];
+  }
+  saveState();
+  renderMisiones();
+}
+
+function cerrarConfirm(event) {
+  if (event) event.stopPropagation();
+  event.target.closest('.mc-wrap')?.querySelector('.mc-front')?.classList.remove('show-confirm');
 }
 
 

@@ -2,6 +2,22 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-06 — sprint 4.2 Correcciones post-prueba #2
+
+**Versión:** v5.2 Alpha — STATE_VERSION 9
+**Archivos:** `js/events.js`, `js/render.js`, `js/data.js`, `js/state.js`, `js/config.js`, `css/missions.css`, `css/statsoverlay.css`
+**Tipo:** Fixes UX basados en prueba real en dispositivo móvil
+
+### 4 fixes implementados
+
+1. **Sin rotación en swipe:** Eliminado `rotate(...)` del transform de todas las líneas en `attachSwipeHandlers`. La tarjeta se mueve solo con `translateX`, sin deformación ni solapamiento visual al devolver sin soltar.
+2. **Hechos/Saltados: tap → confirmar devolver:** En tabs `done`/`skip` se desactiva el swipe y se activa un tap handler. Tap sobre tarjeta muestra overlay in-card con botones "Devolver" y "✕". `devolverMision(id)`: si era 'done' revierte XP y atributos con `applyMissionToggle`; si era 'skip' borra el estado. `cerrarConfirm(event)` cierra el overlay. CSS `.mc-confirm-ov` con `.mc-front.show-confirm` toggle.
+3. **Radar escala absoluta:** `buildRadarSVG` cambia de normalización relativa (max=100%) a absoluta. `TARGET=15` significa full=75 completions por attr (~75 días intensos por categoría). `radarValues[i] = min(catValues[i] / (cat.attrs.length * TARGET), 1)`. El radar ya no se llena con un solo día de misiones.
+4. **Atributo `empatia` en Vínculo:** Vínculo sube de 2 a 3 atributos (`confianza`, `conexion`, `empatia`). Añadido a `ATTR_META` (color `#ff77aa`), `CATEGORIES`, `DEFAULT_STATE.stats`. Migration v8→v9 añade `empatia: 0` a estados existentes. `STATE_VERSION: 9`.
+5. **Badge de rango más pequeño:** `.av-rank-badge` 42px→32px, `.av-rank-overlay` padding 10px 14px→7px 10px, `.av-rank-letter-ext` 22px→17px, `.av-rank-lbl` 8px→7px.
+
+---
+
 ## 2026-07-06 — sprint 4.1 Fixes visuales post-prueba en celular
 
 **Versión:** v5.1 Alpha — STATE_VERSION 8 (sin cambio)

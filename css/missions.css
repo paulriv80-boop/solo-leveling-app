@@ -152,6 +152,58 @@
 }
 .mc-star-tag .ti { font-size: 10px; }
 
+/* ---- CONFIRM OVERLAY (tap en Hechos/Saltados) ---- */
+.mc-confirm-ov {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: rgba(8,16,24,.88);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+}
+
+.mc-front.show-confirm .mc-confirm-ov {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mc-confirm-ok {
+  background: rgba(0,245,255,.1);
+  border: 1px solid rgba(0,245,255,.3);
+  color: var(--c1);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mc-confirm-cancel {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.5);
+  font-family: inherit;
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* ---- MISIÓN PROPÓSITO — variante especial ---- */
 .mc-wrap[data-id^="pu_"] .mc-front {
   border: 1px solid rgba(191,95,255,.3);

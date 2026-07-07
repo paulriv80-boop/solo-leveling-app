@@ -174,7 +174,7 @@ const CATEGORIES = [
   { id:'mente',     name:'Mente',     icon:'🧠', iconClass:'ti-brain',     radarLabel:'MEN', attrs:['intelecto'] },
   { id:'presencia', name:'Presencia', icon:'🧘', iconClass:'ti-leaf',      radarLabel:'PRE', attrs:['claridad','serenidad'] },
   { id:'enfoque',   name:'Enfoque',   icon:'🎯', iconClass:'ti-crosshair', radarLabel:'ENF', attrs:['disciplina'] },
-  { id:'vinculo',   name:'Vínculo',   icon:'🤝', iconClass:'ti-link',      radarLabel:'VIN', attrs:['confianza','conexion'] },
+  { id:'vinculo',   name:'Vínculo',   icon:'🤝', iconClass:'ti-link',      radarLabel:'VIN', attrs:['confianza','conexion','empatia'] },
 ];
 
 // Metadatos de atributos: color + etiqueta display
@@ -188,6 +188,7 @@ const ATTR_META = {
   disciplina: { label:'Disciplina',color:'#39ff14' },
   confianza:  { label:'Confianza', color:'#bf5fff' },
   conexion:   { label:'Conexión',  color:'#ffd700' },
+  empatia:    { label:'Empatía',   color:'#ff77aa' },
 };
 
 const ZONA_OSCURA_ITEMS = [

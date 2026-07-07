@@ -128,10 +128,11 @@ function renderAtributosOverlay() {
 // Radar pentagonal con 5 ejes (uno por categoría)
 function buildRadarSVG(catValues) {
   const cx = 130, cy = 130, r = 100, n = 5;
-  // Normalizar por cantidad de atributos para que Cuerpo (3 attrs) y Vínculo (2 attrs) sean comparables
-  const radarValues = catValues.map((v, i) => v / CATEGORIES[i].attrs.length);
-  const maxVal = Math.max(...radarValues, 1);
-  const ang    = i => (Math.PI * 2 * i / n) - Math.PI / 2;
+  const TARGET = 15; // full = 75 completions por attr ≈ 75 días intensos
+  const radarValues = CATEGORIES.map((cat, i) =>
+    Math.min(catValues[i] / (cat.attrs.length * TARGET), 1)
+  );
+  const ang = i => (Math.PI * 2 * i / n) - Math.PI / 2;
   const px     = (i, sc) => cx + r * sc * Math.cos(ang(i));
   const py     = (i, sc) => cy + r * sc * Math.sin(ang(i));
 
@@ -144,7 +145,7 @@ function buildRadarSVG(catValues) {
     `<line x1="${cx}" y1="${cy}" x2="${px(i, 1)}" y2="${py(i, 1)}" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>`
   ).join('');
 
-  const scales  = radarValues.map(v => Math.min(v / maxVal, 1));
+  const scales  = radarValues;
   const dataPts = Array.from({ length: n }, (_, i) => `${px(i, scales[i])},${py(i, scales[i])}`).join(' ');
 
   const cur   = Math.min(ST.rank || 0, RANGOS.length - 1);
@@ -273,7 +274,7 @@ function renderMisiones() {
     container.innerHTML = list.length
       ? list.map(m => buildMisionCard(m)).join('')
       : `<div class="m-empty">No hay misiones en esta sección</div>`;
-    if (typeof attachSwipeHandlers === 'function') attachSwipeHandlers();
+    if (typeof attachSwipeHandlers === 'function') attachSwipeHandlers(_mActiveTab);
   }
 
   // Actualizar contadores de tabs
@@ -350,6 +351,10 @@ function buildMisionCard(m) {
 
   return `<div class="mc-wrap" data-id="${m.id}" data-xp="${m.xp}" data-coins="${m.coins}" data-cats='${catsJson}'>
     <div class="mc-front">
+      <div class="mc-confirm-ov">
+        <button class="mc-confirm-ok" onclick="devolverMision('${m.id}', event)">Devolver</button>
+        <button class="mc-confirm-cancel" onclick="cerrarConfirm(event)">✕</button>
+      </div>
       <div class="mc-overlay mc-overlay--done">${checkSVG}</div>
       <div class="mc-overlay mc-overlay--skip">${xSVG}</div>
       <div class="mc-bg" style="background:linear-gradient(135deg,${grad})"></div>
