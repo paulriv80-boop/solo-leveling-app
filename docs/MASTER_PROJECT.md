@@ -3,8 +3,8 @@
 ## 1. Estado general
 
 - **Nombre de la app:** **Presence** (anteriormente "THE SYSTEM").
-- **Versión visible (UI):** v5.0 Alpha.
-- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 8` (`js/config.js`).
+- **Versión visible (UI):** v5.2 Alpha.
+- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 9` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
   - Repo: https://github.com/paulriv80-boop/solo-leveling-app
@@ -66,7 +66,7 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 | Tab | Descripción |
 |---|---|
-| **Misiones** (home) | Header con fecha + X/90 días; barra XP; 3 tabs (To-dos/Hecho/Saltar); tarjetas swipe (swipe→ Hecho/Saltar, swipe← info XP/cats); panel misiones opcionales (+); botón Agregar Propósito; collapsibles: Calendario, Zona Oscura, Ruta de Propósito |
+| **Misiones** (home) | Header con fecha + X/90 días; mini calendario 7 días; 3 tabs (To-dos / Hechos / Saltados); tab To-dos: tarjetas swipe Tinder (derecha=hecho, izquierda=saltar, overlays verde/rojo); tabs Hechos/Saltados: tap → overlay in-card "Devolver / ✕"; panel misiones opcionales (+); botón Agregar Propósito; collapsibles: Calendario, Zona Oscura, Ruta de Propósito |
 | **Stats** | Avatar full-screen; badge rango (letra); X/90 top-right; trofeo middle-right; overlay Atributos: radar pentagonal (5 categorías) + barras luminosas 5-segmentos por atributo; overlay Alter Egos; overlay Rangos |
 | **Comunidad** | Placeholder — arquitectura para rankings, eventos globales y desafíos cooperativos (futuro) |
 | **Tools** | Grid de herramientas Coming Soon: IA Mentor (destacado), Pomodoro, Respiración, Workout, Diario, Visualización, Temporizador, Meditación |
@@ -77,7 +77,7 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 - Racha (`ST.racha`) = días verdes consecutivos reales, recalculada desde el calendario (`DateUtils.calcRacha`), nunca un contador acumulativo simple.
 - Bonus de racha en `CONFIG.RACHA_BONUS = [3, 7, 30]` días.
 - **Rango (`ST.rank`):** índice 0–5 en `RANGOS`. La lógica de avance (cuándo sube) está pendiente de diseño en fase 2. El rango se muestra en Inicio como card acordeón con ícono SVG del rango actual.
-- **9 atributos** (`ST.stats`): Fuerza, Agilidad, Vitalidad, Serenidad, Confianza, Intelecto, Claridad, Conexión, Disciplina. Organizados en 5 categorías (`CATEGORIES` en `data.js`): Cuerpo / Mente / Presencia / Enfoque / Vínculo.
+- **10 atributos** (`ST.stats`): Fuerza, Agilidad, Vitalidad, Serenidad, Confianza, Intelecto, Claridad, Conexión, Disciplina, Empatía. Organizados en 5 categorías (`CATEGORIES` en `data.js`): Cuerpo (3) / Mente (1) / Presencia (2) / Enfoque (1) / Vínculo (3).
 - **Lógica de barras:** `attr_value % 5` = barras llenas del atributo (ciclos de 5). Puntaje de categoría = `sum(floor(attr/5))` para attrs en esa categoría.
 - **20 misiones fijas** (`MISIONES` array en `data.js`): m01–m10 visibles, m11–m20 opcionales. Propiedad `cats:[{cat, stars}]` (visual + mapeo de atributos).
 - **Sistema Propósito:** `ST.propositos[]` = array de objetos `{id, name, desc, objetivo, frecuencia, progreso, created}`. Cada propósito genera una tarjeta swipe diaria con XP=25.
@@ -88,15 +88,15 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 ## 6. Funcionalidades implementadas
 
-Todas las descritas en la sección 4, con persistencia completa en `localStorage` (clave `sl_v3`) y migraciones de esquema de v1 a v7.
+Todas las descritas en la sección 4, con persistencia completa en `localStorage` (clave `sl_v3`) y migraciones de esquema de v1 a v9.
 
 **Estructura de misiones (`data.js`):**
 ```js
 // Cada misión:
-{ id: 'ph1', t: 'Ejercicio de fuerza', desc: 'Mínimo 45 minutos', xp: 20, coins: 3, stats: ['fuerza'] }
-// 15 misiones totales — XP diario máximo: 177, Coins máximo: 26
+{ id: 'm03', name: 'Levantar Pesas', desc: 'Mínimo 45 minutos', xp: 20, coins: 2, hidden: false,
+  cats: [{ cat: 'cuerpo', stars: 3 }, { cat: 'enfoque', stars: 2 }] }
+// 20 misiones — m01–m10 default, m11–m20 opcionales — XP diario máximo: 109
 ```
-Categorías: `FISICO` (ph1–ph5) / `MENTE` (mn1–mn6) / `ESPIRITUAL` (sp1–sp3) / `PROPOSITO` (pu1, texto dinámico de `ST.proposito`).
 
 **Migraciones de estado:**
 | Versión | Cambio |
@@ -107,6 +107,8 @@ Categorías: `FISICO` (ph1–ph5) / `MENTE` (mn1–mn6) / `ESPIRITUAL` (sp1–sp
 | v4→v5 | 9 nuevos atributos, elimina stacks, añade `proposito` |
 | v5→v6 | Limpia `ST.mis` (fix colisión de IDs de misiones) |
 | v6→v7 | `rankH → rank`, elimina `starsH`, `rankT`, `starsT`, `dc` |
+| v7→v8 | `energia→vitalidad`, `conocimiento→intelecto`, `espiritualidad→conexion`; `propositos[]`; `activeMissions[]`; limpia `ST.mis` |
+| v8→v9 | Añade `empatia: 0` a `ST.stats` (3er atributo de Vínculo) |
 
 ## 7. Funcionalidades pendientes (roadmap)
 

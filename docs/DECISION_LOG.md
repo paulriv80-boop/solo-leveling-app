@@ -4,6 +4,69 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-06 — Sprint 4.2: Radar absoluto, empatia, swipe sin rotación, devolver desde Hechos/Saltados
+
+**Problema 1 — Radar se llenaba tras un solo día de misiones.**
+La normalización relativa (`maxVal = max(radarValues)`) hacía que el eje con más progreso apareciera siempre al 100%. Con apenas 1 punto en cualquier categoría, ese eje se mostraba completo, dando una falsa impresión de maestría.
+
+**Alternativas consideradas:**
+1. **Escala logarítmica.** Difícil de intuir para el usuario: no sabe cuánto le falta.
+2. **Escala relativa con suavizado (media entre valores).** Sigue siendo engañosa en fases tempranas.
+3. **Escala absoluta con TARGET fijo.** **Elegida.**
+
+**Solución:** `TARGET = 15` → full = 75 completions de misiones por atributo (≈75 días de trabajo intenso en una categoría). `radarValues[i] = min(catValues[i] / (cat.attrs.length * TARGET), 1)`. El radar empieza casi vacío y crece progresivamente a lo largo de semanas, reflejando el progreso real.
+
+---
+
+**Problema 2 — Vínculo siempre débil en el radar.**
+Vínculo tenía 2 atributos (confianza, conexión) frente a los 3 de Cuerpo. Aunque la normalización per-attr lo compensaba parcialmente, el puntaje máximo posible de Vínculo era siempre inferior al de Cuerpo con el mismo esfuerzo diario.
+
+**Solución:** Añadir `empatia` como 3er atributo de Vínculo. Las misiones existentes que otorgan XP a la categoría `vinculo` (ej. Socializar, Oración/Gratitud) automáticamente incrementan `empatia` en +1 por completado, sin cambiar las definiciones de misiones. STATE_VERSION 8→9 con migración automática.
+
+---
+
+**Problema 3 — Rotación del swipe deformaba la UI.**
+El `rotate(deltaX * 0.04deg)` durante el arrastre hacía que la tarjeta girase visualmente sobre sus vecinas (el wrapper tiene `overflow: visible` para que la sombra no se corte). Al devolver la tarjeta sin soltar, la rotación se podía "pegar" visualmente a las tarjetas de arriba/abajo.
+
+**Solución:** Eliminar el `rotate()` por completo. Usar solo `translateX`. La experiencia de swipe Tinder sigue siendo clara con el overlay de color sin necesitar inclinación.
+
+---
+
+**Problema 4 — No había forma de revertir una misión desde Hechos/Saltados.**
+Los tabs Hechos y Saltados mostraban tarjetas con swipe activo, pero el usuario quería poder devolverlas a To-dos sin que eso afectase los XP/atributos acumulados históricamente (solo revertir el estado del día actual).
+
+**Alternativas consideradas:**
+1. **Swipe izquierda en Hechos = devolver.** Confuso: izquierda ya significa "Saltar" en To-dos.
+2. **Botón persistente en cada tarjeta.** Añade ruido visual cuando no se quiere devolver.
+3. **Tap → overlay de confirmación in-card.** **Elegida.**
+
+**Solución:** En tabs `done`/`skip`, `attachSwipeHandlers` no añade listeners de touch/swipe, solo un `click` handler que hace `toggle('show-confirm')` en `.mc-front`. El overlay `.mc-confirm-ov` aparece con `opacity: 1; pointer-events: auto` vía CSS (`.mc-front.show-confirm`). `devolverMision(id)`: si era `done` llama `applyMissionToggle` (revierte XP+attrs), si era `skip` hace `delete ST.mis[today][id]`. Los acumulados históricos (`ST.totalXP`, `ST.stats`) solo se modifican si la misión estaba `done` ese mismo día.
+
+---
+
+## 2026-07-06 — Sprint 4.1: Swipe Tinder, mini calendario, Tabler Icons, badge de rango
+
+**Problema 1 — Sistema de paneles de swipe poco intuitivo en móvil.**
+El diseño anterior mostraba el card en posición central; swipe derecha revelaba un panel con botón "Hecho", swipe izquierda revelaba info de XP/categorías. En mobile el gesto era ambiguo y no daba feedback visual inmediato de la intención.
+
+**Solución:** Sistema Tinder: el card se arrastra con el dedo, superponiéndose un overlay de color proporcional al desplazamiento (verde=hecho, rojo=saltar). Al superar 80px la tarjeta vuela fuera de pantalla. `touchmove { passive: false }` para interceptar el scroll vertical solo cuando se detecta dirección horizontal (`|dx| > |dy|`). Función `misionHechoById(id, xp, cats, coins)` y `misionSaltarById(id)` reciben datos directamente desde `dataset`, sin leer el DOM.
+
+---
+
+**Problema 2 — Barra XP del día no aportaba contexto en mobile.**
+Un número de XP aislado no transmite si el usuario está en racha o ha fallado la semana.
+
+**Solución:** Mini calendario de 7 días con puntos de color (verde=completo, rojo=fallido, naranja=parcial, borde blanco=hoy). Implementado en `renderMiniWeek()`. El ID del elemento (`mMiniWeek`) reemplaza la card de XP en `index.html`.
+
+---
+
+**Problema 3 — Emojis de categorías incompatibles con el estilo visual.**
+Los emojis ⚔🧠🧘🎯🤝 varían por sistema operativo y no se integran bien con el diseño oscuro/neón de la app.
+
+**Solución:** Tabler Icons webfont (ya cargado vía CDN). `CATEGORIES` en `data.js` añade `iconClass` (`ti-barbell`, `ti-brain`, `ti-leaf`, `ti-crosshair`, `ti-link`) y `radarLabel` (3 letras: CUE/MEN/PRE/ENF/VIN). El emoji `icon` se conserva en el objeto pero ya no se usa en la UI.
+
+---
+
 ## 2026-07-06 — Sprint 4: Categorías, barras de atributo y sistema de misiones
 
 **Problema 1 — Nombres de atributos inconsistentes con la visión.**
