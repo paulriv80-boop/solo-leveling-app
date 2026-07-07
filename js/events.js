@@ -68,6 +68,16 @@ function misionHechoById(id, xp, cats, coins) {
 function misionSaltarById(id) {
   const today = DateUtils.today();
   if (!ST.mis[today]) ST.mis[today] = {};
+
+  // Si estaba marcada como 'done', revertir XP y atributos antes de pasar a skip
+  if (ST.mis[today][id] === 'done') {
+    let m = MISIONES.find(x => x.id === id);
+    if (!m && id.startsWith('pu_')) {
+      m = { xp: 25, coins: 2, cats: [{cat:'mente',stars:3},{cat:'enfoque',stars:2},{cat:'vinculo',stars:1}] };
+    }
+    if (m) applyMissionToggle(id, m.xp, m.cats, m.coins);
+  }
+
   ST.mis[today][id] = 'skip';
   saveState();
   renderMisiones();

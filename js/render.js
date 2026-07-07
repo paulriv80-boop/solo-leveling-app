@@ -128,7 +128,9 @@ function renderAtributosOverlay() {
 // Radar pentagonal con 5 ejes (uno por categoría)
 function buildRadarSVG(catValues) {
   const cx = 130, cy = 130, r = 100, n = 5;
-  const maxVal = Math.max(...catValues, 1);
+  // Normalizar por cantidad de atributos para que Cuerpo (3 attrs) y Vínculo (2 attrs) sean comparables
+  const radarValues = catValues.map((v, i) => v / CATEGORIES[i].attrs.length);
+  const maxVal = Math.max(...radarValues, 1);
   const ang    = i => (Math.PI * 2 * i / n) - Math.PI / 2;
   const px     = (i, sc) => cx + r * sc * Math.cos(ang(i));
   const py     = (i, sc) => cy + r * sc * Math.sin(ang(i));
@@ -142,7 +144,7 @@ function buildRadarSVG(catValues) {
     `<line x1="${cx}" y1="${cy}" x2="${px(i, 1)}" y2="${py(i, 1)}" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>`
   ).join('');
 
-  const scales  = catValues.map(v => Math.min(v / maxVal, 1));
+  const scales  = radarValues.map(v => Math.min(v / maxVal, 1));
   const dataPts = Array.from({ length: n }, (_, i) => `${px(i, scales[i])},${py(i, scales[i])}`).join(' ');
 
   const cur   = Math.min(ST.rank || 0, RANGOS.length - 1);

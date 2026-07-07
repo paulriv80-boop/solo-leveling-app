@@ -44,9 +44,9 @@
 /* ---- SWIPE CARD WRAPPER ---- */
 .mc-wrap {
   position: relative;
-  height: 68px;
-  margin: 4px -14px;
-  border-radius: 0;
+  height: 140px;
+  margin: 6px 0;
+  border-radius: 12px;
   overflow: visible;
   touch-action: pan-y;
   user-select: none;
@@ -85,7 +85,7 @@
 .mc-front {
   position: absolute;
   inset: 0;
-  border-radius: 0;
+  border-radius: 12px;
   overflow: hidden;
   will-change: transform;
   transition: transform .25s cubic-bezier(.22,.68,0,1.2);
@@ -103,19 +103,19 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, rgba(0,0,0,.1) 0%, rgba(0,0,0,.5) 100%);
-  border: none;
-  border-radius: 0;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
 }
 
 .mc-body {
   position: relative;
   z-index: 1;
-  padding: 10px 18px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   height: 100%;
-  gap: 2px;
+  gap: 4px;
 }
 
 .mc-name {
