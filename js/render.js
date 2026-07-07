@@ -54,11 +54,17 @@ function renderStats() {
   const cur = Math.min(ST.rank || 0, RANGOS.length - 1);
   const r   = RANGOS[cur];
 
-  // Badge de rango — solo ícono + letra encima
+  // Badge de rango — SVG símbolo solo; letra y label "RANGO" en elemento externo
   const avBadge = el('avRankBadge');
   if (avBadge) {
-    avBadge.innerHTML    = r.svg + `<span class="av-rank-letter">${r.letter}</span>`;
+    avBadge.innerHTML    = r.svg;
     avBadge.style.filter = `drop-shadow(0 0 5px ${r.color})`;
+  }
+  const avLetterEl = el('avRankLetter');
+  if (avLetterEl) {
+    avLetterEl.textContent      = r.letter;
+    avLetterEl.style.color      = r.color;
+    avLetterEl.style.textShadow = `0 0 8px ${r.color}`;
   }
 
   // X/90 contador
@@ -110,7 +116,7 @@ function renderAtributosOverlay() {
     return `<div class="ao-cat-block">
       <div class="ao-cat-header">
         <span class="ao-cat-num">${ci + 1}</span>
-        <span class="ao-cat-icon">${cat.icon}</span>
+        <span class="ao-cat-icon"><i class="ti ${cat.iconClass}"></i></span>
         <span class="ao-cat-name">${cat.name}</span>
         <span class="ao-cat-score">${catScore}</span>
       </div>
@@ -146,8 +152,8 @@ function buildRadarSVG(catValues) {
     const lx  = cx + (r + 24) * Math.cos(ang(i));
     const ly  = cy + (r + 24) * Math.sin(ang(i));
     const anc = lx < cx - 4 ? 'end' : lx > cx + 4 ? 'start' : 'middle';
-    return `<text x="${lx}" y="${ly - 5}" text-anchor="${anc}" fill="rgba(255,255,255,.9)" font-size="15" font-family="inherit">${cat.icon}</text>
-      <text x="${lx}" y="${ly + 9}" text-anchor="${anc}" fill="rgba(255,255,255,.45)" font-size="8" font-family="inherit" letter-spacing=".5">${cat.name.toUpperCase()}</text>`;
+    return `<text x="${lx}" y="${ly - 3}" text-anchor="${anc}" fill="rgba(255,255,255,.9)" font-size="10" font-family="inherit" font-weight="700" letter-spacing="1">${cat.radarLabel}</text>
+      <text x="${lx}" y="${ly + 10}" text-anchor="${anc}" fill="rgba(255,255,255,.45)" font-size="8" font-family="inherit" letter-spacing=".5">${cat.name.toUpperCase()}</text>`;
   }).join('');
 
   const dots = Array.from({ length: n }, (_, i) =>
@@ -240,9 +246,7 @@ function renderMisiones() {
   setText('mDate',  `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]}`);
   const d90 = calcDias90();
   setText('mDias90', `${d90.count}/90 días`);
-  const xp = xpHoy();
-  setText('mXPHoy', xp);
-  setStyle('mBXPHoy', 'width', pct(xp, CONFIG.XP_DIA_MAXIMO) + '%');
+  renderMiniWeek();
 
   const today    = DateUtils.today();
   const todayMis = ST.mis[today] || {};
@@ -276,6 +280,52 @@ function renderMisiones() {
   setText('mTabSkipCount',   skipped.length);
 }
 
+function renderMiniWeek() {
+  const container = el('mMiniWeek');
+  if (!container) return;
+
+  const today = DateUtils.today();
+  const days  = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    days.push({ key, d });
+  }
+
+  const DSHORT = ['D','L','M','X','J','V','S'];
+
+  container.innerHTML = days.map(({ key, d }) => {
+    const isToday   = key === today;
+    const isFuture  = key > today;
+    const status    = ST.dias[key];
+    const doneCount = Object.values(ST.mis[key] || {}).filter(v => v === 'done').length;
+
+    let bg = 'rgba(255,255,255,.07)', shadow = '', textColor = 'rgba(255,255,255,.25)';
+    if (status === 'gold') {
+      bg = '#ffd700'; shadow = '0 0 6px #ffd700'; textColor = '#000';
+    } else if (status === 'green') {
+      bg = '#39ff14'; shadow = '0 0 6px #39ff14'; textColor = '#000';
+    } else if (status === 'red') {
+      bg = '#ff2d55'; textColor = '#fff';
+    } else if (!isFuture && doneCount > 0) {
+      bg = '#ff8c00'; shadow = '0 0 4px #ff8c00'; textColor = '#000';
+    } else if (!isFuture) {
+      textColor = 'rgba(255,255,255,.45)';
+    }
+
+    const border  = isToday ? '2px solid rgba(255,255,255,.75)' : '2px solid transparent';
+    const dotStyle = `background:${bg};border:${border};${shadow ? 'box-shadow:' + shadow + ';' : ''}`;
+
+    return `<div class="mw-day${isToday ? ' mw-today' : ''}">
+      <span class="mw-lbl">${DSHORT[d.getDay()]}</span>
+      <div class="mw-dot" style="${dotStyle}">
+        <span class="mw-num" style="color:${textColor}">${d.getDate()}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function buildMisionCard(m) {
   const gradMap = {
     cuerpo:   '#180008,#28081a',
@@ -290,26 +340,16 @@ function buildMisionCard(m) {
   const catsJson   = JSON.stringify(m.cats || []);
   const catsPreview = (m.cats || []).slice(0, 2).map(c => {
     const cat = CATEGORIES.find(x => x.id === c.cat);
-    return cat ? `<span class="mc-star-tag">${'★'.repeat(c.stars)}${cat.icon}</span>` : '';
+    return cat ? `<span class="mc-star-tag">${'★'.repeat(c.stars)}<i class="ti ${cat.iconClass}"></i></span>` : '';
   }).join('');
 
-  const infoCats = (m.cats || []).map(c => {
-    const cat = CATEGORIES.find(x => x.id === c.cat);
-    if (!cat) return '';
-    return `<div class="mc-info-cat">${cat.icon} ${cat.name} ${'★'.repeat(c.stars)}</div>`;
-  }).join('');
+  const checkSVG = `<svg class="mc-swipe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  const xSVG     = `<svg class="mc-swipe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
 
   return `<div class="mc-wrap" data-id="${m.id}" data-xp="${m.xp}" data-coins="${m.coins}" data-cats='${catsJson}'>
-    <div class="mc-panel-left">
-      <button class="mc-btn-done" onclick="misionHecho(this)">✓ Hecho</button>
-      <button class="mc-btn-skip" onclick="misionSaltar(this)">✕ Saltar</button>
-    </div>
-    <div class="mc-panel-right">
-      <div class="mc-info-xp">+${m.xp} XP</div>
-      <div class="mc-info-coins">+${m.coins} 🪙</div>
-      ${infoCats}
-    </div>
     <div class="mc-front">
+      <div class="mc-overlay mc-overlay--done">${checkSVG}</div>
+      <div class="mc-overlay mc-overlay--skip">${xSVG}</div>
       <div class="mc-bg" style="background:linear-gradient(135deg,${grad})"></div>
       <div class="mc-body">
         <div class="mc-name">${m.name}</div>

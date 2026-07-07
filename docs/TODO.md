@@ -19,6 +19,7 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
   - Tarjetas swipe (swipe→ Hecho/Saltar, swipe← info XP/cats) + 3 tabs (To-dos/Hecho/Saltar).
   - Radar pentagonal 5 ejes + barras luminosas 5-segmentos en overlay Atributos.
   - STATE_VERSION 7→8 con migración automática.
+- [x] **Sprint 4.1 — Fixes post-prueba en celular:** logo más grande, tabs renombrados (Hechos/Saltados), mini calendario semanal, swipe Tinder con overlays verde/rojo, tipografía misiones uppercase medium, tarjetas full-bleed más cortas, iconos Tabler en lugar de emojis, badge de rango rediseñado (SVG + RANGO + letra en color).
 - [ ] **Imágenes para tarjetas de misiones:** asignar fondos anime/estilo Solo Leveling a cada una de las 20 misiones. La estructura de `background-image` en `.mc-bg` ya está preparada.
 - [ ] **Avatares de progresión:** generar y asignar imágenes distintas para cada uno de los 6 rangos. Propiedad `avatar` ya preparada en `RANGOS`.
 - [ ] **Sistema de rangos fase 2:** definir lógica de avance de rango (cómo y cuándo sube `ST.rank`). Pendiente de diseño y aprobación antes de implementar.

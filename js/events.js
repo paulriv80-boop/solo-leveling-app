@@ -50,34 +50,22 @@ function toggleMision(id, xp, cats, coins) {
   renderCalendario();
 }
 
-// "Hecho" desde swipe card
-function misionHecho(btn) {
-  const wrap  = btn.closest('.mc-wrap');
-  if (!wrap) return;
-  const id    = wrap.dataset.id;
-  const xp    = parseInt(wrap.dataset.xp, 10) || 0;
-  const coins = parseInt(wrap.dataset.coins, 10) || 0;
-  let cats = [];
-  try { cats = JSON.parse(wrap.dataset.cats || '[]'); } catch(e) {}
-
+// Swipe derecha — marcar hecho (llamado desde attachSwipeHandlers)
+function misionHechoById(id, xp, cats, coins) {
   applyMissionToggle(id, xp, cats, coins);
   const coinsMsg = coins > 0 ? ` +${coins}c` : '';
   Toast.show(`+${xp} XP${coinsMsg}`, 'var(--c1)');
   const dayResult = applyDayCompletion();
   if (dayResult.completed) {
-    Toast.show('¡Día completo! 🔥 Racha: ' + ST.racha, '#39ff14');
+    Toast.show('¡Día completo! Racha: ' + ST.racha, '#39ff14');
   }
-
   saveState();
   renderMisiones();
   renderCalendario();
 }
 
-// "Saltar" desde swipe card
-function misionSaltar(btn) {
-  const wrap = btn.closest('.mc-wrap');
-  if (!wrap) return;
-  const id   = wrap.dataset.id;
+// Swipe izquierda — marcar saltado (llamado desde attachSwipeHandlers)
+function misionSaltarById(id) {
   const today = DateUtils.today();
   if (!ST.mis[today]) ST.mis[today] = {};
   ST.mis[today][id] = 'skip';
@@ -200,53 +188,87 @@ function deleteProposito(propId) {
 }
 
 
-// ---- SWIPE HANDLERS para tarjetas de misiones ----
+// ---- SWIPE HANDLERS estilo Tinder ----
 
 function attachSwipeHandlers() {
+  const THRESHOLD = 80;
+
   document.querySelectorAll('.mc-wrap').forEach(card => {
     if (card._swipeAttached) return;
     card._swipeAttached = true;
 
-    let startX = 0, currentX = 0, dragging = false;
-    const front = card.querySelector('.mc-front');
+    const front       = card.querySelector('.mc-front');
     if (!front) return;
-    const THRESHOLD = 80;
+    const overlayDone = card.querySelector('.mc-overlay--done');
+    const overlaySkip = card.querySelector('.mc-overlay--skip');
+
+    let startX = 0, startY = 0, currentX = 0, dirLocked = false, isHoriz = false;
 
     card.addEventListener('touchstart', e => {
-      startX   = e.touches[0].clientX;
-      currentX = 0;
-      dragging = true;
+      startX    = e.touches[0].clientX;
+      startY    = e.touches[0].clientY;
+      currentX  = 0;
+      dirLocked = false;
+      isHoriz   = false;
       front.style.transition = 'none';
+      front.style.opacity    = '1';
+      if (overlayDone) { overlayDone.style.transition = 'none'; overlayDone.style.opacity = '0'; }
+      if (overlaySkip) { overlaySkip.style.transition = 'none'; overlaySkip.style.opacity = '0'; }
     }, { passive: true });
 
     card.addEventListener('touchmove', e => {
-      if (!dragging) return;
-      currentX = e.touches[0].clientX - startX;
-      front.style.transform = `translateX(${currentX}px)`;
-    }, { passive: true });
+      const dx = e.touches[0].clientX - startX;
+      const dy = e.touches[0].clientY - startY;
+
+      if (!dirLocked && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+        dirLocked = true;
+        isHoriz   = Math.abs(dx) > Math.abs(dy);
+      }
+      if (!isHoriz) return;
+
+      e.preventDefault();
+      currentX = dx;
+      front.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.04}deg)`;
+
+      if (currentX > 0) {
+        if (overlayDone) overlayDone.style.opacity = Math.min(currentX / THRESHOLD, 1);
+        if (overlaySkip) overlaySkip.style.opacity = '0';
+      } else {
+        if (overlaySkip) overlaySkip.style.opacity = Math.min(-currentX / THRESHOLD, 1);
+        if (overlayDone) overlayDone.style.opacity = '0';
+      }
+    }, { passive: false });
 
     card.addEventListener('touchend', () => {
-      if (!dragging) return;
-      dragging = false;
-      front.style.transition = 'transform .28s cubic-bezier(.22,.68,0,1.2)';
+      if (!isHoriz) { currentX = 0; return; }
+
+      const id    = card.dataset.id;
+      const xp    = parseInt(card.dataset.xp, 10)    || 0;
+      const coins = parseInt(card.dataset.coins, 10)  || 0;
+      let cats = [];
+      try { cats = JSON.parse(card.dataset.cats || '[]'); } catch(e) {}
+
+      const trans = 'transform .3s ease, opacity .3s ease';
+      front.style.transition = trans;
+      if (overlayDone) overlayDone.style.transition = 'opacity .3s ease';
+      if (overlaySkip) overlaySkip.style.transition = 'opacity .3s ease';
 
       if (currentX > THRESHOLD) {
-        front.style.transform = `translateX(130px)`;
+        front.style.transform = 'translateX(420px) rotate(15deg)';
+        front.style.opacity   = '0';
+        if (overlayDone) overlayDone.style.opacity = '1';
+        setTimeout(() => misionHechoById(id, xp, cats, coins), 310);
       } else if (currentX < -THRESHOLD) {
-        front.style.transform = `translateX(-130px)`;
+        front.style.transform = 'translateX(-420px) rotate(-15deg)';
+        front.style.opacity   = '0';
+        if (overlaySkip) overlaySkip.style.opacity = '1';
+        setTimeout(() => misionSaltarById(id), 310);
       } else {
-        front.style.transform = 'translateX(0)';
+        front.style.transform = 'translateX(0) rotate(0)';
+        if (overlayDone) overlayDone.style.opacity = '0';
+        if (overlaySkip) overlaySkip.style.opacity = '0';
       }
       currentX = 0;
-    });
-
-    // Tap sobre el frente cierra el panel si estaba abierto
-    front.addEventListener('click', () => {
-      const tr = front.style.transform;
-      if (tr && tr !== 'translateX(0px)' && tr !== '') {
-        front.style.transition = 'transform .28s cubic-bezier(.22,.68,0,1.2)';
-        front.style.transform  = 'translateX(0)';
-      }
     });
   });
 }

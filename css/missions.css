@@ -44,90 +44,48 @@
 /* ---- SWIPE CARD WRAPPER ---- */
 .mc-wrap {
   position: relative;
-  height: 82px;
-  margin: 6px 0;
-  border-radius: 14px;
-  overflow: hidden;
+  height: 68px;
+  margin: 4px -14px;
+  border-radius: 0;
+  overflow: visible;
   touch-action: pan-y;
   user-select: none;
 }
 
-/* ---- PANEL IZQUIERDO: Hecho / Saltar (revelado al swipe derecha) ---- */
-.mc-panel-left {
+/* ---- OVERLAYS TINDER (feedback visual de swipe) ---- */
+.mc-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 0 20px;
-  gap: 12px;
-  background: linear-gradient(90deg, #002210 0%, #001808 100%);
-}
-
-/* ---- PANEL DERECHO: Info XP / Cats (revelado al swipe izquierda) ---- */
-.mc-panel-right {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
   justify-content: center;
-  padding: 0 20px;
-  gap: 4px;
-  background: linear-gradient(270deg, #001230 0%, #000820 100%);
-}
-.mc-info-xp {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--c1);
-  text-shadow: 0 0 8px var(--c1);
-}
-.mc-info-coins {
-  font-size: 12px;
-  color: #ffd700;
-}
-.mc-info-cat {
-  font-size: 10px;
-  color: rgba(255,255,255,.55);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
 }
 
-/* ---- BOTONES ACCIÓN ---- */
-.mc-btn-done {
-  background: #004422;
+.mc-overlay--done {
+  background: rgba(0, 210, 80, .38);
   color: #00ff88;
-  border: 1px solid #00ff8844;
-  border-radius: 10px;
-  padding: 10px 18px;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  font-family: inherit;
-  box-shadow: 0 0 12px #00ff4422;
-  transition: background .1s;
-  -webkit-tap-highlight-color: transparent;
 }
-.mc-btn-done:active { background: #006633; }
 
-.mc-btn-skip {
-  background: #3a0808;
-  color: #ff6644;
-  border: 1px solid #ff664422;
-  border-radius: 10px;
-  padding: 10px 18px;
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background .1s;
-  -webkit-tap-highlight-color: transparent;
+.mc-overlay--skip {
+  background: rgba(220, 35, 35, .38);
+  color: #ff5555;
 }
-.mc-btn-skip:active { background: #5a1010; }
+
+.mc-swipe-icon {
+  width: 44px;
+  height: 44px;
+  stroke: currentColor;
+  filter: drop-shadow(0 0 6px currentColor);
+}
 
 /* ---- FRENTE DE LA TARJETA ---- */
 .mc-front {
   position: absolute;
   inset: 0;
-  border-radius: 14px;
+  border-radius: 0;
   overflow: hidden;
   will-change: transform;
   transition: transform .25s cubic-bezier(.22,.68,0,1.2);
@@ -145,33 +103,36 @@
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, rgba(0,0,0,.1) 0%, rgba(0,0,0,.5) 100%);
-  border: 1px solid rgba(255,255,255,.07);
-  border-radius: 14px;
+  border: none;
+  border-radius: 0;
 }
 
 .mc-body {
   position: relative;
   z-index: 1;
-  padding: 14px 16px;
+  padding: 10px 18px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100%;
-  gap: 3px;
+  gap: 2px;
 }
 
 .mc-name {
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 500;
   color: #fff;
-  text-shadow: 0 2px 8px rgba(0,0,0,.8);
+  text-shadow: 0 1px 6px rgba(0,0,0,.9);
   line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
 }
 
 .mc-desc {
-  font-size: 10px;
-  color: rgba(255,255,255,.6);
+  font-size: 9px;
+  color: rgba(255,255,255,.5);
   line-height: 1.3;
+  letter-spacing: .3px;
 }
 
 .mc-cats-preview {
@@ -183,9 +144,13 @@
 
 .mc-star-tag {
   font-size: 9px;
-  color: rgba(255,255,255,.7);
-  letter-spacing: 1px;
+  color: rgba(255,255,255,.65);
+  letter-spacing: .5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
 }
+.mc-star-tag .ti { font-size: 10px; }
 
 /* ---- MISIÓN PROPÓSITO — variante especial ---- */
 .mc-wrap[data-id^="pu_"] .mc-front {
@@ -293,4 +258,51 @@
   font-size: 11px; padding: 6px 14px; background: var(--bg3);
   border: 1px solid var(--c5); border-radius: 8px; cursor: pointer;
   color: var(--c5); font-family: inherit; margin-top: 8px;
+}
+
+/* ---- MINI SEMANA (reemplaza barra XP) ---- */
+.m-mini-week {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 4px 0 14px;
+}
+
+.mw-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.mw-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: rgba(255,255,255,.35);
+  text-transform: uppercase;
+}
+
+.mw-today .mw-lbl {
+  color: rgba(255,255,255,.75);
+}
+
+.mw-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .15s;
+}
+
+.mw-today .mw-dot {
+  transform: scale(1.1);
+}
+
+.mw-num {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
 }

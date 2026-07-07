@@ -65,15 +65,8 @@
       <div id="mDias90" class="missions-days90">0/90 días</div>
     </div>
 
-    <!-- XP del día -->
-    <div class="card" style="margin-bottom:12px">
-      <div class="slbl">XP Hoy</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
-        <div class="sval" id="mXPHoy">0</div>
-        <div class="ssub">de 109 posibles</div>
-      </div>
-      <div class="xbw"><div class="xb xb-c" id="mBXPHoy" style="width:0%"></div></div>
-    </div>
+    <!-- Mini calendario semanal — últimos 7 días -->
+    <div id="mMiniWeek" class="m-mini-week"></div>
 
     <!-- Tabs: To-dos / Hecho / Saltar -->
     <div class="m-tabs">
@@ -81,10 +74,10 @@
         To-dos <span class="m-tab-count" id="mTabTodosCount">0</span>
       </button>
       <button class="m-tab" onclick="switchMisionTab('done',this)">
-        Hecho <span class="m-tab-count" id="mTabDoneCount">0</span>
+        Hechos <span class="m-tab-count" id="mTabDoneCount">0</span>
       </button>
       <button class="m-tab" onclick="switchMisionTab('skip',this)">
-        Saltar <span class="m-tab-count" id="mTabSkipCount">0</span>
+        Saltados <span class="m-tab-count" id="mTabSkipCount">0</span>
       </button>
     </div>
 
@@ -243,9 +236,13 @@
         <img id="avatarImg" src="" alt="Avatar" style="display:none">
       </div>
 
-      <!-- Rank badge top-left: solo ícono, más transparente -->
-      <div class="av-rank-overlay av-rank-overlay--icon" onclick="openRangoSheet()">
+      <!-- Rank badge top-left: símbolo + RANGO + letra en color del rango -->
+      <div class="av-rank-overlay" onclick="openRangoSheet()">
         <div class="av-rank-badge" id="avRankBadge"></div>
+        <div class="av-rank-info">
+          <span class="av-rank-lbl">RANGO</span>
+          <span class="av-rank-letter-ext" id="avRankLetter">E</span>
+        </div>
       </div>
 
       <!-- X/90 contador top-right -->

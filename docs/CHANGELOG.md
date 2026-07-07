@@ -2,6 +2,25 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-06 — sprint 4.1 Fixes visuales post-prueba en celular
+
+**Versión:** v5.1 Alpha — STATE_VERSION 8 (sin cambio)
+**Archivos:** `css/topbar.css`, `css/missions.css`, `css/statsoverlay.css`, `js/data.js`, `js/render.js`, `js/events.js`, `index.html`
+**Tipo:** Mejoras visuales y UX basadas en prueba real en dispositivo móvil
+
+### 8 fixes implementados
+
+1. **Logo más grande:** `height: 36px` → `52px` en `css/topbar.css`.
+2. **Labels de tabs:** "Hecho" → "Hechos", "Saltar" → "Saltados" en `index.html`.
+3. **Mini calendario semanal:** Reemplaza la barra XP del día. Muestra los últimos 7 días con puntos de color por estado (verde=completado, rojo=fallido, naranja=parcial, borde blanco=hoy). Implementado en `renderMiniWeek()` + CSS `.mw-*`.
+4. **Swipe Tinder:** Sistema de paneles eliminado. Ahora: swipe derecha → overlay verde + checkmark SVG crece con el arrastre; swipe izquierda → overlay rojo + X. Al superar threshold (80px) la tarjeta vuela fuera de pantalla y ejecuta la acción. `attachSwipeHandlers` reescrito con `touchmove { passive: false }` para detectar dirección y usar `e.preventDefault()` solo en swipes horizontales.
+5. **Tipografía misiones:** `.mc-name` → `font-weight: 500`, `text-transform: uppercase`, `letter-spacing: 1.5px`, `font-size: 12px`. Sin negrilla, estilizado y elegante.
+6. **Tarjetas full-bleed:** Altura reducida de 82px a 68px. Ancho extendido con `margin: 4px -14px` para ir de borde a borde (compensa el padding `14px` del `.content`).
+7. **Sin emojis — iconos Tabler:** `CATEGORIES` en `data.js` incluye ahora `iconClass` (Tabler) y `radarLabel` (texto corto 3 letras). En HTML se usa `<i class="ti ti-*">`, en radar SVG se usan labels de texto (CUE/MEN/PRE/ENF/VIN).
+8. **Badge de rango rediseñado:** La letra ya no se superpone al símbolo SVG. Nuevo layout: `[SVG badge] [RANGO label + letra en color del rango]`. `renderStats()` actualiza `#avRankLetter` con color dinámico del rango.
+
+---
+
 ## 2026-07-06 — sprint 4.0 Refactorización Mayor: Misiones + Stats + Atributos
 
 **Versión:** v5.0 Alpha — STATE_VERSION 8

@@ -170,11 +170,11 @@ const MISIONES = [
 
 // Categorías principales: agrupan atributos para el radar y la vista de stats
 const CATEGORIES = [
-  { id:'cuerpo',    name:'Cuerpo',    icon:'⚔',  attrs:['fuerza','agilidad','vitalidad'] },
-  { id:'mente',     name:'Mente',     icon:'🧠', attrs:['intelecto'] },
-  { id:'presencia', name:'Presencia', icon:'🧘', attrs:['claridad','serenidad'] },
-  { id:'enfoque',   name:'Enfoque',   icon:'🎯', attrs:['disciplina'] },
-  { id:'vinculo',   name:'Vínculo',   icon:'🤝', attrs:['confianza','conexion'] },
+  { id:'cuerpo',    name:'Cuerpo',    icon:'⚔',  iconClass:'ti-barbell',   radarLabel:'CUE', attrs:['fuerza','agilidad','vitalidad'] },
+  { id:'mente',     name:'Mente',     icon:'🧠', iconClass:'ti-brain',     radarLabel:'MEN', attrs:['intelecto'] },
+  { id:'presencia', name:'Presencia', icon:'🧘', iconClass:'ti-leaf',      radarLabel:'PRE', attrs:['claridad','serenidad'] },
+  { id:'enfoque',   name:'Enfoque',   icon:'🎯', iconClass:'ti-crosshair', radarLabel:'ENF', attrs:['disciplina'] },
+  { id:'vinculo',   name:'Vínculo',   icon:'🤝', iconClass:'ti-link',      radarLabel:'VIN', attrs:['confianza','conexion'] },
 ];
 
 // Metadatos de atributos: color + etiqueta display
