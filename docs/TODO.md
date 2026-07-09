@@ -21,7 +21,8 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
   - STATE_VERSION 7→8 con migración automática.
 - [x] **Sprint 4.1 — Fixes post-prueba en celular:** logo más grande, tabs renombrados (Hechos/Saltados), mini calendario semanal, swipe Tinder con overlays verde/rojo, tipografía misiones uppercase medium, tarjetas full-bleed más cortas, iconos Tabler en lugar de emojis, badge de rango rediseñado (SVG + RANGO + letra en color).
 - [x] **Sprint 4.2 — Correcciones post-prueba #2:** sin rotación en swipe (no deformación), Hechos/Saltados tap→confirmar devolver, radar escala absoluta (TARGET=15), `empatia` añadido a Vínculo (STATE_VERSION 9), badge de rango más pequeño.
-- [ ] **Imágenes para tarjetas de misiones:** asignar fondos anime/estilo Solo Leveling a cada una de las 20 misiones. La estructura de `background-image` en `.mc-bg` ya está preparada.
+- [x] **Sprint 4.3 — Post-prueba en celular #3:** bug X/90 días corregido (`=== true` → `=== 'done'`), logo con aura pulsante color-rango, tab Stats → Progreso, categorías de atributos colapsables, Tienda movida a overlay en Progreso, badges racha/freq/dif en misiones + títulos más grandes, imágenes de fondo en tarjetas m01–m10.
+- [ ] **Imágenes para tarjetas m11–m20:** las misiones opcionales aún usan gradiente de color. Añadir imágenes cuando estén disponibles.
 - [ ] **Avatares de progresión:** generar y asignar imágenes distintas para cada uno de los 6 rangos. Propiedad `avatar` ya preparada en `RANGOS`.
 - [ ] **Sistema de rangos fase 2:** definir lógica de avance de rango (cómo y cuándo sube `ST.rank`). Pendiente de diseño y aprobación antes de implementar.
 - [ ] **Ruta de Propósito:** conectar `ST.propositos[]` al módulo de roadmap (Ruta de Propósito collapsible). Preparar estructura de hitos/progreso visual.
@@ -46,3 +47,4 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
 - [x] `buildSecretCard()` — ya no aplica. La Misión Secreta Semanal fue eliminada completamente en el sprint 2.6. El bug desapareció junto con la feature.
 - [x] Misiones no se reseteaban al día siguiente (sprint 2.7). Causa dual: (1) `DateUtils.today()` usaba `toISOString()` (UTC) en lugar de fecha local; (2) colisión de IDs de misión entre sprints. Ambos corregidos.
 - [x] Atributos stats de misiones no se sumaban correctamente. Causa: `applyMissionToggle` recibía un string en lugar de array. Corregido al pasar `statsStr.split(',')` en `events.js`.
+- [x] `calcDias90()` siempre retornaba 0 (sprint 4.3). Causa: filtro `v === true` cuando el estado se almacena como el string `'done'`. Corregido a `v === 'done'`.

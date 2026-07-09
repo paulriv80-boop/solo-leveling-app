@@ -4,6 +4,40 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-08 — Sprint 4.3: Tienda en Progreso, categorías colapsables, badges de misión
+
+**Decisión 1 — Mover Tienda de Menú a Progreso.**
+La Tienda estaba en el tab Menú, lejos del contexto de progreso del usuario. El usuario quería verla cerca del avatar y los atributos.
+
+**Alternativas consideradas:**
+1. **Mantenerla en Menú con un enlace desde Progreso.** Añade navegación extra sin reducir fricción real.
+2. **Tab propio "Tienda".** La app ya tiene 5 tabs; añadir uno rompería el balance.
+3. **Overlay slide-up encima del botón Trofeo en Progreso.** **Elegida.**
+
+**Solución:** Botón `.av-shop-btn` (ícono moneda) posicionado absoluto a `top: calc(50% - 60px)` encima del `.av-trophy-btn` (que usa `top: 50%`). Overlay `#tiendaOverlay` con la misma estructura `attrs-overlay` de los demás overlays (Atributos, Rangos, Alter Egos, Trofeos). `renderTiendaOverlay()` escribe a `#tiendaListOv` y `#tiendaCoinsOv`. `renderMenu()` ya no llama a `renderTienda()`. Los elementos `#shopList` y `#shopC` se eliminaron del HTML de Menú; `renderTienda()` queda en `render.js` como función inerte (no rompe nada, sus targets simplemente no existen).
+
+---
+
+**Decisión 2 — Categorías colapsables (cerradas por defecto) vs. abiertas por defecto.**
+
+**Alternativas consideradas:**
+1. **Abiertas por defecto:** el usuario ve todo de inmediato pero la lista es muy larga en una pantalla pequeña.
+2. **Colapsadas por defecto:** requiere un tap extra para ver atributos, pero la vista general de 5 categorías con su puntaje es la lectura más útil a primera vista. **Elegida.**
+
+**Solución:** `.ao-cat-body { display: none }` / `.ao-cat-block.open .ao-cat-body { display: block }`. El chevron rota 180° con `transition: transform .2s`. Sin animación de altura para mantener el código simple (no se necesita `max-height` porque el overlay ya tiene scroll).
+
+---
+
+**Decisión 3 — Dificultad como campo estático vs. dinámica.**
+El usuario quiere que la dificultad (`m.dif`, 1–5) sea estática ahora y se vuelva dinámica en el futuro al subir de rango. Se implementa como campo de datos en `MISIONES` y se renderiza como barras decorativas. Sin lógica de escalado por rango todavía — pendiente de diseño en fase futura.
+
+---
+
+**Nota — Bug `calcDias90` corregido.**
+La implementación original del decisión de sprint 3.0 (ver más abajo) tenía un error en el filtro: `v === true` cuando el valor real almacenado es `'done'` (string). Documentado en el CHANGELOG de sprint 4.3. La lógica de diseño sigue siendo la misma; solo el predicado era incorrecto.
+
+---
+
 ## 2026-07-06 — Sprint 4.2: Radar absoluto, empatia, swipe sin rotación, devolver desde Hechos/Saltados
 
 **Problema 1 — Radar se llenaba tras un solo día de misiones.**

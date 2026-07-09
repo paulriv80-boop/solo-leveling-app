@@ -2,6 +2,29 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-08 — sprint 4.3 Post-prueba en celular #3
+
+**Versión:** v5.3 Alpha — STATE_VERSION 9 (sin cambio)
+**Archivos:** `js/utils.js`, `js/render.js`, `js/events.js`, `js/data.js`, `css/topbar.css`, `css/missions.css`, `css/statsoverlay.css`, `index.html`, `assets/Avatar_Rango_E_*.png`
+**Tipo:** Bug fix + mejoras visuales y UX basadas en prueba real en dispositivo móvil
+
+### 7 cambios implementados
+
+1. **Bug X/90 días:** `calcDias90()` filtraba `v === true` (booleano) cuando el estado se almacena como `'done'` (string). El contador siempre retornaba 0. Corregido: `v === 'done'`. Nueva función auxiliar `misionStreak(id)` añadida a `utils.js` para racha individual por misión.
+2. **Aura pulsante en logo Presence:** Animación `logoGlow` añadida a `.logo-img` (topbar) y `.boot-logo-img` (pantalla de arranque). El color del aura (`--rank-color` custom property) se actualiza al color del rango actual en `renderStats()` vía `querySelectorAll`.
+3. **Tab "Stats" → "Progreso":** Solo el label en la barra inferior. IDs de DOM, funciones internas y CSS sin cambio.
+4. **Categorías colapsables en overlay Atributos:** Cada `ao-cat-block` es clicable con `onclick="toggleCatBlock(this)"`. Atributos envueltos en `.ao-cat-body` (oculto por defecto). Chevron con `transform: rotate(180deg)` en `.ao-cat-block.open`. `toggleCatBlock(blk)` en `events.js`.
+5. **Tienda movida a Progreso:** Botón `.av-shop-btn` (ícono moneda, encima del trofeo) en el tab Progreso. Overlay `#tiendaOverlay` con estructura idéntica a los demás overlays. `renderTiendaOverlay()` en `render.js`. `openTiendaOverlay()` / `closeTiendaOverlay()` en `events.js`. Tienda eliminada del tab Menú. `renderMenu()` ya no llama a `renderTienda()`.
+6. **Badges en tarjetas de misión:** Racha individual (`misionStreak(id)`, solo si >0), frecuencia (`m.freq`) y dificultad (`m.dif`, barras 1–5). Nuevos campos `freq` y `dif` en los 20 objetos de `MISIONES`. Tipografía: `.mc-name` 12px→15px, `.mc-desc` 9px→10px. Altura: `.mc-wrap` 140px→170px.
+7. **Imágenes de fondo en tarjetas m01–m10:** Campo `img` en misiones m01–m10. `.mc-bg` usa `background-image: url(...)` con `cover`/`center top`. `data-has-img` en el wrapper activa overlay oscuro más pronunciado (`.mc-wrap[data-has-img] .mc-front::after`) para legibilidad. m11–m20 y propósitos conservan gradiente de color.
+
+### Assets
+- **Añadidas (nuevas):** `Avatar_Rango_E_meditacion.png`, `Avatar_Rango_E_oracion_y_gratitud.png`, `Avatar_Rango_E_levantar_pesas.png`, `Avatar_Rango_E_hidratacion.png`, `Avatar_Rango_E_nutricion.png`, `Avatar_Rango_E_Dormir_7_o_8_H.png`, `Avatar_Rango_E_Afirmaciones.png`, `Avatar_Rango_E_lectura.png`, `Avatar_Rango_E_journal.png`.
+- **Reemplazada:** `Avatar_Rango_E_correr.png` (nueva versión de mayor calidad).
+- **Eliminadas (obsoletas):** `Avatar_Rango_E_descanso.png`, `Avatar_Rango_E_flexiones.png`, `Avatar_Rango_E_meditar.png`, `avatar.png`.
+
+---
+
 ## 2026-07-06 — sprint 4.2 Correcciones post-prueba #2
 
 **Versión:** v5.2 Alpha — STATE_VERSION 9

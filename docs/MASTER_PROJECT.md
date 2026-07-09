@@ -3,7 +3,7 @@
 ## 1. Estado general
 
 - **Nombre de la app:** **Presence** (anteriormente "THE SYSTEM").
-- **Versión visible (UI):** v5.2 Alpha.
+- **Versión visible (UI):** v5.3 Alpha.
 - **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 9` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
@@ -66,11 +66,11 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 | Tab | Descripción |
 |---|---|
-| **Misiones** (home) | Header con fecha + X/90 días; mini calendario 7 días; 3 tabs (To-dos / Hechos / Saltados); tab To-dos: tarjetas swipe Tinder (derecha=hecho, izquierda=saltar, overlays verde/rojo); tabs Hechos/Saltados: tap → overlay in-card "Devolver / ✕"; panel misiones opcionales (+); botón Agregar Propósito; collapsibles: Calendario, Zona Oscura, Ruta de Propósito |
-| **Stats** | Avatar full-screen; badge rango (letra); X/90 top-right; trofeo middle-right; overlay Atributos: radar pentagonal (5 categorías) + barras luminosas 5-segmentos por atributo; overlay Alter Egos; overlay Rangos |
+| **Misiones** (home) | Header con fecha + X/90 días; mini calendario 7 días; 3 tabs (To-dos / Hechos / Saltados); tab To-dos: tarjetas swipe Tinder (derecha=hecho, izquierda=saltar, overlays verde/rojo) con imagen de fondo por misión, badges de racha/frecuencia/dificultad; tabs Hechos/Saltados: tap → overlay in-card "Devolver / ✕"; panel misiones opcionales (+); botón Agregar Propósito; collapsibles: Calendario, Zona Oscura, Ruta de Propósito |
+| **Progreso** (antes Stats) | Avatar full-screen con aura pulsante logo Presence; badge rango; X/90 top-right; botón Tienda + botón Trofeo (derecha); overlay Tienda: canje de monedas de sombra; overlay Atributos: radar pentagonal (5 categorías, colapsables) + barras luminosas; overlay Alter Egos; overlay Rangos |
 | **Comunidad** | Placeholder — arquitectura para rankings, eventos globales y desafíos cooperativos (futuro) |
 | **Tools** | Grid de herramientas Coming Soon: IA Mentor (destacado), Pomodoro, Respiración, Workout, Diario, Visualización, Temporizador, Meditación |
-| **Menú** | Tienda (canje de monedas de sombra) + Alter Egos + Títulos placeholder + Reset |
+| **Menú** | Alter Egos + Títulos placeholder + Reset |
 
 ## 5. Sistema de progresión (resumen)
 
@@ -79,7 +79,7 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 - **Rango (`ST.rank`):** índice 0–5 en `RANGOS`. La lógica de avance (cuándo sube) está pendiente de diseño en fase 2. El rango se muestra en Inicio como card acordeón con ícono SVG del rango actual.
 - **10 atributos** (`ST.stats`): Fuerza, Agilidad, Vitalidad, Serenidad, Confianza, Intelecto, Claridad, Conexión, Disciplina, Empatía. Organizados en 5 categorías (`CATEGORIES` en `data.js`): Cuerpo (3) / Mente (1) / Presencia (2) / Enfoque (1) / Vínculo (3).
 - **Lógica de barras:** `attr_value % 5` = barras llenas del atributo (ciclos de 5). Puntaje de categoría = `sum(floor(attr/5))` para attrs en esa categoría.
-- **20 misiones fijas** (`MISIONES` array en `data.js`): m01–m10 visibles, m11–m20 opcionales. Propiedad `cats:[{cat, stars}]` (visual + mapeo de atributos).
+- **20 misiones fijas** (`MISIONES` array en `data.js`): m01–m10 visibles (con imagen de fondo), m11–m20 opcionales. Propiedades: `cats:[{cat, stars}]` (visual + mapeo de atributos), `freq` (string: 'Diario'/'3x/sem'/etc.), `dif` (1–5, estático), `img` (ruta asset, solo m01–m10).
 - **Sistema Propósito:** `ST.propositos[]` = array de objetos `{id, name, desc, objetivo, frecuencia, progreso, created}`. Cada propósito genera una tarjeta swipe diaria con XP=25.
 - **Estado de misión:** `ST.mis[fecha][id]` = `'done'` | `'skip'` | `undefined`.
 - **Monedas (`ST.coins`):** máx. 26c/día según misiones completadas. Se gastan en la Tienda.
@@ -94,8 +94,10 @@ Todas las descritas en la sección 4, con persistencia completa en `localStorage
 ```js
 // Cada misión:
 { id: 'm03', name: 'Levantar Pesas', desc: 'Mínimo 45 minutos', xp: 20, coins: 2, hidden: false,
+  freq: '3x/sem', dif: 4, img: 'assets/Avatar_Rango_E_levantar_pesas.png',
   cats: [{ cat: 'cuerpo', stars: 3 }, { cat: 'enfoque', stars: 2 }] }
-// 20 misiones — m01–m10 default, m11–m20 opcionales — XP diario máximo: 109
+// 20 misiones — m01–m10 default (con img), m11–m20 opcionales — XP diario máximo: 109
+// freq: string de frecuencia display  |  dif: 1–5 (estático, escalará con rango en el futuro)
 ```
 
 **Migraciones de estado:**
@@ -109,6 +111,8 @@ Todas las descritas en la sección 4, con persistencia completa en `localStorage
 | v6→v7 | `rankH → rank`, elimina `starsH`, `rankT`, `starsT`, `dc` |
 | v7→v8 | `energia→vitalidad`, `conocimiento→intelecto`, `espiritualidad→conexion`; `propositos[]`; `activeMissions[]`; limpia `ST.mis` |
 | v8→v9 | Añade `empatia: 0` a `ST.stats` (3er atributo de Vínculo) |
+
+> **Sprint 4.3 (sin cambio de STATE_VERSION):** bug `calcDias90` corregido, logo con aura pulsante color-rango, tab Progreso, categorías colapsables, Tienda en overlay de Progreso, badges racha/freq/dif en misiones, imágenes de fondo m01–m10.
 
 ## 7. Funcionalidades pendientes (roadmap)
 
