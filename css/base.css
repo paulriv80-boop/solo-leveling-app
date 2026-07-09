@@ -1,5 +1,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { overflow-x: hidden; }
+
 body {
   font-family: system-ui, -apple-system, sans-serif;
   background: var(--bg0);

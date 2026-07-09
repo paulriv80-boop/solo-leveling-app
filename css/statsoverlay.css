@@ -34,45 +34,27 @@
   display: none;
 }
 
-/* ---- RANK OVERLAY (top of avatar) ---- */
+/* ---- RANK BUTTON — compacto, derecha arriba de Tienda ---- */
 
-.av-rank-overlay {
+.av-rank-btn {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  right: 16px;
+  top: calc(50% - 134px);
   z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(8,16,24,.72);
+  width: 44px; height: 44px;
+  background: rgba(8,16,24,.45);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.12);
   border-radius: 14px;
-  padding: 7px 10px;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  max-width: 72%;
   -webkit-tap-highlight-color: transparent;
-  transition: border-color .15s;
+  transition: border-color .15s, background .15s;
 }
-.av-rank-overlay:hover { border-color: rgba(0,245,255,.25); }
+.av-rank-btn:hover { border-color: rgba(0,245,255,.25); background: rgba(8,16,24,.65); }
 
 .av-rank-badge { width: 32px; height: 32px; flex-shrink: 0; }
-
-.av-rank-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--t0);
-  letter-spacing: .5px;
-}
-
-.av-rank-desc {
-  font-size: 10px;
-  color: var(--t2);
-  margin-top: 3px;
-  line-height: 1.4;
-  max-width: 180px;
-}
 
 
 /* ---- BOTTOM OVERLAY (stats + buttons) ---- */
@@ -522,7 +504,7 @@
 .av-shop-btn {
   position: absolute;
   right: 16px;
-  top: calc(50% - 60px);
+  top: calc(50% - 78px);
   z-index: 10;
   width: 44px; height: 44px;
   background: rgba(8,16,24,.45);

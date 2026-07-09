@@ -60,17 +60,6 @@ function renderStats() {
     avBadge.innerHTML    = r.svg;
     avBadge.style.filter = `drop-shadow(0 0 5px ${r.color})`;
   }
-  const avLetterEl = el('avRankLetter');
-  if (avLetterEl) {
-    avLetterEl.textContent      = r.letter;
-    avLetterEl.style.color      = r.color;
-    avLetterEl.style.textShadow = `0 0 8px ${r.color}`;
-  }
-
-  // Glow del logo según rango
-  document.querySelectorAll('.logo-img, .boot-logo-img').forEach(img => {
-    img.style.setProperty('--rank-color', r.color);
-  });
 
   // X/90 contador
   const d90 = calcDias90();

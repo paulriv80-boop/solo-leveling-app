@@ -12,7 +12,7 @@
 <body>
 
 <div id="bootScreen" class="boot-screen">
-  <img src="assets/design-system/logo/trasparente.png" alt="Presence" class="boot-logo-img">
+  <img src="assets/design-system/logo/final/logo.png" alt="Presence" class="boot-logo-img">
   <div class="boot-operator">BIENVENIDO, GUERRERO</div>
 </div>
 
@@ -20,7 +20,7 @@
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <img src="assets/design-system/logo/trasparente.png" alt="Presence" class="logo-img">
+    <img src="assets/design-system/logo/final/solo_icon.png" alt="Presence" class="logo-img">
   </div>
   <div class="system-status">
     <span class="status-dot"></span>
@@ -58,6 +58,11 @@
 
   <!-- ===== TAB 1: MISIONES (home) ===== -->
   <div class="sec on" id="sec-misiones">
+
+    <!-- Logo Presence en home de misiones -->
+    <div class="missions-logo-row">
+      <img src="assets/design-system/logo/final/solo_icon.png" alt="Presence" class="logo-img">
+    </div>
 
     <!-- Header: fecha + contador 90 días -->
     <div class="missions-header">
@@ -236,14 +241,10 @@
         <img id="avatarImg" src="" alt="Avatar" style="display:none">
       </div>
 
-      <!-- Rank badge top-left: símbolo + RANGO + letra en color del rango -->
-      <div class="av-rank-overlay" onclick="openRangoSheet()">
+      <!-- Rank button — compacto, derecha encima de Tienda -->
+      <button class="av-rank-btn" onclick="openRangoSheet()" aria-label="Rango">
         <div class="av-rank-badge" id="avRankBadge"></div>
-        <div class="av-rank-info">
-          <span class="av-rank-lbl">RANGO</span>
-          <span class="av-rank-letter-ext" id="avRankLetter">E</span>
-        </div>
-      </div>
+      </button>
 
       <!-- X/90 contador top-right -->
       <div class="av-x90" id="avX90">0/90</div>

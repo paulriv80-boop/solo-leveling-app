@@ -23,20 +23,22 @@
 .logo-img {
   height: 52px;
   width: auto;
-  mix-blend-mode: screen;
   display: block;
-  --rank-color: #c8956a;
-  animation: logoGlow 2.5s ease-in-out infinite;
+  filter: brightness(0.75) contrast(1.1)
+    drop-shadow(1px 1px 0px rgba(255,255,255,0.10))
+    drop-shadow(-1px -1px 2px rgba(0,0,0,0.85));
 }
 
 .boot-logo-img {
-  --rank-color: #c8956a;
-  animation: logoGlow 2.5s ease-in-out infinite;
+  filter: brightness(0.75) contrast(1.1)
+    drop-shadow(1px 1px 0px rgba(255,255,255,0.10))
+    drop-shadow(-1px -1px 2px rgba(0,0,0,0.85));
 }
 
-@keyframes logoGlow {
-  0%, 100% { filter: drop-shadow(0 0 4px var(--rank-color)) drop-shadow(0 0 12px var(--rank-color)); }
-  50%       { filter: drop-shadow(0 0 10px var(--rank-color)) drop-shadow(0 0 28px var(--rank-color)); }
+.missions-logo-row {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 4px;
 }
 
 .system-status {
