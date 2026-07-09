@@ -4,6 +4,53 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-09 — Sprint 4.4: Botón rango compacto, swipe sin deformación, logo piedra
+
+**Decisión 1 — Botón Rango: compacto en columna derecha vs. overlay con texto siempre visible.**
+
+El `.av-rank-overlay` (div clicable, top-left del avatar, 3 elementos: badge SVG + "RANGO" label + letra con color del rango) consumía mucho espacio visual y estaba en la esquina opuesta a los demás controles flotantes (Tienda, Trofeo), fragmentando la UI.
+
+**Alternativas consideradas:**
+1. **Mantener en top-left pero colapsar con toggle:** Añade estado extra (expandido/colapsado) y un tap antes de llegar al overlay de info completa. Dos fuentes de verdad para el mismo dato.
+2. **Mover a top-right con texto visible.** Chocaría con el contador X/90 que está ahí.
+3. **Compacto 44×44px en la columna de botones derecha, sin texto externo, mismo onclick que antes.** **Elegida.**
+
+**Solución:** `button.av-rank-btn` con solo el `.av-rank-badge` (SVG del rango) dentro. El badge ya contiene visualmente el símbolo y el color del rango — la letra "RANGO" y el text-label externos eran redundantes. Tap sigue abriendo el mismo `rangoOverlay` completo.
+
+---
+
+**Decisión 2 — Fix swipe: `html { overflow-x: hidden }` vs. cambiar la animación de salida.**
+
+La animación `translateX(420px)` en el touchend causaba que el viewport de iOS Safari se expandiera brevemente, creando un efecto de "zoom out" o "pantalla que se aleja" incluso con `body { overflow-x: hidden }`.
+
+**Causa raíz:** En iOS Safari, `body` NO es el scroll container del viewport. El elemento `html` lo es. Si solo `body` tiene `overflow-x: hidden`, el contenido desbordado puede provocar que el viewport se estire momentáneamente.
+
+**Alternativas consideradas:**
+1. **Cambiar la animación de salida a solo `opacity: 0`** (sin `translateX`). Elimina el overflow, pero pierde el feedback visual de la tarjeta "volando" fuera de pantalla.
+2. **Añadir `overflow: hidden` al contenedor de misiones `#mListaMisiones` vía JS durante el swipe.** Funciona pero añade lógica de gestión de estado en eventos, frágil.
+3. **Añadir `html { overflow-x: hidden }` en `base.css`.** **Elegida.** Una línea, no toca la animación, afecta el viewport real en iOS.
+
+---
+
+**Decisión 3 — Efecto de logo: relieve hundido estático vs. otras opciones.**
+
+El usuario quería reemplazar el glow pulsante de neón (que cambiaba de color según el rango) por un efecto "rudimentario como piedra tallada, no luminoso".
+
+**Alternativas consideradas:**
+1. **Solo quitar la animación y dejar el filtro estático con `--rank-color`.** Sigue siendo un glow de neón, aunque estático. No cumple el requisito visual.
+2. **`filter: grayscale(1) brightness(0.6)`.** Demasiado plano, pierde los detalles del logo.
+3. **Dos `drop-shadow` opuestos (luz desde arriba-izquierda, sombra hacia abajo-derecha) + `brightness` reducido.** **Elegida.** Simula la física de luz de un bajo-relieve: el filo superior captura la luz, el filo inferior queda en sombra, la superficie es mate (`brightness < 1`).
+
+**CSS resultante:**
+```css
+filter: brightness(0.75) contrast(1.1)
+  drop-shadow(1px 1px 0px rgba(255,255,255,0.10))
+  drop-shadow(-1px -1px 2px rgba(0,0,0,0.85));
+```
+Sin animación, sin `mix-blend-mode: screen`, sin `--rank-color`. Cero JS para el logo.
+
+---
+
 ## 2026-07-08 — Sprint 4.3: Tienda en Progreso, categorías colapsables, badges de misión
 
 **Decisión 1 — Mover Tienda de Menú a Progreso.**

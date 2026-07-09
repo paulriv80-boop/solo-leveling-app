@@ -2,6 +2,22 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-09 — sprint 4.4 Post-prueba en celular #4
+
+**Versión:** v5.4 Alpha — STATE_VERSION 9 (sin cambio)
+**Archivos:** `index.html`, `css/statsoverlay.css`, `css/topbar.css`, `css/base.css`, `js/render.js`, `assets/design-system/logo/final/logo.png` (nuevo), `assets/design-system/logo/final/solo_icon.png` (nuevo), `assets/design-system/logo/logo.png` (eliminado)
+**Tipo:** Fixes UX + rediseño visual basados en prueba real en dispositivo móvil
+
+### 3 cambios implementados
+
+1. **Botón Rango compacto + columna derecha reorganizada:** El `div.av-rank-overlay` (posición absoluta top-left, mostraba badge + "RANGO" + letra siempre visibles) fue reemplazado por `button.av-rank-btn` — compacto 44×44px, columna derecha del avatar. Posición de los 3 botones (de arriba a abajo): Rango (`top:calc(50%-134px)`) → Tienda (`top:calc(50%-78px)`, antes `-60px`) → Trofeo (centro). Espaciado de 12px entre cada uno. Eliminados `avRankLetter` del DOM y su actualización en `render.js`. CSS obsoleto del overlay antiguo (`.av-rank-overlay`, `.av-rank-info`, `.av-rank-lbl`, `.av-rank-letter-ext`, `.av-rank-name`, `.av-rank-desc`) reemplazado por `.av-rank-btn`.
+
+2. **Swipe de misiones sin deformación de pantalla:** Al hacer `translateX(420px)` para la animación de salida de tarjetas, el viewport de iOS Safari se expandía momentáneamente creando el efecto "se aleja". Causa: `body` tenía `overflow-x: hidden` pero `html` no — en iOS Safari el elemento `html` controla el scroll del viewport, no `body`. Fix: añadido `html { overflow-x: hidden }` en `css/base.css`.
+
+3. **Logo rediseñado — estilo piedra + nuevos assets:** Reemplazada la animación `logoGlow` (resplandor de neón en color de rango) por un efecto de relieve hundido estático: `brightness(0.75) contrast(1.1) drop-shadow(1px 1px 0 rgba(255,255,255,.10)) drop-shadow(-1px -1px 2px rgba(0,0,0,.85))`. Eliminados `mix-blend-mode: screen`, `--rank-color` CSS var y su actualización JS desde `renderStats()`. Tres puntos de uso: topbar (`solo_icon.png`), boot screen (`logo.png`), home de misiones (nuevo `.missions-logo-row` con `solo_icon.png`). Assets en `assets/design-system/logo/final/`.
+
+---
+
 ## 2026-07-08 — sprint 4.3 Post-prueba en celular #3
 
 **Versión:** v5.3 Alpha — STATE_VERSION 9 (sin cambio)

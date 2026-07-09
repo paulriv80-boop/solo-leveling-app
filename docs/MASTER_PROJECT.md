@@ -3,7 +3,7 @@
 ## 1. Estado general
 
 - **Nombre de la app:** **Presence** (anteriormente "THE SYSTEM").
-- **Versión visible (UI):** v5.3 Alpha.
+- **Versión visible (UI):** v5.4 Alpha.
 - **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 9` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
@@ -113,6 +113,7 @@ Todas las descritas en la sección 4, con persistencia completa en `localStorage
 | v8→v9 | Añade `empatia: 0` a `ST.stats` (3er atributo de Vínculo) |
 
 > **Sprint 4.3 (sin cambio de STATE_VERSION):** bug `calcDias90` corregido, logo con aura pulsante color-rango, tab Progreso, categorías colapsables, Tienda en overlay de Progreso, badges racha/freq/dif en misiones, imágenes de fondo m01–m10.
+> **Sprint 4.4 (sin cambio de STATE_VERSION):** botón Rango compacto (44×44, columna derecha, encima de Tienda), swipe de misiones sin deformación de viewport (`html { overflow-x: hidden }`), logo con efecto piedra tallada estático (sin animación, sin neón), nuevos assets `final/logo.png` y `final/solo_icon.png`, logo añadido en home de misiones.
 
 ## 7. Funcionalidades pendientes (roadmap)
 
