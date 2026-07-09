@@ -37,7 +37,7 @@
   </button>
   <button class="bnav-item" onclick="nav('stats',this)">
     <i class="ti ti-chart-bar" aria-hidden="true"></i>
-    <span>Stats</span>
+    <span>Progreso</span>
   </button>
   <button class="bnav-item" onclick="nav('comunidad',this)">
     <i class="ti ti-shield" aria-hidden="true"></i>
@@ -248,6 +248,11 @@
       <!-- X/90 contador top-right -->
       <div class="av-x90" id="avX90">0/90</div>
 
+      <!-- Tienda botón encima del trofeo -->
+      <button class="av-shop-btn" onclick="openTiendaOverlay()" aria-label="Tienda">
+        <i class="ti ti-coin" aria-hidden="true"></i>
+      </button>
+
       <!-- Trofeo botón middle-right -->
       <button class="av-trophy-btn" onclick="openTrofeoOverlay()" aria-label="Trofeos">
         <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,184,51,.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -388,20 +393,6 @@
       </div>
     </div>
 
-    <!-- Tienda -->
-    <div class="menu-section-title">Tienda</div>
-    <div class="streak-box">
-      <i class="ti ti-coin" aria-hidden="true" style="font-size:26px;color:var(--c5)"></i>
-      <div>
-        <div class="streak-num" style="color:var(--c5)" id="shopC">0</div>
-        <div class="streak-lbl">monedas de sombra</div>
-      </div>
-    </div>
-    <div class="card card2" style="margin-bottom:16px">
-      <div class="stitle">Recompensas disponibles</div>
-      <div id="shopList"></div>
-    </div>
-
     <!-- Alter Egos -->
     <div class="menu-section-title">Alter Egos</div>
     <div id="alterContent"></div>
@@ -481,6 +472,25 @@
         <div class="trofeo-slot-sub">Próximamente</div>
       </div>
     </div>
+  </div>
+</div>
+
+
+<!-- TIENDA OVERLAY (full-screen) -->
+<div class="attrs-overlay" id="tiendaOverlay">
+  <div class="attrs-overlay-scroll">
+    <div class="attrs-overlay-hdr">
+      <div class="attrs-overlay-title">Tienda</div>
+      <button class="attrs-close-btn" onclick="closeTiendaOverlay()">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="av-meta-chip" style="margin-bottom:16px">
+      <i class="ti ti-coin" aria-hidden="true" style="color:var(--c5)"></i>
+      <span id="tiendaCoinsOv" style="color:var(--c5);font-weight:900;font-size:18px">0</span>
+      <span style="color:var(--t2);font-size:11px">monedas de sombra</span>
+    </div>
+    <div id="tiendaListOv"></div>
   </div>
 </div>
 

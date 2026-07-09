@@ -44,7 +44,7 @@
 /* ---- SWIPE CARD WRAPPER ---- */
 .mc-wrap {
   position: relative;
-  height: 140px;
+  height: 170px;
   margin: 6px 0;
   border-radius: 12px;
   overflow: visible;
@@ -119,7 +119,7 @@
 }
 
 .mc-name {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 500;
   color: #fff;
   text-shadow: 0 1px 6px rgba(0,0,0,.9);
@@ -129,7 +129,7 @@
 }
 
 .mc-desc {
-  font-size: 9px;
+  font-size: 10px;
   color: rgba(255,255,255,.5);
   line-height: 1.3;
   letter-spacing: .3px;
@@ -304,6 +304,31 @@
   transition: background .15s;
 }
 .m-add-prop-btn:active { background: rgba(191,95,255,.15); }
+
+/* ---- BADGES (racha / frecuencia / dificultad) ---- */
+.mc-badges {
+  display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px;
+}
+.mc-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 8px; font-weight: 700; letter-spacing: .3px;
+  background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.14);
+  border-radius: 20px; padding: 3px 7px; color: rgba(255,255,255,.8);
+  text-transform: uppercase;
+}
+.mc-badge .ti { font-size: 10px; }
+.mc-badge--streak { color: #ff8c00; border-color: rgba(255,140,0,.3); }
+.mc-badge--streak .ti { color: #ff6b00; }
+.mc-badge--dif { gap: 5px; }
+.mc-dif-bars { display: flex; gap: 2px; align-items: center; }
+.mc-dif-bar { width: 3px; height: 8px; border-radius: 2px; background: rgba(255,255,255,.18); }
+.mc-dif-bar--on { background: var(--c1); }
+
+/* imagen de fondo — overlay más oscuro para legibilidad */
+.mc-wrap[data-has-img] .mc-front::after {
+  background: linear-gradient(to top, rgba(0,0,0,.75) 0%, rgba(0,0,0,.2) 60%, rgba(0,0,0,.35) 100%);
+}
+
 
 /* ---- BOTÓN GENÉRICO RPG ---- */
 .secret-btn {

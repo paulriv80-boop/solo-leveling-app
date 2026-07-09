@@ -147,7 +147,19 @@ function calcDias90() {
     const d   = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     const dayMis = ST.mis[key];
-    if (dayMis && Object.values(dayMis).filter(v => v === true).length >= 3) count++;
+    if (dayMis && Object.values(dayMis).filter(v => v === 'done').length >= 3) count++;
   }
   return { count, total: 90 };
+}
+
+function misionStreak(id) {
+  let streak = 0;
+  for (let i = 0; i < 90; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if (ST.mis[key] && ST.mis[key][id] === 'done') streak++;
+    else break;
+  }
+  return streak;
 }

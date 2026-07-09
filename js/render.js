@@ -67,6 +67,11 @@ function renderStats() {
     avLetterEl.style.textShadow = `0 0 8px ${r.color}`;
   }
 
+  // Glow del logo según rango
+  document.querySelectorAll('.logo-img, .boot-logo-img').forEach(img => {
+    img.style.setProperty('--rank-color', r.color);
+  });
+
   // X/90 contador
   const d90 = calcDias90();
   setText('avX90', d90.count + '/90');
@@ -113,14 +118,17 @@ function renderAtributosOverlay() {
       </div>`;
     }).join('');
 
-    return `<div class="ao-cat-block">
+    return `<div class="ao-cat-block" onclick="toggleCatBlock(this)">
       <div class="ao-cat-header">
         <span class="ao-cat-num">${ci + 1}</span>
         <span class="ao-cat-icon"><i class="ti ${cat.iconClass}"></i></span>
         <span class="ao-cat-name">${cat.name}</span>
         <span class="ao-cat-score">${catScore}</span>
+        <i class="ti ti-chevron-down ao-cat-chevron"></i>
       </div>
-      ${attrRows}
+      <div class="ao-cat-body">
+        ${attrRows}
+      </div>
     </div>`;
   }).join('');
 }
@@ -349,7 +357,24 @@ function buildMisionCard(m) {
   const checkSVG = `<svg class="mc-swipe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
   const xSVG     = `<svg class="mc-swipe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
 
-  return `<div class="mc-wrap" data-id="${m.id}" data-xp="${m.xp}" data-coins="${m.coins}" data-cats='${catsJson}'>
+  // Racha individual, frecuencia y dificultad
+  const streak = misionStreak(m.id);
+  const streakBadge = streak > 0
+    ? `<span class="mc-badge mc-badge--streak"><i class="ti ti-flame"></i>${streak}d</span>`
+    : '';
+  const freqVal = m.freq || 'Diario';
+  const difVal  = m.dif  || 2;
+  const difBars = Array.from({length: 5}, (_, i) =>
+    `<span class="mc-dif-bar${i < difVal ? ' mc-dif-bar--on' : ''}"></span>`
+  ).join('');
+
+  // Imagen de fondo
+  const bgStyle    = m.img
+    ? `background-image:url('${m.img}');background-size:cover;background-position:center top`
+    : `background:linear-gradient(135deg,${grad})`;
+  const hasImgAttr = m.img ? ' data-has-img' : '';
+
+  return `<div class="mc-wrap" data-id="${m.id}" data-xp="${m.xp}" data-coins="${m.coins}" data-cats='${catsJson}'${hasImgAttr}>
     <div class="mc-front">
       <div class="mc-confirm-ov">
         <button class="mc-confirm-ok" onclick="devolverMision('${m.id}', event)">Devolver</button>
@@ -357,11 +382,16 @@ function buildMisionCard(m) {
       </div>
       <div class="mc-overlay mc-overlay--done">${checkSVG}</div>
       <div class="mc-overlay mc-overlay--skip">${xSVG}</div>
-      <div class="mc-bg" style="background:linear-gradient(135deg,${grad})"></div>
+      <div class="mc-bg" style="${bgStyle}"></div>
       <div class="mc-body">
         <div class="mc-name">${m.name}</div>
         ${m.desc ? `<div class="mc-desc">${m.desc}</div>` : ''}
         <div class="mc-cats-preview">${catsPreview}</div>
+        <div class="mc-badges">
+          ${streakBadge}
+          <span class="mc-badge mc-badge--freq"><i class="ti ti-repeat"></i>${freqVal}</span>
+          <span class="mc-badge mc-badge--dif"><div class="mc-dif-bars">${difBars}</div>Dif</span>
+        </div>
       </div>
     </div>
   </div>`;
@@ -472,7 +502,6 @@ function renderRuta() {
 // ---- MENÚ (Tienda + Alter Egos) ----
 
 function renderMenu() {
-  renderTienda();
   renderAlter();
 }
 
@@ -494,6 +523,31 @@ function renderTienda() {
       <button class="rbuy"
               ${canAfford ? '' : 'disabled'}
               onclick="buyReward(${r.cost}, '${safeName}')">
+        ${canAfford ? 'Canjear' : 'Bloqueado'}
+      </button>
+    </div>`;
+  }).join('');
+}
+
+
+function renderTiendaOverlay() {
+  setText('tiendaCoinsOv', ST.coins);
+  const container = el('tiendaListOv');
+  if (!container) return;
+
+  container.innerHTML = TIENDA.map(r => {
+    const canAfford = ST.coins >= r.cost;
+    const safeName  = r.name.replace(/'/g, "\\'");
+    return `<div class="reward-row">
+      <div class="remoji">${r.emoji}</div>
+      <div style="flex:1">
+        <div class="rname">${r.name}</div>
+        <div class="rreq">${r.req}</div>
+      </div>
+      <div class="rcost">${r.cost}c</div>
+      <button class="rbuy"
+              ${canAfford ? '' : 'disabled'}
+              onclick="buyReward(${r.cost}, '${safeName}');renderTiendaOverlay()">
         ${canAfford ? 'Canjear' : 'Bloqueado'}
       </button>
     </div>`;

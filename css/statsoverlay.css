@@ -326,6 +326,13 @@
   /* color/shadow injected inline from ATTR_META */
 }
 
+/* ---- CATEGORÍAS COLAPSABLES ---- */
+.ao-cat-header { cursor: pointer; }
+.ao-cat-body { display: none; padding-top: 4px; }
+.ao-cat-block.open .ao-cat-body { display: block; }
+.ao-cat-chevron { font-size: 14px; color: var(--t3); margin-left: auto; transition: transform .2s; }
+.ao-cat-block.open .ao-cat-chevron { transform: rotate(180deg); }
+
 
 /* ---- RANGO BOTTOM SHEET (half screen) ---- */
 
@@ -510,6 +517,27 @@
 }
 .av-trophy-btn:hover { border-color: rgba(255,184,51,.4); background: rgba(8,16,24,.65); }
 .av-trophy-btn svg   { width: 22px; height: 22px; }
+
+/* ---- BOTÓN TIENDA (encima del trofeo) ---- */
+.av-shop-btn {
+  position: absolute;
+  right: 16px;
+  top: calc(50% - 60px);
+  z-index: 10;
+  width: 44px; height: 44px;
+  background: rgba(8,16,24,.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,215,0,.2);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .15s, background .15s;
+  color: var(--c5);
+  font-size: 22px;
+}
+.av-shop-btn:hover { border-color: rgba(255,215,0,.4); background: rgba(8,16,24,.65); }
 
 
 /* ---- RANGO OVERLAY — full-screen (igual que Atributos) ---- */

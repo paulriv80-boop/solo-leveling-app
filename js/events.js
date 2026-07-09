@@ -438,6 +438,27 @@ function closeTrofeoOverlay() {
 }
 
 
+// ---- TIENDA OVERLAY (en Progreso) ----
+
+function openTiendaOverlay() {
+  renderTiendaOverlay();
+  el('tiendaOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeTiendaOverlay() {
+  el('tiendaOverlay')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
+// ---- ATRIBUTOS COLAPSABLES ----
+
+function toggleCatBlock(blk) {
+  blk.classList.toggle('open');
+}
+
+
 // ---- RESET ----
 
 function showReset() {

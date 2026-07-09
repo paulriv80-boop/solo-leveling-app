@@ -25,6 +25,18 @@
   width: auto;
   mix-blend-mode: screen;
   display: block;
+  --rank-color: #c8956a;
+  animation: logoGlow 2.5s ease-in-out infinite;
+}
+
+.boot-logo-img {
+  --rank-color: #c8956a;
+  animation: logoGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes logoGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px var(--rank-color)) drop-shadow(0 0 12px var(--rank-color)); }
+  50%       { filter: drop-shadow(0 0 10px var(--rank-color)) drop-shadow(0 0 28px var(--rank-color)); }
 }
 
 .system-status {
