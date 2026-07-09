@@ -33,6 +33,11 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
 - [x] Eliminar estilos inline duplicados en `index.html` (los 5 orbes de stats y el `margin-bottom` redundante de la tienda). Ver DECISION_LOG.
 - [ ] **Reconsiderado, no implementado:** centralizar el mapeo de IDs del DOM usados por `el()`/`setText()`/`setStyle()`. Tras evaluarlo (regla YAGNI/KISS del proyecto: "¿Es realmente necesaria? ¿Puede simplificarse?"), no se justifica todavía: `el()` ya centraliza el acceso y avisa por consola si un id no existe, los renames de id son poco frecuentes en este tamaño de proyecto, y un mapa de constantes añadiría una capa de indirección en ~30 sitios sin reducir riesgo real. Queda en espera de decisión del usuario — si se prefiere implementarlo igual, hacerlo.
 
+## Media prioridad (reciente)
+
+- [x] **BRAND_IDENTITY.md creado** — documento de identidad visual de marca (paleta, tipografía, estilo, assets).
+- [x] **instrucciones_claude.md actualizado** — stack técnico real, flujo de Git, eliminadas referencias obsoletas (Stacks, Enemigos, NPC, Inventario), UX subida a prioridad 5, estructura de carpetas corregida.
+
 ## Baja prioridad / futuro
 
 - [ ] Migrar a ES Modules (`type="module"`, `import`/`export`) para habilitar bundling y tests automatizados — requiere servir la app vía HTTP (no `file://`); evaluar antes de aplicar.

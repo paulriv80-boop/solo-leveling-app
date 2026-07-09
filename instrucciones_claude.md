@@ -99,11 +99,11 @@ Toda decisión debe respetar el siguiente orden:
 2. Estabilidad.
 3. Fiabilidad.
 4. Calidad del código.
-5. Escalabilidad.
-6. Mantenibilidad.
-7. Rendimiento.
-8. Reutilización.
-9. Experiencia de Usuario.
+5. Experiencia de Usuario.
+6. Escalabilidad.
+7. Mantenibilidad.
+8. Rendimiento.
+9. Reutilización.
 10. Game Design.
 11. Comercialización.
 
@@ -434,6 +434,23 @@ Antes de implementar cualquier solución pregúntate:
 
 ---
 
+## STACK TÉCNICO ACTUAL
+
+Este es el stack real del proyecto. Toda decisión técnica debe respetarlo.
+
+- **Lenguaje:** JavaScript ES6+ vanilla. Sin framework (no React, no Vue, no Angular).
+- **Bundler:** ninguno. Los archivos se cargan como `<script>` clásicos en `index.html`.
+- **Scope global:** todas las funciones y variables son globales por diseño, para mantener compatibilidad con apertura directa via `file://` y con GitHub Pages sin servidor de build.
+- **Sin ES Modules:** no usar `import`/`export`. Queda en el roadmap para cuando se migre a PWA con servidor HTTP.
+- **CSS:** archivos modulares por feature, unificados via `@import` en `style.css`. Sin preprocesador. Design tokens en `variables.css`.
+- **Persistencia:** exclusivamente `localStorage`, clave `sl_v3`. `STATE_VERSION` en `config.js` controla migraciones.
+- **Iconos:** Tabler Icons via CDN (`@tabler/icons-webfont@2.44.0`). Clases `ti ti-*`.
+- **Hosting:** GitHub Pages. Cada push a `main` despliega automáticamente.
+- **Testing:** manual en dispositivo móvil real (Chrome en Android). No hay tests automatizados.
+- **Fuente de verdad del estado:** objeto global `ST` definido en `state.js`. Nunca estados paralelos.
+
+---
+
 ## SEPARACIÓN DE RESPONSABILIDADES
 
 Mantener siempre separadas las siguientes capas del sistema.
@@ -451,9 +468,6 @@ Ejemplos:
 - Balance
 - Items
 - Alter Egos
-- Stacks
-- Enemigos
-- NPC
 - Constantes
 
 Nunca incluir lógica dentro de los datos.
@@ -479,11 +493,8 @@ Ejemplos:
 - XP
 - Monedas
 - Progresión
-- Combate
-- Inventario
 - Penalizaciones
 - Rachas
-- Stacks
 - Logros
 - Misiones
 - Eventos
@@ -762,20 +773,7 @@ Optimizar únicamente donde realmente aporte valor.
 
 ## ESCALABILIDAD
 
-Cada decisión debe facilitar una futura expansión hacia:
-
-- Android.
-- iOS.
-- Aplicación Web.
-- Backend.
-- API REST.
-- Base de datos.
-- Sincronización en la nube.
-- Multiusuario.
-- Inteligencia Artificial.
-- Panel administrativo.
-- Marketplace.
-- Sistema Premium.
+Cada decisión debe facilitar la evolución del producto descrita en VISIÓN DEL PROYECTO (Android, iOS, Backend, API, IA, Marketplace, etc.).
 
 No implementar estas funciones antes de tiempo, pero diseñar el código para soportarlas.
 
@@ -1006,9 +1004,7 @@ Toda progresión debe sentirse significativa.
 Cada:
 
 - Nivel.
-- Estrella.
 - Rango.
-- Stack.
 - Alter Ego.
 - Logro.
 - Desbloqueo.
@@ -1130,27 +1126,32 @@ Mantener una estructura clara.
 
 Agrupar archivos por responsabilidad.
 
-Ejemplo:
+Estructura actual del proyecto:
 
-/src
-
-/components
-
-/modules
-
-/data
-
-/services
-
-/utils
-
-/styles
-
-/assets
-
-/docs
-
-/tests
+```
+index.html          — entrada única de la app
+css/
+  style.css         — entry point con @import del resto
+  variables.css     — design tokens (colores, glows)
+  base.css, topbar.css, navigation.css, layout.css
+  cards.css, components.css, missions.css, ranks.css
+  avatar.css, calendar.css, statsoverlay.css
+  darkzone.css, route.css, shop.css, alteregos.css
+  reset.css, animations.css, responsive.css, bottomnav.css
+  placeholders.css
+js/
+  data.js           — datos del juego (MISIONES, RANGOS, TIENDA, etc.)
+  config.js         — CONFIG: constantes centralizadas
+  state.js          — ST: estado único + Storage + migraciones
+  utils.js          — DateUtils, Toast, helpers DOM, calcDias90, misionStreak
+  logic.js          — lógica de negocio pura (nunca toca el DOM)
+  render.js         — presentación (lee ST, nunca lo muta)
+  events.js         — handlers invocados desde onclick="" en el HTML
+  app.js            — bootstrap: loadState() + renderAll() + bootSystem()
+assets/             — imágenes del juego (PNG por misión y rango)
+docs/               — documentación obligatoria del proyecto
+instrucciones_claude.md — este archivo
+```
 
 Nunca crear archivos sin un propósito claro.
 
@@ -1293,6 +1294,19 @@ Nunca dejar documentación importante desactualizada.
 
 ---
 
+## FLUJO DE GIT
+
+Reglas para el control de versiones de este proyecto.
+
+- **Un commit por sprint completo.** No crear commits por archivo ni por fix individual. El commit agrupa todo el sprint.
+- **Formato del mensaje:** `sprint X.Y — descripción breve de los cambios`. Para docs: `docs: descripción`.
+- **Push a main solo cuando el sprint está verificado** en dispositivo móvil real. Nunca pushear con funcionalidades a medias o rotas.
+- **GitHub Pages despliega automáticamente** con cada push a `main`. Tener esto en cuenta antes de pushear.
+- **STATE_VERSION:** cada vez que se modifica la forma del objeto `ST`, incrementar `STATE_VERSION` en `config.js` y añadir migración en `state.js`. Nunca romper partidas guardadas existentes.
+- **No hacer git amend** sobre commits ya pusheados. Crear un nuevo commit.
+
+---
+
 ## CONTROL DE VERSIONES
 
 Cada cambio importante debe quedar registrado.
@@ -1310,18 +1324,7 @@ Después resumir exactamente lo realizado.
 
 ## ESCALABILIDAD DEL REPOSITORIO
 
-La organización debe prepararse para futuras versiones:
-
-- Aplicación móvil.
-- Backend.
-- API.
-- Base de datos.
-- Microservicios.
-- Plugins.
-- Marketplace.
-- Inteligencia Artificial.
-
-La estructura inicial debe facilitar esta evolución.
+La estructura de archivos actual (ver ORGANIZACIÓN DEL REPOSITORIO) debe facilitar la incorporación futura de carpetas como `/backend`, `/mobile`, `/api` sin reorganizar lo que ya existe.
 
 ---
 
@@ -1377,8 +1380,6 @@ Cada cambio debe comprobar que no rompe:
 - Misiones.
 - XP.
 - Monedas.
-- Inventario.
-- Stacks.
 - Alter Egos.
 - Persistencia.
 - Guardado.
