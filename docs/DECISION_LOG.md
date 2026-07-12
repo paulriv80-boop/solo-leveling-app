@@ -4,6 +4,49 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-12 — Sprint 5.1: Logo definitivo, X/90 premium, tabs pill, calendario mensual
+
+**Decisión 1 — Logo: sin filtro CSS en el logo definitivo.**
+
+El logo `solo_icon.png` era negro sobre fondo transparente, lo que requería un filtro `invert(0.88)...` para hacerlo visible. El nuevo logo (`logo final.png`) ya contiene símbolo + texto "Presence" y fue diseñado específicamente para fondos oscuros.
+
+**Alternativas consideradas:**
+1. **Mantener el filtro para el nuevo logo.** El filtro aplicado sobre un logo ya blanco/coloreado lo deformaría (invertiría blancos a negros).
+2. **Ajustar el filtro para el nuevo logo.** Requeriría re-calibrar sin poder ver el resultado en tiempo real; peor DX.
+3. **Sin filtro, logo tal como fue diseñado.** **Elegida.** El logo oficial debe usarse sin transformaciones. Si el logo resultara invisible, la solución sería corregir el asset, no añadir filtros CSS.
+
+---
+
+**Decisión 2 — Botón Rutina: desde tabs hacia el header junto a X/90.**
+
+El botón `+` en los tabs (junto a "Saltados") tenía un problema semántico: visualmente quedaba fuera de contexto entre filtros de tabs. Su función futura es gestionar rutinas completas (no solo filtrar misiones del día).
+
+**Alternativas consideradas:**
+1. **Mantener en tabs.** Más accesible con el pulgar, pero semánticamente incorrecto y visualmente desequilibrado (los tabs son 3 pills + 1 círculo).
+2. **Floating action button (FAB) en esquina inferior derecha.** Oculto por la bottom nav; requiere z-index complejo.
+3. **En el header, a la derecha de X/90.** **Elegida.** Crea un par semántico natural: el indicador de maestría (qué tanto has logrado) + el botón de acción (gestionar la rutina que lo genera). Jerarquía visual clara.
+
+---
+
+**Decisión 3 — Calendario mensual vs. rolling 30 días.**
+
+El calendario expandible anterior mostraba 30 puntos sin números en 10 columnas, lo cual no era legible ni intuitivo como "historial". El usuario pidió que se viera como "un calendario mensual real".
+
+**Alternativas consideradas:**
+1. **Rolling 30 días en cuadrícula 7 columnas con números.** Más información (30 días siempre), pero el offset de día de semana del primer día visible cambia cada día → confuso.
+2. **Mes actual con offset de día de semana correcto.** **Elegida.** El concepto mental de "mes" es universal; el usuario puede navegar visualmente sin necesitar una leyenda. Las celdas vacías antes del día 1 son la convención estándar de calendarios. El offset se calcula con `(firstDay.getDay() + 6) % 7` para que lunes = columna 0 (convención europea).
+3. **Navegación multi-mes (flechas < >).** Demasiada complejidad para el valor; archivado para sprint futuro.
+
+---
+
+**Decisión 4 — Efectividad basada en días del mes, no en 30 días fijos.**
+
+Con el calendario mensual, la base natural de cálculo es el número de días transcurridos en el mes, no 30 días arbitrarios.
+
+**Solución:** `eff = Math.round((doneMes / daysInMonth) * 100)`. Esto hace que el porcentaje sea más preciso: en julio (31 días) y a mitad de mes la comparación es justa respecto a lo que el usuario pudo hacer.
+
+---
+
 ## 2026-07-12 — Sprint 5.0: HUD topbar, collapsibles eliminados, calendario por misión, logo visible
 
 **Decisión 1 — Logo visible: `invert()` vs. cambiar el asset.**

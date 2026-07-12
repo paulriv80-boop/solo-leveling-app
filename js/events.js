@@ -145,18 +145,30 @@ function toggleMisionDetail(id, e) {
 function _renderMisionDetail(id) {
   const calEl = el('mc-cal-' + id);
   if (calEl && !calEl.dataset.rendered) {
-    const today = DateUtils.today();
-    let done30 = 0, html = '';
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const today       = DateUtils.today();
+    const now         = new Date();
+    const year        = now.getFullYear();
+    const month       = now.getMonth();
+    const firstDay    = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    // Offset lunes=0: domingo(0)→6, lunes(1)→0, …
+    const startOffset = (firstDay.getDay() + 6) % 7;
+
+    let doneMes = 0, html = '';
+
+    for (let i = 0; i < startOffset; i++) {
+      html += `<div class="mc-cal-cell mc-cal-cell--empty"></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const key   = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
       const state = (ST.mis[key] || {})[id];
       const cls   = state === 'done' ? 'done' : state === 'skip' ? 'skip' : 'none';
-      const todayMark = key === today ? ' mc-cal-dot--today' : '';
-      if (state === 'done') done30++;
-      html += `<div class="mc-cal-dot mc-cal-dot--${cls}${todayMark}" title="${key}"></div>`;
+      const todayMark = key === today ? ' mc-cal-cell--today' : '';
+      if (state === 'done') doneMes++;
+      html += `<div class="mc-cal-cell mc-cal-cell--${cls}${todayMark}" title="${key}">${day}</div>`;
     }
+
     calEl.innerHTML = html;
     calEl.dataset.rendered = '1';
 
@@ -164,7 +176,7 @@ function _renderMisionDetail(id) {
     for (const dateKey in ST.mis) {
       if ((ST.mis[dateKey] || {})[id] === 'done') total90++;
     }
-    const eff    = Math.round((done30 / 30) * 100);
+    const eff    = Math.round((doneMes / daysInMonth) * 100);
     const streak = misionStreak(id);
 
     setText('mc-eff-'     + id, eff + '%');

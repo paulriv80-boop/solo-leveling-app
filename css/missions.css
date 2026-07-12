@@ -2,103 +2,151 @@
    MISSIONS — Swipe Cards + Tabs (Sprint 4)
    ==================================================== */
 
-/* ---- TABS ---- */
+/* ---- TABS (pill glassmorphism) ---- */
 .m-tabs {
   display: flex;
-  border-bottom: 1px solid rgba(0,245,255,.12);
-  margin-bottom: 12px;
-  gap: 0;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 0 2px;
+  align-items: center;
 }
 .m-tab {
   flex: 1;
-  padding: 10px 4px;
+  padding: 9px 6px;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: .5px;
+  letter-spacing: .8px;
   text-transform: uppercase;
   color: var(--t3);
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 20px;
   cursor: pointer;
   font-family: inherit;
+  text-align: center;
   -webkit-tap-highlight-color: transparent;
-  transition: color .15s, border-color .15s;
+  transition: color .2s, background .2s, border-color .2s, transform .15s;
 }
 .m-tab.on {
   color: var(--c1);
-  border-bottom-color: var(--c1);
+  background: rgba(0,245,255,.10);
+  border-color: rgba(0,245,255,.25);
 }
+.m-tab:active { transform: scale(0.96); }
 .m-tab-count {
   display: inline-block;
-  background: rgba(0,245,255,.12);
+  background: rgba(255,255,255,.08);
   border-radius: 8px;
   padding: 1px 5px;
   font-size: 9px;
   margin-left: 3px;
+  vertical-align: middle;
 }
 .m-tab.on .m-tab-count {
-  background: rgba(0,245,255,.25);
+  background: rgba(0,245,255,.18);
+  color: var(--c1);
 }
 
-/* ---- HEADER MISIONES ---- */
+/* ---- HEADER MISIONES — X/90 premium + botón Rutina ---- */
 .missions-header {
   display: flex;
-  justify-content: center;
-  padding: 4px 0 8px;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 4px 14px;
 }
 
 .missions-days90 {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
+  flex: 1;
   background: rgba(0,245,255,.04);
   border: 1px solid rgba(0,245,255,.10);
-  border-radius: 30px;
-  padding: 8px 22px;
+  border-radius: 14px;
+  padding: 11px 16px 10px;
+}
+
+.days90-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+
+.days90-left {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
 }
 
 .days90-num {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   color: var(--t0);
-  letter-spacing: -1px;
+  letter-spacing: -2px;
   line-height: 1;
 }
 
-.days90-lbl {
-  font-size: 10px;
-  font-weight: 600;
+.days90-sep {
+  font-size: 16px;
+  font-weight: 300;
   color: var(--t3);
-  letter-spacing: 1.5px;
+  margin: 0 1px;
+}
+
+.days90-max {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--t3);
+}
+
+.days90-lbl {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--t3);
+  letter-spacing: 2px;
   text-transform: uppercase;
 }
 
-/* ---- BOTÓN AÑADIR MISIÓN (en tabs) ---- */
-.m-add-mission-btn {
-  width: 32px;
-  height: 32px;
+.days90-bar-track {
+  height: 3px;
+  background: rgba(255,255,255,.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.days90-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--c1), rgba(0,245,255,.55));
+  border-radius: 2px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+  min-width: 4px;
+}
+
+/* ---- BOTÓN RUTINA (en header, junto a X/90) ---- */
+.m-rutina-btn {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
   border-radius: 50%;
-  background: rgba(0,245,255,.07);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0,245,255,.18);
+  background: rgba(0,245,255,.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0,245,255,.22);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: var(--c1);
-  font-size: 18px;
-  flex-shrink: 0;
-  margin-left: auto;
-  align-self: center;
-  transition: background .2s, border-color .2s, transform .15s;
+  font-size: 20px;
+  transition: background .2s, border-color .2s, transform .15s, box-shadow .2s;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 0 18px rgba(0,245,255,.07);
 }
-.m-add-mission-btn:hover {
-  background: rgba(0,245,255,.15);
-  border-color: var(--c1);
-  transform: scale(1.08);
+.m-rutina-btn:hover {
+  background: rgba(0,245,255,.14);
+  border-color: rgba(0,245,255,.42);
+  box-shadow: 0 0 24px rgba(0,245,255,.18);
+}
+.m-rutina-btn:active {
+  transform: scale(0.91);
 }
 
 /* ---- SWIPE CARD WRAPPER ---- */
@@ -451,22 +499,77 @@
   margin-bottom: 10px;
 }
 
-/* ---- MINI-CALENDARIO 30 DÍAS ---- */
-.mc-mini-cal {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 3px;
+/* ---- CALENDARIO MENSUAL POR MISIÓN ---- */
+.mc-cal-header-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.mc-cal-month-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--t2);
+  letter-spacing: 1px;
+  text-transform: capitalize;
+}
+
+.mc-cal-wrap {
   margin-bottom: 14px;
 }
-.mc-cal-dot {
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 3px;
+
+.mc-cal-dow-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-bottom: 3px;
 }
-.mc-cal-dot--done { background: var(--c3); }
-.mc-cal-dot--skip { background: rgba(255,45,85,.35); }
-.mc-cal-dot--none { background: rgba(255,255,255,.08); }
-.mc-cal-dot--today { outline: 1.5px solid rgba(0,245,255,.55); }
+.mc-cal-dow-row span {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--t3);
+  text-align: center;
+  letter-spacing: .5px;
+  padding: 2px 0;
+}
+
+.mc-mini-cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.mc-cal-cell {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+}
+.mc-cal-cell--done {
+  background: rgba(57,255,20,.20);
+  color: rgba(255,255,255,.90);
+}
+.mc-cal-cell--skip {
+  background: rgba(255,45,85,.18);
+  color: rgba(255,255,255,.90);
+}
+.mc-cal-cell--none {
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.35);
+}
+.mc-cal-cell--empty {
+  background: transparent;
+}
+.mc-cal-cell--today {
+  outline: 1.5px solid rgba(0,245,255,.6);
+  outline-offset: -1px;
+}
+
+/* compatibilidad con puntos del sprint anterior */
+.mc-cal-dot { display: none; }
 
 /* ---- ESTADÍSTICAS ---- */
 .mc-stats-row {
@@ -596,49 +699,3 @@
   color: var(--c5); font-family: inherit; margin-top: 8px;
 }
 
-/* ---- MINI SEMANA (reemplaza barra XP) ---- */
-.m-mini-week {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 4px 0 14px;
-}
-
-.mw-day {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-
-.mw-lbl {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .5px;
-  color: rgba(255,255,255,.35);
-  text-transform: uppercase;
-}
-
-.mw-today .mw-lbl {
-  color: rgba(255,255,255,.75);
-}
-
-.mw-dot {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform .15s;
-}
-
-.mw-today .mw-dot {
-  transform: scale(1.1);
-}
-
-.mw-num {
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 1;
-}

@@ -252,8 +252,9 @@ function renderMisiones() {
   if (el90) {
     const numEl = el90.querySelector('.days90-num');
     if (numEl) numEl.textContent = d90.count;
+    const barEl = el('mDias90Bar');
+    if (barEl) barEl.style.width = Math.min(100, (d90.count / 90) * 100) + '%';
   }
-  renderMiniWeek();
 
   const today    = DateUtils.today();
   const todayMis = ST.mis[today] || {};
@@ -372,6 +373,8 @@ function buildMisionCard(m) {
     : `background:linear-gradient(135deg,${grad})`;
   const hasImgAttr = m.img ? ' data-has-img' : '';
 
+  const monthLbl = new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+
   return `<div class="mc-wrap" data-id="${m.id}" data-xp="${m.xp}" data-coins="${m.coins}" data-cats='${catsJson}'${hasImgAttr}>
     <div class="mc-card-face">
       <div class="mc-front">
@@ -399,8 +402,15 @@ function buildMisionCard(m) {
     </div>
     <div class="mc-detail" id="mc-detail-${m.id}">
       <div class="mc-detail-inner">
-        <div class="mc-detail-section-title">Historial · 30 días</div>
-        <div class="mc-mini-cal" id="mc-cal-${m.id}"></div>
+        <div class="mc-cal-header-row">
+          <span class="mc-cal-month-name">${monthLbl}</span>
+        </div>
+        <div class="mc-cal-wrap">
+          <div class="mc-cal-dow-row">
+            <span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span>
+          </div>
+          <div class="mc-mini-cal" id="mc-cal-${m.id}"></div>
+        </div>
         <div class="mc-stats-row">
           <div class="mc-stat-pill">
             <span class="mc-stat-num" id="mc-eff-${m.id}">—</span>

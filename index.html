@@ -12,8 +12,7 @@
 <body>
 
 <div id="bootScreen" class="boot-screen">
-  <img src="assets/design-system/logo/final/solo_icon.png" alt="Presence" class="boot-logo-img">
-  <div class="boot-brand">PRESENCE</div>
+  <img src="assets/design-system/logo/final/definitivo/logo final.png" alt="Presence" class="boot-logo-img">
   <div class="boot-operator">BIENVENIDO, GUERRERO</div>
 </div>
 
@@ -21,7 +20,7 @@
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
-    <img src="assets/design-system/logo/final/solo_icon.png" alt="Presence" class="logo-img">
+    <img src="assets/design-system/logo/final/definitivo/logo final.png" alt="Presence" class="logo-img">
   </div>
   <div class="topbar-hud">
     <div class="hud-chip hud-chip--xp">
@@ -69,20 +68,27 @@
   <!-- ===== TAB 1: MISIONES (home) ===== -->
   <div class="sec on" id="sec-misiones">
 
-    <!-- Logo Presence en home de misiones -->
-    <div class="missions-logo-row">
-      <img src="assets/design-system/logo/final/solo_icon.png" alt="Presence" class="logo-img">
-    </div>
-
-    <!-- Header: contador 90 días -->
+    <!-- Header: contador 90 días + botón Rutina -->
     <div class="missions-header">
-      <div id="mDias90" class="missions-days90"><span class="days90-num">0</span><span class="days90-lbl">/90 días activos</span></div>
+      <div id="mDias90" class="missions-days90">
+        <div class="days90-top">
+          <div class="days90-left">
+            <span class="days90-num">0</span>
+            <span class="days90-sep">/</span>
+            <span class="days90-max">90</span>
+          </div>
+          <span class="days90-lbl">DÍAS ACTIVOS</span>
+        </div>
+        <div class="days90-bar-track">
+          <div class="days90-bar-fill" id="mDias90Bar" style="width:0%"></div>
+        </div>
+      </div>
+      <button class="m-rutina-btn" onclick="openAddMision()" aria-label="Gestionar Rutina">
+        <i class="ti ti-plus" aria-hidden="true"></i>
+      </button>
     </div>
 
-    <!-- Mini calendario semanal — últimos 7 días -->
-    <div id="mMiniWeek" class="m-mini-week"></div>
-
-    <!-- Tabs: To-dos / Hechos / Saltados / + -->
+    <!-- Tabs: To-dos / Hechos / Saltados -->
     <div class="m-tabs">
       <button class="m-tab on" onclick="switchMisionTab('todos',this)">
         To-dos <span class="m-tab-count" id="mTabTodosCount">0</span>
@@ -92,9 +98,6 @@
       </button>
       <button class="m-tab" onclick="switchMisionTab('skip',this)">
         Saltados <span class="m-tab-count" id="mTabSkipCount">0</span>
-      </button>
-      <button class="m-add-mission-btn" onclick="openAddMision()" aria-label="Añadir misión">
-        <i class="ti ti-plus" aria-hidden="true"></i>
       </button>
     </div>
 

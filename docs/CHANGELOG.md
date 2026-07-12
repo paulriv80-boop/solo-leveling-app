@@ -2,6 +2,28 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-12 — sprint 5.1 Refinamiento Premium: Misiones
+
+**Versión:** v6.0 Alpha — STATE_VERSION 9 (sin cambio)
+**Archivos:** `index.html`, `css/topbar.css`, `css/missions.css`, `js/render.js`, `js/events.js`
+**Tipo:** Refinamiento visual premium
+
+### 6 cambios implementados
+
+1. **Logo oficial.** Reemplazado `solo_icon.png` por el logo definitivo (`assets/design-system/logo/final/definitivo/logo final.png`) que contiene símbolo + texto "Presence". Aplicado en topbar y boot screen. Eliminado el texto `.boot-brand` HTML (ya no necesario, el logo lo incluye). Eliminado el filtro CSS piedra-tallada de `.logo-img` y `.boot-logo-img` — el logo oficial está diseñado para fondos oscuros. Topbar: `height: 32px`; boot screen: `width: 180px`.
+
+2. **Header misiones limpio.** Eliminados: ícono flotante central (`.missions-logo-row`) y mini-calendario de 7 días (`#mMiniWeek`). Eliminada llamada a `renderMiniWeek()` en `render.js`. Eliminado CSS de `.m-mini-week`, `.mw-day`, `.mw-lbl`, `.mw-dot`, `.mw-num`, `.mw-today` de `missions.css`. Eliminado CSS de `.missions-logo-row` de `topbar.css`.
+
+3. **X/90 maestría premium + barra de progreso.** El counter X/90 fue elevado a un componente de maestría: número grande (`32px/900`) con separador `/` y máximo `90` alineados en baseline, etiqueta `DÍAS ACTIVOS` en letra tracking de 2px, y una barra de progreso cyan (`3px`) que muestra visualmente el avance de 0% a 100% de los 90 días. `render.js` ahora actualiza también `#mDias90Bar` (via `style.width`) en cada `renderMisiones()`.
+
+4. **Botón Rutina.** El botón `+` fue movido de los tabs al header, a la derecha del indicador X/90. Nueva clase `.m-rutina-btn` (círculo de 46px, glassmorphism cyan, glow sutil, `scale(0.91)` al tap). Semánticamente nombrado "Rutina" por ser el punto de entrada futuro a la gestión de rutinas. Llamada: `openAddMision()` (stub existente).
+
+5. **Tabs pill glassmorphism.** Rediseño completo de `.m-tab`: era un tab underline plano → ahora pill con `border-radius: 20px`, `background: rgba(255,255,255,.04)`, borde sutil, transición en background/border/color (`200ms`), `scale(0.96)` al presionar. Tab activo: fondo cyan semitransparente, borde cyan. Badge de conteo alineado con `vertical-align: middle`. Eliminado el `border-bottom` del contenedor `.m-tabs`.
+
+6. **Calendario mensual real por misión.** Reemplazada la cuadrícula de 30 puntos sin números (10 columnas) por un calendario del mes actual con: fila de iniciales de días `L M X J V S D`, 7 columnas, celdas con número del día visible (`font-size: 9px`), offset de celdas vacías para alinear el primer día al día de semana correcto (lunes = columna 0). Colores: verde semitransparente `rgba(57,255,20,.20)` para días hechos, rojo semitransparente `rgba(255,45,85,.18)` para saltados, gris oscuro `rgba(255,255,255,.06)` para vacíos. Día de hoy: outline cyan 1.5px. Estadísticas: efectividad calculada sobre días del mes (no 30 días fijos). `buildMisionCard()` incluye ahora el nombre del mes y la fila de iniciales. `_renderMisionDetail()` reescrita para lógica de mes actual con `startOffset = (firstDay.getDay() + 6) % 7`.
+
+---
+
 ## 2026-07-12 — sprint 5.0 Visual Overhaul: Pantalla Misiones
 
 **Versión:** v6.0 Alpha — STATE_VERSION 9 (sin cambio)

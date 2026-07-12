@@ -21,35 +21,15 @@
 }
 
 .logo-img {
-  height: 52px;
+  height: 32px;
   width: auto;
   display: block;
-  filter: invert(0.88) brightness(0.62) contrast(1.4) sepia(0.15)
-    drop-shadow(0px 2px 0px rgba(255,255,255,0.12))
-    drop-shadow(0px -1px 1px rgba(0,0,0,0.95))
-    drop-shadow(1px 0px 0px rgba(255,255,255,0.06));
 }
 
 .boot-logo-img {
-  filter: invert(0.88) brightness(0.62) contrast(1.4) sepia(0.15)
-    drop-shadow(0px 2px 0px rgba(255,255,255,0.12))
-    drop-shadow(0px -1px 1px rgba(0,0,0,0.95))
-    drop-shadow(1px 0px 0px rgba(255,255,255,0.06));
-}
-
-.boot-brand {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 6px;
-  color: rgba(255,255,255,0.28);
-  text-transform: uppercase;
-  margin-top: 10px;
-}
-
-.missions-logo-row {
-  display: flex;
-  justify-content: center;
-  padding: 8px 0 4px;
+  width: 180px;
+  height: auto;
+  display: block;
 }
 
 /* ---- HUD (XP + Coins + Settings) ---- */
