@@ -2,6 +2,37 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-12 — sprint 5.0 Visual Overhaul: Pantalla Misiones
+
+**Versión:** v6.0 Alpha — STATE_VERSION 9 (sin cambio)
+**Archivos:** `index.html`, `css/topbar.css`, `css/missions.css`, `css/animations.css`, `js/render.js`, `js/events.js`, `js/logic.js`
+**Tipo:** Rediseño visual mayor + nuevas funcionalidades UX
+
+### 7 cambios implementados
+
+1. **Logo: piedra tallada visible.** El filtro anterior (`brightness(0.75)`) oscurecía el icono negro hasta hacerlo invisible sobre fondo oscuro. Nuevo filtro: `invert(0.88) brightness(0.62) contrast(1.4) sepia(0.15)` + dos `drop-shadow` opuestos (luz desde arriba, sombra abajo) que simulan relieve hundido en piedra mate. Boot screen cambia de `logo.png` a `solo_icon.png` con texto "PRESENCE" como elemento HTML (independiente de la imagen para evitar texto en idioma incorrecto). Nueva clase `.boot-brand`.
+
+2. **Topbar HUD: XP + Coins + Settings.** El indicador ONLINE (`.system-status` + `.status-dot` con animación parpadeante) fue reemplazado por dos chips minimalistas (`#hudXP`, `#hudCoins`) y un botón engranaje (`openSettings()`). Nueva función `renderHUD()` en `render.js`, llamada desde `renderAll()` y `renderMisiones()`. Los chips se actualizan en tiempo real al completar misiones. `openSettings()` y `openAddMision()` son stubs — funcionalidad en sprint futuro.
+
+3. **Header misiones: X/90 premium.** Se eliminó el elemento `#mDate` (fecha del día) del header de misiones. El contador X/90 se rediseñó con tipografía grande (`font-size: 28px; font-weight: 900`) dentro de un pill con borde cyan tenue. La estructura HTML cambió a `<span class="days90-num">` + `<span class="days90-lbl">` para separar número de etiqueta. `renderMisiones()` actualiza solo `.days90-num` en lugar de reemplazar todo el texto.
+
+4. **Botón (+) junto a tabs / espaciado de cards.** Añadido `button.m-add-mission-btn` al final de `.m-tabs` para añadir misiones personalizadas (funcionalidad pendiente). Espaciado de tarjetas: `.mc-wrap { margin: 6px 0 → 10px 0 }` para más respiración visual.
+
+5. **Eliminación de 3 collapsibles.** Removidos del HTML y del ciclo de render:
+   - **Calendario global:** HTML eliminado (≈55 líneas). `renderCalendario()` ya no se llama en `renderAll()`. Los elementos `#cRacha`, `#cGrid`, etc. no existen → las funciones del calendario son silent-miss.
+   - **Zona Oscura:** HTML eliminado (≈30 líneas). `renderZona()` eliminado de `render.js`. `toggleZona()` eliminado de `events.js`. `toggleZonaFall()` eliminado de `logic.js`. El campo `zona: {}` permanece en `DEFAULT_STATE` (campo huérfano, no requiere migration ni VERSION bump).
+   - **Ruta de Propósito:** HTML eliminado (≈18 líneas). `renderRuta()` ya no se llama. `openPropositoForm()` y el modal `#propositoModal` se conservan intactos (la funcionalidad de crear propósitos sigue activa).
+
+6. **Calendario expandible por misión.** Cada tarjeta de misión ahora tiene:
+   - Estructura `.mc-card-face` (nuevo wrapper para el frente de la tarjeta) con el botón chevron como sibling de `.mc-front` (evita el `overflow: hidden` del frente). Panel `.mc-detail` como sibling de `.mc-card-face`, expande con `max-height` transition.
+   - Contenido del panel: mini-calendario de 30 puntos de colores (verde=hecho, rojo-rosado=saltado, gris=sin datos), 3 estadísticas (efectividad %, racha actual, total completadas en 90d), configuración de recordatorio (toggle ON/OFF, selector de hora, pills de días de semana L-M-X-J-V-S-D).
+   - Estado de recordatorios guardado en `ST.reminders` (accedido como `ST.reminders || {}` → defensivo, sin VERSION bump). Funciones nuevas en `events.js`: `toggleMisionDetail`, `_renderMisionDetail`, `_renderDayPills`, `toggleDay`, `toggleReminder`, `saveReminder`.
+   - **Nota:** Las notificaciones push reales requieren PWA (sprint futuro). El sistema ya guarda la preferencia en localStorage.
+
+7. **Animación XP flotante.** Al completar una misión con swipe derecha, aparece un elemento `div.xp-float` centrado en pantalla (posición fija) que muestra "+N XP" en cyan y flota hacia arriba desapareciendo en 650ms. CSS en `animations.css`. El elemento se crea en `attachSwipeHandlers` y se auto-elimina tras la animación.
+
+---
+
 ## 2026-07-09 — sprint 4.4 Post-prueba en celular #4
 
 **Versión:** v5.4 Alpha — STATE_VERSION 9 (sin cambio)

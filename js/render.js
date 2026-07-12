@@ -234,18 +234,25 @@ function renderTrofeoOverlay() {
 }
 
 
+// ---- HUD (topbar: XP + coins) ----
+
+function renderHUD() {
+  setText('hudXP', ST.totalXP);
+  setText('hudCoins', ST.coins);
+}
+
+
 // ---- MISIONES (Tab home) — swipe cards + 3 tabs ----
 
 let _mActiveTab = 'todos';
 
 function renderMisiones() {
-  const now   = new Date();
-  const dias  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-  const meses = ['enero','febrero','marzo','abril','mayo','junio','julio',
-                 'agosto','septiembre','octubre','noviembre','diciembre'];
-  setText('mDate',  `${dias[now.getDay()]}, ${now.getDate()} de ${meses[now.getMonth()]}`);
-  const d90 = calcDias90();
-  setText('mDias90', `${d90.count}/90 días`);
+  const d90  = calcDias90();
+  const el90 = el('mDias90');
+  if (el90) {
+    const numEl = el90.querySelector('.days90-num');
+    if (numEl) numEl.textContent = d90.count;
+  }
   renderMiniWeek();
 
   const today    = DateUtils.today();
@@ -278,6 +285,8 @@ function renderMisiones() {
   setText('mTabTodosCount',  todos.length);
   setText('mTabDoneCount',   done.length);
   setText('mTabSkipCount',   skipped.length);
+
+  renderHUD();
 }
 
 function renderMiniWeek() {
@@ -364,22 +373,60 @@ function buildMisionCard(m) {
   const hasImgAttr = m.img ? ' data-has-img' : '';
 
   return `<div class="mc-wrap" data-id="${m.id}" data-xp="${m.xp}" data-coins="${m.coins}" data-cats='${catsJson}'${hasImgAttr}>
-    <div class="mc-front">
-      <div class="mc-confirm-ov">
-        <button class="mc-confirm-ok" onclick="devolverMision('${m.id}', event)">Devolver</button>
-        <button class="mc-confirm-cancel" onclick="cerrarConfirm(event)">✕</button>
+    <div class="mc-card-face">
+      <div class="mc-front">
+        <div class="mc-confirm-ov">
+          <button class="mc-confirm-ok" onclick="devolverMision('${m.id}', event)">Devolver</button>
+          <button class="mc-confirm-cancel" onclick="cerrarConfirm(event)">✕</button>
+        </div>
+        <div class="mc-overlay mc-overlay--done">${checkSVG}</div>
+        <div class="mc-overlay mc-overlay--skip">${xSVG}</div>
+        <div class="mc-bg" style="${bgStyle}"></div>
+        <div class="mc-body">
+          <div class="mc-name">${m.name}</div>
+          ${m.desc ? `<div class="mc-desc">${m.desc}</div>` : ''}
+          <div class="mc-cats-preview">${catsPreview}</div>
+          <div class="mc-badges">
+            ${streakBadge}
+            <span class="mc-badge mc-badge--freq"><i class="ti ti-repeat"></i>${freqVal}</span>
+            <span class="mc-badge mc-badge--dif"><div class="mc-dif-bars">${difBars}</div>Dif</span>
+          </div>
+        </div>
       </div>
-      <div class="mc-overlay mc-overlay--done">${checkSVG}</div>
-      <div class="mc-overlay mc-overlay--skip">${xSVG}</div>
-      <div class="mc-bg" style="${bgStyle}"></div>
-      <div class="mc-body">
-        <div class="mc-name">${m.name}</div>
-        ${m.desc ? `<div class="mc-desc">${m.desc}</div>` : ''}
-        <div class="mc-cats-preview">${catsPreview}</div>
-        <div class="mc-badges">
-          ${streakBadge}
-          <span class="mc-badge mc-badge--freq"><i class="ti ti-repeat"></i>${freqVal}</span>
-          <span class="mc-badge mc-badge--dif"><div class="mc-dif-bars">${difBars}</div>Dif</span>
+      <button class="mc-expand-btn" onclick="toggleMisionDetail('${m.id}', event)" aria-label="Ver historial">
+        <i class="ti ti-chevron-down"></i>
+      </button>
+    </div>
+    <div class="mc-detail" id="mc-detail-${m.id}">
+      <div class="mc-detail-inner">
+        <div class="mc-detail-section-title">Historial · 30 días</div>
+        <div class="mc-mini-cal" id="mc-cal-${m.id}"></div>
+        <div class="mc-stats-row">
+          <div class="mc-stat-pill">
+            <span class="mc-stat-num" id="mc-eff-${m.id}">—</span>
+            <span class="mc-stat-lbl">efectividad</span>
+          </div>
+          <div class="mc-stat-pill">
+            <span class="mc-stat-num" id="mc-streak2-${m.id}">—</span>
+            <span class="mc-stat-lbl">racha</span>
+          </div>
+          <div class="mc-stat-pill">
+            <span class="mc-stat-num" id="mc-total-${m.id}">—</span>
+            <span class="mc-stat-lbl">total 90d</span>
+          </div>
+        </div>
+        <div class="mc-reminder-wrap">
+          <div class="mc-reminder-row">
+            <span class="mc-reminder-lbl"><i class="ti ti-bell"></i> Recordatorio</span>
+            <label class="mc-toggle">
+              <input type="checkbox" id="mc-rem-${m.id}" onchange="toggleReminder('${m.id}', this)">
+              <span class="mc-toggle-track"><span class="mc-toggle-thumb"></span></span>
+            </label>
+          </div>
+          <div class="mc-rem-config" id="mc-rem-cfg-${m.id}">
+            <input type="time" class="mc-time-input" id="mc-rem-time-${m.id}" value="07:00" onchange="saveReminder('${m.id}')">
+            <div class="mc-days-row" id="mc-rem-days-${m.id}"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -438,53 +485,6 @@ function renderCalGrid() {
     html += `<div class="${classes}" onclick="clickDay('${k}')">${d}${bossIcon}${mCountEl}</div>`;
   }
   gEl.innerHTML = html;
-}
-
-
-// ---- ZONA OSCURA ----
-
-function renderZona() {
-  const today = DateUtils.today();
-  const fell  = !!(ST.zona[today]?.fell);
-  const chk   = el('zonaBigChk');
-
-  if (chk) {
-    chk.textContent = fell ? '✕' : '';
-    chk.className   = 'zone-big-chk' + (fell ? ' fell' : '');
-  }
-
-  setText('zonaSub', fell
-    ? 'Penalización activada — cumple el castigo'
-    : 'Toca si fallaste hoy');
-
-  const pd = PENALIZACIONES[Math.min(ST.rank || 0, PENALIZACIONES.length - 1)];
-  setText('punRank', pd.name);
-
-  const punList = el('punList');
-  if (punList) {
-    punList.innerHTML = pd.items.map(item =>
-      `<div class="pitem">${item}</div>`
-    ).join('');
-  }
-}
-
-
-// ---- RUTA DE ESTUDIO ----
-
-function renderRuta() {
-  const container = el('rutaList');
-  if (!container) return;
-
-  container.innerHTML = MODULOS_ESTUDIO.map(m => `
-    <div class="mod-row">
-      <div class="mod-dot dot-${m.status}"></div>
-      <div style="flex:1">
-        <div class="mod-name">${m.name}</div>
-        <div class="mod-sub">${m.rank}</div>
-      </div>
-      <div class="mod-wk">Sem.${m.weeks}</div>
-    </div>
-  `).join('');
 }
 
 
@@ -598,10 +598,8 @@ function renderTools()     { /* HTML estático en sec-tools */ }
 // ---- RENDER COMPLETO ----
 
 function renderAll() {
+  renderHUD();
   renderStats();
   renderMisiones();
-  renderCalendario();
-  renderZona();
-  renderRuta();
   renderMenu();
 }

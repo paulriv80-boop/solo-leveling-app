@@ -1,18 +1,16 @@
-@keyframes statusPulse{
+/* ---- XP FLOTANTE (al completar misión con swipe) ---- */
+.xp-float {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--c1);
+  text-shadow: 0 0 14px var(--c1);
+  pointer-events: none;
+  animation: xpFloat .65s ease-out forwards;
+  letter-spacing: 2px;
+}
 
-    0%{
-        opacity:.5;
-        transform:scale(1);
-    }
-
-    50%{
-        opacity:1;
-        transform:scale(1.25);
-    }
-
-    100%{
-        opacity:.5;
-        transform:scale(1);
-    }
-
+@keyframes xpFloat {
+  0%   { opacity: 1; transform: translate(-50%, -50%); }
+  60%  { opacity: 1; transform: translate(-50%, -90%); }
+  100% { opacity: 0; transform: translate(-50%, -120%); }
 }

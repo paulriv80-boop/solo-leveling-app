@@ -100,17 +100,6 @@ function applyCalendarDayClick(k, mode) {
 }
 
 /**
- * Alterna el estado de "caída" en la zona oscura para hoy.
- * Devuelve el nuevo valor de fell.
- */
-function toggleZonaFall() {
-  const today = DateUtils.today();
-  if (!ST.zona[today]) ST.zona[today] = {};
-  ST.zona[today].fell = !ST.zona[today].fell;
-  return ST.zona[today].fell;
-}
-
-/**
  * Intenta comprar una recompensa de la tienda. Devuelve true si hubo
  * monedas suficientes y se descontó el costo.
  */

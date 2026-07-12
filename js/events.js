@@ -13,6 +13,9 @@ let rankAccordOpen = false;
 
 // ---- NAVEGACIÓN ----
 
+function openSettings()  { /* TODO: implementar panel de configuración */ }
+function openAddMision() { /* TODO: implementar modal de nueva misión */ }
+
 function nav(id, btn) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
   const section = el('sec-' + id);
@@ -127,6 +130,95 @@ function toggleOpcionalesPanel() {
   const open = body.classList.toggle('open');
   if (chevron) chevron.textContent = open ? '▴' : '▾';
   if (open) renderMisionesOpcionales();
+}
+
+
+// ---- PANEL EXPANDIBLE POR MISIÓN ----
+
+function toggleMisionDetail(id, e) {
+  e.stopPropagation();
+  const wrap   = document.querySelector(`.mc-wrap[data-id="${id}"]`);
+  const isOpen = wrap?.classList.toggle('expanded');
+  if (isOpen) _renderMisionDetail(id);
+}
+
+function _renderMisionDetail(id) {
+  const calEl = el('mc-cal-' + id);
+  if (calEl && !calEl.dataset.rendered) {
+    const today = DateUtils.today();
+    let done30 = 0, html = '';
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      const state = (ST.mis[key] || {})[id];
+      const cls   = state === 'done' ? 'done' : state === 'skip' ? 'skip' : 'none';
+      const todayMark = key === today ? ' mc-cal-dot--today' : '';
+      if (state === 'done') done30++;
+      html += `<div class="mc-cal-dot mc-cal-dot--${cls}${todayMark}" title="${key}"></div>`;
+    }
+    calEl.innerHTML = html;
+    calEl.dataset.rendered = '1';
+
+    let total90 = 0;
+    for (const dateKey in ST.mis) {
+      if ((ST.mis[dateKey] || {})[id] === 'done') total90++;
+    }
+    const eff    = Math.round((done30 / 30) * 100);
+    const streak = misionStreak(id);
+
+    setText('mc-eff-'     + id, eff + '%');
+    setText('mc-streak2-' + id, streak + 'd');
+    setText('mc-total-'   + id, total90);
+  }
+
+  const rem = (ST.reminders || {})[id];
+  const chk = el('mc-rem-' + id);
+  if (chk) {
+    chk.checked = !!(rem && rem.enabled);
+    const cfg = el('mc-rem-cfg-' + id);
+    if (cfg) cfg.classList.toggle('visible', !!(rem && rem.enabled));
+    const timeEl = el('mc-rem-time-' + id);
+    if (timeEl && rem && rem.time) timeEl.value = rem.time;
+  }
+  _renderDayPills(id, (rem && rem.days) ? rem.days : []);
+}
+
+function _renderDayPills(id, activeDays) {
+  const daysEl = el('mc-rem-days-' + id);
+  if (!daysEl) return;
+  const DAYS = [['L','lun'],['M','mar'],['X','mie'],['J','jue'],['V','vie'],['S','sab'],['D','dom']];
+  daysEl.innerHTML = DAYS.map(([label, key]) =>
+    `<button class="mc-day-pill${activeDays.includes(key) ? ' active' : ''}"
+             onclick="toggleDay('${id}','${key}',this)">${label}</button>`
+  ).join('');
+}
+
+function toggleDay(id, day, btn) {
+  if (!ST.reminders) ST.reminders = {};
+  if (!ST.reminders[id]) ST.reminders[id] = { enabled: false, time: '07:00', days: [] };
+  const days = ST.reminders[id].days;
+  const idx  = days.indexOf(day);
+  if (idx > -1) days.splice(idx, 1); else days.push(day);
+  btn.classList.toggle('active');
+  saveState();
+}
+
+function toggleReminder(id, checkbox) {
+  if (!ST.reminders) ST.reminders = {};
+  if (!ST.reminders[id]) ST.reminders[id] = { enabled: false, time: '07:00', days: [] };
+  ST.reminders[id].enabled = checkbox.checked;
+  const cfg = el('mc-rem-cfg-' + id);
+  if (cfg) cfg.classList.toggle('visible', checkbox.checked);
+  saveState();
+}
+
+function saveReminder(id) {
+  if (!ST.reminders) ST.reminders = {};
+  if (!ST.reminders[id]) ST.reminders[id] = { enabled: true, time: '07:00', days: [] };
+  const timeEl = el('mc-rem-time-' + id);
+  if (timeEl) ST.reminders[id].time = timeEl.value;
+  saveState();
 }
 
 
@@ -276,6 +368,12 @@ function attachSwipeHandlers(activeTab) {
         front.style.transform = 'translateX(420px)';
         front.style.opacity   = '0';
         if (overlayDone) overlayDone.style.opacity = '1';
+        const xpFloat = document.createElement('div');
+        xpFloat.className = 'xp-float';
+        xpFloat.textContent = '+' + xp + ' XP';
+        xpFloat.style.cssText = 'position:fixed;left:50%;top:50%;z-index:9999';
+        document.body.appendChild(xpFloat);
+        setTimeout(() => xpFloat.remove(), 700);
         setTimeout(() => misionHechoById(id, xp, cats, coins), 310);
       } else if (currentX < -THRESHOLD) {
         front.style.transform = 'translateX(-420px)';
@@ -343,19 +441,6 @@ function clickDay(k) {
   saveState();
   renderCalendario();
   renderMisiones();
-}
-
-
-// ---- ZONA OSCURA ----
-
-function toggleZona() {
-  const fell = toggleZonaFall();
-  Toast.show(
-    fell ? '⚠️ Penalización activada' : '✦ Zona oscura limpia hoy',
-    fell ? '#ff2d55' : 'var(--c3)'
-  );
-  saveState();
-  renderZona();
 }
 
 

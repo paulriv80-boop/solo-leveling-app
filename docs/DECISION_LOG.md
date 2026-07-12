@@ -4,6 +4,56 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-12 — Sprint 5.0: HUD topbar, collapsibles eliminados, calendario por misión, logo visible
+
+**Decisión 1 — Logo visible: `invert()` vs. cambiar el asset.**
+
+El `solo_icon.png` es negro sobre fondo transparente. Con `brightness(0.75)` (sprint 4.4) el logo quedaba invisible sobre el fondo oscuro `#05050f`.
+
+**Alternativas consideradas:**
+1. **Crear un asset nuevo con el icono en blanco.** Requiere edición de imagen externa; la app no debe depender de ediciones externas para cambiar el tema.
+2. **`mix-blend-mode: screen`** (revertir sprint 4.4). Devolvería el glow de neón que el usuario quería eliminar.
+3. **Filtro CSS `invert(0.88) brightness(0.62) contrast(1.4) sepia(0.15)` + drop-shadows opuestos.** **Elegida.** Convierte el negro en gris-piedra claro sin cambiar el asset, añade el efecto de relieve tallado y es ajustable sin tocar archivos de imagen.
+
+---
+
+**Decisión 2 — Topbar HUD vs. mantener ONLINE indicator.**
+
+El punto parpadeante ONLINE no aportaba información real (la app funciona offline). El espacio era mejor aprovechado con XP y Coins, los recursos primarios del juego.
+
+**Alternativas consideradas:**
+1. **Eliminar solo el dot, mantener texto ONLINE.** Sin valor informativo; ocupa espacio.
+2. **XP + Coins en la topbar como texto plano.** Sin identidad visual RPG.
+3. **Chips pill con icono Tabler.** **Elegida.** Consistente con el estilo glassmorphism de la app. `renderHUD()` centraliza las actualizaciones y se llama en `renderAll()` + `renderMisiones()` (único punto donde coins/XP cambian).
+
+---
+
+**Decisión 3 — Eliminar Zona Oscura: ¿mantener `zona: {}` en DEFAULT_STATE?**
+
+Eliminar `zona` de `DEFAULT_STATE` requeriría bumpar `STATE_VERSION` y añadir una migración que no hace nada útil (borrar un campo que ninguna función lee). Los usuarios con localStorage existente seguirán teniendo `ST.zona` porque `deepMerge` copia el estado guardado, pero ningún código lo usa.
+
+**Solución:** Dejar `zona: {}` en `DEFAULT_STATE` como campo huérfano. No hay `VERSION` bump. Las funciones `renderZona`, `toggleZona`, `toggleZonaFall` están completamente eliminadas.
+
+---
+
+**Decisión 4 — Estructura `.mc-card-face` para el botón chevron.**
+
+El botón chevron no puede vivir dentro de `.mc-front` porque `.mc-front` tiene `overflow: hidden` — el botón sería recortado en los bordes de la tarjeta.
+
+**Alternativas consideradas:**
+1. **Botón absoluto dentro de `.mc-wrap`.** `.mc-front` también es absoluto con `inset: 0` y Z-index superior, cubriría el botón.
+2. **Botón como sibling de `.mc-front` dentro de `.mc-card-face` (nuevo wrapper).**  **Elegida.** `.mc-card-face` es `position: relative; height: 170px`, contiene `.mc-front` (absolute, inset: 0) y `.mc-expand-btn` (absolute, z-index: 5 > mc-front). El botón no está recortado porque vive en el mismo nivel del DOM que el frente, fuera de su `overflow: hidden`. `wrap.querySelector('.mc-front')` en `attachSwipeHandlers` sigue encontrando el frente correctamente.
+
+---
+
+**Decisión 5 — Recordatorios: `ST.reminders` sin VERSION bump.**
+
+Añadir `reminders: {}` a `DEFAULT_STATE` requeriría `STATE_VERSION 9 → 10` con migración trivial (`ST.reminders = {}`). Dado que `_renderMisionDetail` accede siempre como `ST.reminders || {}` de forma defensiva, el campo puede no existir en usuarios con estado antiguo sin causar errores. Las funciones `toggleReminder`/`saveReminder` inicializan `ST.reminders` en el primer uso con `if (!ST.reminders) ST.reminders = {}`.
+
+**Solución:** No bumpar VERSION. El campo se auto-crea cuando el usuario usa un recordatorio por primera vez. `saveState()` lo persiste desde ese momento.
+
+---
+
 ## 2026-07-09 — Sprint 4.4: Botón rango compacto, swipe sin deformación, logo piedra
 
 **Decisión 1 — Botón Rango: compacto en columna derecha vs. overlay con texto siempre visible.**

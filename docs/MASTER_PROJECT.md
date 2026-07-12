@@ -3,7 +3,7 @@
 ## 1. Estado general
 
 - **Nombre de la app:** **Presence** (anteriormente "THE SYSTEM").
-- **Versión visible (UI):** v5.4 Alpha.
+- **Versión visible (UI):** v6.0 Alpha.
 - **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 9` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
@@ -66,7 +66,7 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 | Tab | Descripción |
 |---|---|
-| **Misiones** (home) | Header con fecha + X/90 días; mini calendario 7 días; 3 tabs (To-dos / Hechos / Saltados); tab To-dos: tarjetas swipe Tinder (derecha=hecho, izquierda=saltar, overlays verde/rojo) con imagen de fondo por misión, badges de racha/frecuencia/dificultad; tabs Hechos/Saltados: tap → overlay in-card "Devolver / ✕"; panel misiones opcionales (+); botón Agregar Propósito; collapsibles: Calendario, Zona Oscura, Ruta de Propósito |
+| **Misiones** (home) | Topbar HUD (XP+Coins+Settings); logo piedra-tallada; header X/90 premium; mini calendario 7 días; 4 tabs (To-dos / Hechos / Saltados / botón+); tarjetas swipe Tinder con badge racha/freq/dif + botón chevron para expandir panel de historial (calendario 30d, estadísticas, recordatorio); panel misiones opcionales (+); botón Agregar Propósito |
 | **Progreso** (antes Stats) | Avatar full-screen con aura pulsante logo Presence; badge rango; X/90 top-right; botón Tienda + botón Trofeo (derecha); overlay Tienda: canje de monedas de sombra; overlay Atributos: radar pentagonal (5 categorías, colapsables) + barras luminosas; overlay Alter Egos; overlay Rangos |
 | **Comunidad** | Placeholder — arquitectura para rankings, eventos globales y desafíos cooperativos (futuro) |
 | **Tools** | Grid de herramientas Coming Soon: IA Mentor (destacado), Pomodoro, Respiración, Workout, Diario, Visualización, Temporizador, Meditación |
@@ -114,6 +114,7 @@ Todas las descritas en la sección 4, con persistencia completa en `localStorage
 
 > **Sprint 4.3 (sin cambio de STATE_VERSION):** bug `calcDias90` corregido, logo con aura pulsante color-rango, tab Progreso, categorías colapsables, Tienda en overlay de Progreso, badges racha/freq/dif en misiones, imágenes de fondo m01–m10.
 > **Sprint 4.4 (sin cambio de STATE_VERSION):** botón Rango compacto (44×44, columna derecha, encima de Tienda), swipe de misiones sin deformación de viewport (`html { overflow-x: hidden }`), logo con efecto piedra tallada estático (sin animación, sin neón), nuevos assets `final/logo.png` y `final/solo_icon.png`, logo añadido en home de misiones.
+> **Sprint 5.0 (sin cambio de STATE_VERSION):** logo visible con filtro piedra `invert+sepia`, topbar HUD (XP+Coins+Settings), header misiones sin fecha + X/90 pill premium, botón (+) en tabs, 3 collapsibles eliminados (Calendario global, Zona Oscura+lógica, Ruta de Propósito), calendario expandible por misión (historial 30d, stats efectividad/racha/total, recordatorio ON/OFF+hora+días guardado en `ST.reminders`), animación XP flotante al completar. Funciones eliminadas: `renderZona`, `renderRuta`, `toggleZona`, `toggleZonaFall`.
 
 ## 7. Funcionalidades pendientes (roadmap)
 

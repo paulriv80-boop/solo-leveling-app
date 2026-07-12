@@ -12,7 +12,8 @@
 <body>
 
 <div id="bootScreen" class="boot-screen">
-  <img src="assets/design-system/logo/final/logo.png" alt="Presence" class="boot-logo-img">
+  <img src="assets/design-system/logo/final/solo_icon.png" alt="Presence" class="boot-logo-img">
+  <div class="boot-brand">PRESENCE</div>
   <div class="boot-operator">BIENVENIDO, GUERRERO</div>
 </div>
 
@@ -22,9 +23,18 @@
   <div class="logo">
     <img src="assets/design-system/logo/final/solo_icon.png" alt="Presence" class="logo-img">
   </div>
-  <div class="system-status">
-    <span class="status-dot"></span>
-    <span style="font-size:10px;letter-spacing:1px;color:var(--t2)">ONLINE</span>
+  <div class="topbar-hud">
+    <div class="hud-chip hud-chip--xp">
+      <i class="ti ti-bolt" aria-hidden="true"></i>
+      <span id="hudXP">0</span>
+    </div>
+    <div class="hud-chip hud-chip--coins">
+      <i class="ti ti-coin" aria-hidden="true"></i>
+      <span id="hudCoins">0</span>
+    </div>
+    <button class="hud-settings-btn" onclick="openSettings()" aria-label="Configuración">
+      <i class="ti ti-settings" aria-hidden="true"></i>
+    </button>
   </div>
 </div>
 
@@ -64,16 +74,15 @@
       <img src="assets/design-system/logo/final/solo_icon.png" alt="Presence" class="logo-img">
     </div>
 
-    <!-- Header: fecha + contador 90 días -->
+    <!-- Header: contador 90 días -->
     <div class="missions-header">
-      <div id="mDate" class="missions-date">—</div>
-      <div id="mDias90" class="missions-days90">0/90 días</div>
+      <div id="mDias90" class="missions-days90"><span class="days90-num">0</span><span class="days90-lbl">/90 días activos</span></div>
     </div>
 
     <!-- Mini calendario semanal — últimos 7 días -->
     <div id="mMiniWeek" class="m-mini-week"></div>
 
-    <!-- Tabs: To-dos / Hecho / Saltar -->
+    <!-- Tabs: To-dos / Hechos / Saltados / + -->
     <div class="m-tabs">
       <button class="m-tab on" onclick="switchMisionTab('todos',this)">
         To-dos <span class="m-tab-count" id="mTabTodosCount">0</span>
@@ -83,6 +92,9 @@
       </button>
       <button class="m-tab" onclick="switchMisionTab('skip',this)">
         Saltados <span class="m-tab-count" id="mTabSkipCount">0</span>
+      </button>
+      <button class="m-add-mission-btn" onclick="openAddMision()" aria-label="Añadir misión">
+        <i class="ti ti-plus" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -103,116 +115,6 @@
       + Agregar Propósito
     </button>
 
-    <!-- Collapsible: Calendario -->
-    <div class="collapsible">
-      <div class="collapsible-hdr" onclick="toggleCollapse('calBody','calChevron')">
-        <span><i class="ti ti-calendar" aria-hidden="true"></i>Calendario</span>
-        <span id="calChevron">▾</span>
-      </div>
-      <div class="collapsible-body" id="calBody">
-        <div class="collapsible-content">
-          <div class="streak-box">
-            <i class="ti ti-flame" aria-hidden="true" style="font-size:26px;color:var(--c2)"></i>
-            <div>
-              <div class="streak-num" id="cRacha">0</div>
-              <div class="streak-lbl">días de racha</div>
-            </div>
-            <div style="flex:1;padding-left:12px">
-              <div class="bonus-row">
-                <span class="bdays">3 días</span>
-                <span class="bname">+10% XP</span>
-                <span class="bactive" id="b3" style="display:none">✦ Activo</span>
-              </div>
-              <div class="bonus-row">
-                <span class="bdays">7 días</span>
-                <span class="bname">Estado de flujo</span>
-                <span class="bactive" id="b7" style="display:none">✦ Activo</span>
-              </div>
-              <div class="bonus-row">
-                <span class="bdays">30 días</span>
-                <span class="bname">Despertar de poder</span>
-                <span class="bactive" id="b30" style="display:none">✦ Activo</span>
-              </div>
-            </div>
-          </div>
-          <div class="leg">
-            <div class="leg-i"><div class="leg-d" style="background:var(--c3)"></div>Completado</div>
-            <div class="leg-i"><div class="leg-d" style="background:var(--red)"></div>Fallido</div>
-            <div class="leg-i"><div class="leg-d" style="background:var(--c5)"></div>Boss vencido</div>
-            <div class="leg-i"><div class="leg-d" style="background:var(--c1)"></div>Entrenamiento ligero</div>
-          </div>
-          <div class="cal-mode-btns">
-            <button class="cmb on" onclick="setCM('mark',this)">Marcar día</button>
-            <button class="cmb"    onclick="setCM('boss',this)">Boss fight</button>
-            <button class="cmb"    onclick="setCM('light',this)">Ligero</button>
-          </div>
-          <div class="card card2">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-              <span style="font-size:12px;font-weight:600" id="cLabel">Julio 2026</span>
-              <div style="display:flex;gap:6px">
-                <button class="cmb" onclick="chM(-1)"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
-                <button class="cmb" onclick="chM(1)"><i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-              </div>
-            </div>
-            <div class="cal-hdr" id="cHdr"></div>
-            <div class="cal-grid" id="cGrid"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Collapsible: Zona Oscura -->
-    <div class="collapsible">
-      <div class="collapsible-hdr" onclick="toggleCollapse('zonaBody','zonaChevron')">
-        <span><i class="ti ti-moon" aria-hidden="true"></i>Zona Oscura</span>
-        <span id="zonaChevron">▾</span>
-      </div>
-      <div class="collapsible-body" id="zonaBody">
-        <div class="collapsible-content">
-          <div class="zone-wrap">
-            <div class="zone-title">¿Caíste hoy en la zona oscura?</div>
-            <div class="zone-big-chk" id="zonaBigChk" onclick="toggleZona()"></div>
-            <div class="zone-sub" id="zonaSub">Toca si fallaste hoy</div>
-            <div class="zone-list">
-              <div class="zone-item">Redes sociales sin límite (máx 20 min/día)</div>
-              <div class="zone-item">Lujuria</div>
-              <div class="zone-item">Simpear</div>
-              <div class="zone-item">Videojuegos sin ganarlos como recompensa</div>
-              <div class="zone-item">Comida chatarra / dulces / alcohol</div>
-              <div class="zone-item">Apuestas</div>
-            </div>
-          </div>
-          <div class="card card2">
-            <div class="stitle">Castigos — Rango: <span id="punRank" style="color:var(--red)">Ansioso</span></div>
-            <div class="punish-box">
-              <div class="ptitle"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Penalización activa</div>
-              <div id="punList"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Collapsible: Ruta de Propósito -->
-    <div class="collapsible" style="margin-bottom:0">
-      <div class="collapsible-hdr" onclick="toggleCollapse('rutaBody','rutaChevron')">
-        <span><i class="ti ti-map" aria-hidden="true"></i>Ruta de Propósito</span>
-        <span id="rutaChevron">▾</span>
-      </div>
-      <div class="collapsible-body" id="rutaBody">
-        <div class="collapsible-content">
-          <div class="card card2" style="margin-bottom:12px">
-            <div class="stitle">Mis Propósitos</div>
-            <div style="font-size:11px;color:var(--t2);margin-bottom:8px">
-              Crea misiones de propósito personalizadas. Aparecen como tarjetas diarias.
-            </div>
-            <button class="secret-btn" onclick="openPropositoForm()">+ Nuevo Propósito</button>
-          </div>
-          <div class="stitle" style="margin-bottom:10px">Ruta de estudio — 6 meses</div>
-          <div id="rutaList"></div>
-        </div>
-      </div>
-    </div>
 
   </div>
 
