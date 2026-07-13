@@ -4,7 +4,7 @@
 
 - **Nombre de la app:** **Presence** (anteriormente "THE SYSTEM").
 - **Versión visible (UI):** v6.0 Alpha.
-- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 9` (`js/config.js`).
+- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 10` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
   - Repo: https://github.com/paulriv80-boop/solo-leveling-app
@@ -111,11 +111,13 @@ Todas las descritas en la sección 4, con persistencia completa en `localStorage
 | v6→v7 | `rankH → rank`, elimina `starsH`, `rankT`, `starsT`, `dc` |
 | v7→v8 | `energia→vitalidad`, `conocimiento→intelecto`, `espiritualidad→conexion`; `propositos[]`; `activeMissions[]`; limpia `ST.mis` |
 | v8→v9 | Añade `empatia: 0` a `ST.stats` (3er atributo de Vínculo) |
+| v9→v10 | Añade `gameMode`, `onboardingDone`, `settingsPrefs`, `penalty` al estado |
 
 > **Sprint 4.3 (sin cambio de STATE_VERSION):** bug `calcDias90` corregido, logo con aura pulsante color-rango, tab Progreso, categorías colapsables, Tienda en overlay de Progreso, badges racha/freq/dif en misiones, imágenes de fondo m01–m10.
 > **Sprint 4.4 (sin cambio de STATE_VERSION):** botón Rango compacto (44×44, columna derecha, encima de Tienda), swipe de misiones sin deformación de viewport (`html { overflow-x: hidden }`), logo con efecto piedra tallada estático (sin animación, sin neón), nuevos assets `final/logo.png` y `final/solo_icon.png`, logo añadido en home de misiones.
 > **Sprint 5.0 (sin cambio de STATE_VERSION):** logo visible con filtro piedra `invert+sepia`, topbar HUD (XP+Coins+Settings), header misiones sin fecha + X/90 pill premium, botón (+) en tabs, 3 collapsibles eliminados (Calendario global, Zona Oscura+lógica, Ruta de Propósito), calendario expandible por misión (historial 30d, stats efectividad/racha/total, recordatorio ON/OFF+hora+días guardado en `ST.reminders`), animación XP flotante al completar. Funciones eliminadas: `renderZona`, `renderRuta`, `toggleZona`, `toggleZonaFall`.
 > **Sprint 5.1 (sin cambio de STATE_VERSION):** logo definitivo `logo final.png` (símbolo+texto) en topbar y boot screen sin filtros CSS; eliminado ícono flotante `.missions-logo-row` y mini-semana `#mMiniWeek`; X/90 rediseñado con número 32px, separador `/90`, label `DÍAS ACTIVOS` tracking-2px, barra de progreso cyan animada `#mDias90Bar`; botón Rutina `.m-rutina-btn` en header junto al X/90; tabs rediseñados como pills glassmorphism; calendario mensual real por misión: 7 columnas, iniciales L/M/X/J/V/S/D, offset de celdas vacías por día de semana, números de día visibles en celdas de color semitransparente. Función `_renderMisionDetail` reescrita.
+> **Sprint 5.2 (STATE_VERSION 9→10):** onboarding "Elige tu Camino" (full-screen, 3 tarjetas con imágenes de modo); 3 modos de juego (Normal/Guerrero/Monje) con umbrales distintos de XP, coins y días activos; panel de Configuración premium slide-up con 6 secciones; sistema de penalizaciones automático (generado en apertura si no se cumplió el umbral del día anterior); avatar de penalización (`Avatar_Rango_E_Penalizacion.png`) mientras hay penalización pendiente. Nuevos archivos: `css/settings.css`, `css/gamemodes.css`, `css/penalty.css`.
 
 ## 7. Funcionalidades pendientes (roadmap)
 

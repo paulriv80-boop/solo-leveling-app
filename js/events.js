@@ -10,11 +10,173 @@ let calY    = new Date().getFullYear();
 let calM    = new Date().getMonth();
 let rankAccordOpen = false;
 
+// Contexto del selector de modo de juego
+let _gameModeContext = 'settings'; // 'onboarding' | 'settings'
+let _selectedMode    = null;
+
 
 // ---- NAVEGACIÓN ----
 
-function openSettings()  { /* TODO: implementar panel de configuración */ }
 function openAddMision() { /* TODO: implementar modal de nueva misión */ }
+
+
+// ---- SETTINGS ----
+
+function openSettings() {
+  _renderSettingsMode();
+  _syncSettingsPrefs();
+  el('settingsOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSettings() {
+  el('settingsOverlay')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function _renderSettingsMode() {
+  const mc = CONFIG.GAME_MODES[ST.gameMode] || CONFIG.GAME_MODES.normal;
+  const nameEl = el('cfgModeName');
+  const tagEl  = el('cfgModeTagline');
+  const imgEl  = el('cfgModeImg');
+  if (nameEl) nameEl.textContent = mc.label;
+  if (tagEl)  tagEl.textContent  = mc.tagline;
+  if (imgEl)  imgEl.style.backgroundImage = `url('${mc.img}')`;
+}
+
+function _syncSettingsPrefs() {
+  const p    = ST.settingsPrefs || {};
+  const sync = (id, val) => { const e = document.getElementById(id); if (e) e.checked = !!val; };
+  sync('prefNotifications', p.notifications);
+  sync('prefAnimations',    p.animations !== false);
+  sync('prefSounds',        p.sounds);
+  sync('prefVibration',     p.vibration !== false);
+}
+
+function toggleSettingPref(key, checkbox) {
+  if (!ST.settingsPrefs) ST.settingsPrefs = {};
+  ST.settingsPrefs[key] = checkbox.checked;
+  saveState();
+}
+
+function exportProgress() { Toast.show('Próximamente: exportar progreso', 'var(--t2)'); }
+function importProgress() { Toast.show('Próximamente: importar respaldo',  'var(--t2)'); }
+
+
+// ---- ONBOARDING & SELECTOR DE MODO ----
+
+function openOnboarding() {
+  _gameModeContext = 'onboarding';
+  _selectedMode    = ST.gameMode;
+  _syncModeCards();
+  const nav  = el('gmoNav');
+  const logo = el('gmoLogo');
+  if (nav)  nav.style.display  = 'none';
+  if (logo) logo.style.display = 'block';
+  el('gameModeOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function openGameModeSelect() {
+  _gameModeContext = 'settings';
+  _selectedMode    = ST.gameMode;
+  _syncModeCards();
+  const nav  = el('gmoNav');
+  const logo = el('gmoLogo');
+  if (nav)  nav.style.display  = 'flex';
+  if (logo) logo.style.display = 'none';
+  el('gameModeOverlay')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeGameModeSelect() {
+  el('gameModeOverlay')?.classList.remove('open');
+  if (_gameModeContext === 'settings') {
+    openSettings();
+  } else {
+    document.body.style.overflow = '';
+  }
+}
+
+function selectModeCard(mode, btn) {
+  _selectedMode = mode;
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  const confirmBtn = el('gmoConfirmBtn');
+  if (confirmBtn) confirmBtn.disabled = false;
+}
+
+function _syncModeCards() {
+  document.querySelectorAll('.mode-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.mode === _selectedMode);
+  });
+  const confirmBtn = el('gmoConfirmBtn');
+  if (confirmBtn) confirmBtn.disabled = false;
+}
+
+function confirmGameMode() {
+  if (!_selectedMode) return;
+  ST.gameMode       = _selectedMode;
+  ST.onboardingDone = true;
+  saveState();
+  el('gameModeOverlay')?.classList.remove('open');
+  document.body.style.overflow = '';
+  if (_gameModeContext === 'settings') {
+    _renderSettingsMode();
+    openSettings();
+  }
+  renderAll();
+}
+
+
+// ---- PENALIZACIÓN ----
+
+function openPenaltyScreen() {
+  const tasks   = (ST.penalty.tasks || [])
+    .map(id => CONFIG.PENALIZACIONES.find(p => p.id === id))
+    .filter(Boolean);
+  const isMonje = ST.gameMode === 'monje';
+
+  const subEl = el('penaltySub');
+  if (subEl) {
+    subEl.textContent = isMonje
+      ? 'La disciplina exige constancia. Antes de continuar deberás completar las siguientes pruebas.'
+      : 'Ayer no cumpliste con la disciplina mínima. Antes de continuar deberás completar la siguiente prueba.';
+  }
+
+  const tasksEl = el('penaltyTasks');
+  if (tasksEl) {
+    tasksEl.innerHTML = tasks.map(t =>
+      `<div class="penalty-task" data-id="${t.id}" onclick="togglePenaltyTask('${t.id}',this)">
+         <div class="penalty-task-check"><i class="ti ti-check"></i></div>
+         <div class="penalty-task-text">${t.text}</div>
+       </div>`
+    ).join('');
+  }
+
+  const ctaEl = el('penaltyCta');
+  if (ctaEl) ctaEl.disabled = true;
+
+  el('penaltyScreen')?.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function togglePenaltyTask(id, taskEl) {
+  taskEl.classList.toggle('done');
+  const completed = document.querySelectorAll('.penalty-task.done').length;
+  const total     = document.querySelectorAll('.penalty-task').length;
+  const ctaEl = document.getElementById('penaltyCta');
+  if (ctaEl) ctaEl.disabled = completed < total;
+}
+
+function completePenalty() {
+  ST.penalty.pending   = false;
+  ST.penalty.completed = ST.penalty.tasks;
+  saveState();
+  el('penaltyScreen')?.classList.remove('open');
+  document.body.style.overflow = '';
+  renderAll();
+}
 
 function nav(id, btn) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
@@ -36,12 +198,17 @@ function nav(id, btn) {
 
 // ---- MISIONES ----
 
+function _calcXpGained(xp) {
+  const mc = CONFIG.GAME_MODES[ST.gameMode] || CONFIG.GAME_MODES.normal;
+  return Math.round(xp * mc.xpMult);
+}
+
 function toggleMision(id, xp, cats, coins) {
   const result = applyMissionToggle(id, xp, cats, coins);
 
   if (result.completed) {
-    const coinsMsg = coins > 0 ? ` +${coins}c` : '';
-    Toast.show(`+${xp} XP${coinsMsg}`, 'var(--c1)');
+    const coinsMsg = result.coinsGained > 0 ? ` +${result.coinsGained}c` : '';
+    Toast.show(`+${result.xpGained} XP${coinsMsg}`, 'var(--c1)');
     const dayResult = applyDayCompletion();
     if (dayResult.completed) {
       Toast.show('¡Día completo! 🔥 Racha: ' + ST.racha, '#39ff14');
@@ -55,9 +222,9 @@ function toggleMision(id, xp, cats, coins) {
 
 // Swipe derecha — marcar hecho (llamado desde attachSwipeHandlers)
 function misionHechoById(id, xp, cats, coins) {
-  applyMissionToggle(id, xp, cats, coins);
-  const coinsMsg = coins > 0 ? ` +${coins}c` : '';
-  Toast.show(`+${xp} XP${coinsMsg}`, 'var(--c1)');
+  const result = applyMissionToggle(id, xp, cats, coins);
+  const coinsMsg = result.coinsGained > 0 ? ` +${result.coinsGained}c` : '';
+  Toast.show(`+${result.xpGained} XP${coinsMsg}`, 'var(--c1)');
   const dayResult = applyDayCompletion();
   if (dayResult.completed) {
     Toast.show('¡Día completo! Racha: ' + ST.racha, '#39ff14');
@@ -382,7 +549,7 @@ function attachSwipeHandlers(activeTab) {
         if (overlayDone) overlayDone.style.opacity = '1';
         const xpFloat = document.createElement('div');
         xpFloat.className = 'xp-float';
-        xpFloat.textContent = '+' + xp + ' XP';
+        xpFloat.textContent = '+' + _calcXpGained(xp) + ' XP';
         xpFloat.style.cssText = 'position:fixed;left:50%;top:50%;z-index:9999';
         document.body.appendChild(xpFloat);
         setTimeout(() => xpFloat.remove(), 700);

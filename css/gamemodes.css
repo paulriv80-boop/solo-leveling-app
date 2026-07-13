@@ -1,0 +1,214 @@
+/* ============================================================
+   GAME MODES — Presence
+   Onboarding + selector de modo de juego
+============================================================ */
+
+.game-mode-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  background: rgba(5, 5, 15, .97);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  transform: translateY(100%);
+  transition: transform .36s cubic-bezier(.4, 0, .2, 1);
+}
+
+.game-mode-overlay.open {
+  transform: translateY(0);
+}
+
+.gmo-inner {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.gmo-nav {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-bottom: 8px;
+}
+
+.gmo-back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .07);
+  border: 1px solid rgba(255, 255, 255, .12);
+  color: var(--t0);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .2s;
+}
+
+.gmo-back-btn:active {
+  background: rgba(255, 255, 255, .14);
+}
+
+.gmo-logo {
+  width: 130px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+.gmo-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--t0);
+  text-align: center;
+  letter-spacing: -.5px;
+  margin: 0 0 8px;
+}
+
+.gmo-sub {
+  font-size: 12px;
+  color: var(--t3);
+  text-align: center;
+  margin: 0 0 24px;
+  letter-spacing: .5px;
+}
+
+.gmo-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+/* ---- Tarjetas de modo ---- */
+
+.mode-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 130px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .25s, transform .15s, box-shadow .25s;
+}
+
+.mode-card.selected {
+  border-color: var(--c1);
+  box-shadow: 0 0 18px rgba(0, 245, 255, .25);
+  transform: scale(1.01);
+}
+
+.mode-card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.mode-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, .72) 0%, rgba(0, 0, 0, .46) 100%);
+}
+
+.mode-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mode-card-name {
+  font-size: 17px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.mode-card-tagline {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .6);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.mode-card-msg {
+  font-size: 11px;
+  color: rgba(255, 255, 255, .45);
+  font-style: italic;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.mode-card-meta {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .45);
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+
+.mode-card-check {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--c1);
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  opacity: 0;
+  z-index: 2;
+  transition: opacity .2s;
+}
+
+.mode-card.selected .mode-card-check {
+  opacity: 1;
+}
+
+/* ---- Botón confirmar ---- */
+
+.gmo-confirm-btn {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--c1);
+  color: #000;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .2s, transform .15s;
+}
+
+.gmo-confirm-btn:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.gmo-confirm-btn:not(:disabled):active {
+  transform: scale(.97);
+}

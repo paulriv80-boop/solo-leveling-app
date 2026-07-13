@@ -2,6 +2,26 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-12 — sprint 5.2 Settings · Onboarding · Modos de Juego · Penalizaciones
+
+**Versión:** v6.0 Alpha — STATE_VERSION 9 → **10**
+**Archivos:** `js/config.js`, `js/state.js`, `js/logic.js`, `js/utils.js`, `js/app.js`, `js/events.js`, `js/render.js`, `index.html`, `css/settings.css` (nuevo), `css/gamemodes.css` (nuevo), `css/penalty.css` (nuevo), `css/style.css`
+**Tipo:** Feature mayor — sistema de modos de juego, configuración premium, penalizaciones
+
+### 5 cambios implementados
+
+1. **Onboarding "Elige tu Camino".** Primera vez que el usuario abre la app (o tras un reset), aparece una pantalla full-screen con las 3 tarjetas de modo usando las imágenes de `assets/design-system/camino/`. Se muestra después del boot screen (2.5s + 0.8s fade). `ST.onboardingDone: false` → `true` al confirmar. En sesiones subsiguientes no vuelve a aparecer.
+
+2. **3 Modos de Juego (Normal/Guerrero/Monje).** Sistema configurado en `CONFIG.GAME_MODES` con propiedades: `misionesMin`, `xpMult`, `coinsEnabled`, `penaltyCount`. Afecta: (a) XP ganado por misión (×1.0/×1.5/×2.0); (b) coins — Monje no gana coins; (c) umbral de día verde para racha y X/90 (3/6/10 misiones). `applyMissionToggle()`, `applyDayCompletion()` y `calcDias90()` actualizados para leer el modo activo desde `ST.gameMode`.
+
+3. **Panel de Configuración.** Accessible desde el botón engranaje del topbar. Seis secciones: (1) Modo de Juego — tarjeta hero con imagen + nombre + tagline, tap abre selector; (2) Perfil — avatar circular + nombre/rango (stub); (3) Notificaciones — toggles (implementables via notificaciones web en sprint futuro); (4) Apariencia — toggles animations/sounds/vibration; (5) Datos — stubs exportar/importar; (6) Acerca de — versión + links placeholder. Usa `class="attrs-overlay"` (slide-up existente) con z-index:600.
+
+4. **Sistema de penalizaciones (Guerrero y Monje).** `checkAndGeneratePenalty(prevDate)` en `logic.js` se llama en cada apertura de la app con la fecha de la visita anterior. Si el modo tiene `penaltyCount > 0` y el día anterior tuvo menos misiones que `misionesMin`, genera una penalización aleatoria en `ST.penalty`. Las tareas se seleccionan del pool `CONFIG.PENALIZACIONES` (12 entradas), sin repetir las 2 últimas IDs. Guerrero: 1 tarea. Monje: 2 tareas. La pantalla de penalización aparece después del boot screen (si no hay onboarding pendiente). El usuario debe marcar todas las tareas como completadas antes de acceder a la app.
+
+5. **Avatar de penalización.** Cuando `ST.penalty.pending === true`, `renderAvatar()` usa `assets/Avatar_Rango_E_Penalizacion.png` en lugar del avatar de rango actual. Al completar la penalización (`completePenalty()`) se llama `renderAll()` que restaura el avatar neutro.
+
+---
+
 ## 2026-07-12 — sprint 5.1 Refinamiento Premium: Misiones
 
 **Versión:** v6.0 Alpha — STATE_VERSION 9 (sin cambio)

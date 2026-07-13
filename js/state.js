@@ -21,6 +21,10 @@ const DEFAULT_STATE = {
   propositos: [],     // [{ id, name, desc, objetivo, frecuencia, progreso, created }]
   alterActive: null,
   lastVisit: null,
+  gameMode: 'normal',
+  onboardingDone: false,
+  settingsPrefs: { animations: true, sounds: false, vibration: true, notifications: false },
+  penalty: { pending: false, date: null, tasks: [], completed: [], lastIds: [] },
 };
 
 // Estado activo en memoria — única fuente de verdad
@@ -140,6 +144,14 @@ const StateMigration = {
     // v8 → v9: atributo empatia añadido a Vínculo
     if (version < 9) {
       if (raw.stats && raw.stats.empatia === undefined) raw.stats.empatia = 0;
+    }
+
+    // v9 → v10: modos de juego, penalizaciones, onboarding, preferencias
+    if (version < 10) {
+      raw.gameMode       = raw.gameMode || 'normal';
+      raw.onboardingDone = raw.onboardingDone !== undefined ? raw.onboardingDone : false;
+      raw.settingsPrefs  = raw.settingsPrefs  || { animations: true, sounds: false, vibration: true, notifications: false };
+      raw.penalty        = raw.penalty        || { pending: false, date: null, tasks: [], completed: [], lastIds: [] };
     }
 
     raw.version = CONFIG.STATE_VERSION;

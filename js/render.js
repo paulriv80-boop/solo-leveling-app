@@ -17,7 +17,10 @@ function renderAvatar() {
   if (img) {
     img.style.display = hasAvatar ? 'block' : 'none';
     if (hasAvatar) {
-      img.src          = r.avatar;
+      // Usar avatar de penalización si hay una pendiente
+      img.src = (ST.penalty && ST.penalty.pending)
+        ? 'assets/Avatar_Rango_E_Penalizacion.png'
+        : r.avatar;
       img.style.filter = `drop-shadow(0 0 22px ${r.color}) drop-shadow(0 0 8px ${r.color})`;
     }
   }

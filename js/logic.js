@@ -21,13 +21,13 @@ function xpHoy() {
 }
 
 /**
- * Aplica el toggle de una misión: marca o desmarca, ajusta XP/coins/attrs.
- * Revierte el día verde si se desmarca. Devuelve { completed }.
+ * Aplica el toggle de una misión: marca o desmarca, ajusta XP/coins/attrs según modo.
+ * Revierte el día verde si se desmarca. Devuelve { completed, xpGained, coinsGained }.
  *
  * @param {string}              id    - ID de la misión (o 'pu_xxx' para propósito)
- * @param {number}              xp    - XP de la misión
- * @param {{cat,stars}[]}       cats  - Categorías que incrementa (VISUAL + atributos)
- * @param {number}              coins - Monedas
+ * @param {number}              xp    - XP base de la misión
+ * @param {{cat,stars}[]}       cats  - Categorías que incrementa
+ * @param {number}              coins - Monedas base
  */
 function applyMissionToggle(id, xp, cats, coins) {
   const today = DateUtils.today();
@@ -41,8 +41,12 @@ function applyMissionToggle(id, xp, cats, coins) {
   }
   const delta = wasDone ? -1 : 1;
 
-  ST.totalXP = Math.max(0, ST.totalXP + delta * xp);
-  ST.coins   = Math.max(0, ST.coins   + delta * (coins || 0));
+  const modeConf   = CONFIG.GAME_MODES[ST.gameMode] || CONFIG.GAME_MODES.normal;
+  const xpDelta    = Math.round(xp * modeConf.xpMult);
+  const coinsDelta = modeConf.coinsEnabled ? (coins || 0) : 0;
+
+  ST.totalXP = Math.max(0, ST.totalXP + delta * xpDelta);
+  ST.coins   = Math.max(0, ST.coins   + delta * coinsDelta);
 
   // Por cada categoría en cats: incrementar todos sus atributos +1
   (cats || []).forEach(({ cat }) => {
@@ -58,25 +62,66 @@ function applyMissionToggle(id, xp, cats, coins) {
     ST.racha = DateUtils.calcRacha(ST.dias);
   }
 
-  return { completed: !wasDone };
+  return {
+    completed:    !wasDone,
+    xpGained:     delta > 0 ? xpDelta    : 0,
+    coinsGained:  delta > 0 ? coinsDelta : 0,
+  };
 }
 
 /**
- * Evalúa si se completaron todas las misiones activas hoy.
+ * Evalúa si se completaron suficientes misiones hoy según el modo activo.
  * Si es así, marca el día verde y recalcula la racha.
  */
 function applyDayCompletion() {
   const today     = DateUtils.today();
   const todayMis  = ST.mis[today] || {};
-  const active    = MISIONES.filter(m => ST.activeMissions.includes(m.id));
+  const modeConf  = CONFIG.GAME_MODES[ST.gameMode] || CONFIG.GAME_MODES.normal;
+  const doneCount = Object.values(todayMis).filter(v => v === 'done').length;
 
-  if (!active.every(m => todayMis[m.id] === 'done')) {
-    return { completed: false };
-  }
+  if (doneCount < modeConf.misionesMin) return { completed: false };
+  if (ST.dias[today] === 'green')       return { completed: false };
 
   ST.dias[today] = 'green';
   ST.racha = DateUtils.calcRacha(ST.dias);
   return { completed: true };
+}
+
+/**
+ * Comprueba si el día anterior no cumplió el umbral del modo activo.
+ * Si es así, genera una penalización pendiente en ST.penalty.
+ * Debe llamarse con la fecha de la ÚLTIMA visita (antes de sobrescribir lastVisit).
+ */
+function checkAndGeneratePenalty(prevDate) {
+  if (!prevDate) return;
+  if (ST.penalty && ST.penalty.pending) return; // Ya hay una pendiente
+
+  const today = DateUtils.today();
+  if (prevDate === today) return; // Misma sesión, sin check
+
+  const modeConf = CONFIG.GAME_MODES[ST.gameMode] || CONFIG.GAME_MODES.normal;
+  if (modeConf.penaltyCount === 0) return; // Modo Normal no tiene penalizaciones
+
+  const prevMis  = ST.mis[prevDate] || {};
+  const donePrev = Object.values(prevMis).filter(v => v === 'done').length;
+  if (donePrev >= modeConf.misionesMin) return; // Umbral cumplido, sin penalización
+
+  // Seleccionar tareas evitando repetir las últimas
+  const lastIds  = (ST.penalty && ST.penalty.lastIds) || [];
+  const pool     = CONFIG.PENALIZACIONES.filter(p => !lastIds.includes(p.id));
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  const tasks    = [];
+  for (let i = 0; i < modeConf.penaltyCount && i < shuffled.length; i++) {
+    tasks.push(shuffled[i].id);
+  }
+
+  ST.penalty = {
+    pending:   true,
+    date:      today,
+    tasks,
+    completed: [],
+    lastIds:   tasks,
+  };
 }
 
 /**

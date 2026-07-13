@@ -4,6 +4,49 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-12 — Sprint 5.2: Settings, Onboarding, Modos de Juego, Penalizaciones
+
+**Decisión 1 — Un solo overlay de modos compartido (onboarding + settings).**
+
+En lugar de crear dos componentes separados para onboarding y para el selector de modo desde Settings, se usó un único `#gameModeOverlay` con un flag `_gameModeContext` que controla el comportamiento al confirmar.
+
+**Alternativas consideradas:**
+1. **Dos overlays independientes.** Duplica 80% del HTML y CSS. Sin beneficio.
+2. **Un overlay con lógica dinámica.** **Elegida.** El nav button (`gmoNav`) y el logo (`gmoLogo`) se muestran/ocultan según el contexto. Al confirmar desde onboarding: cierra el overlay y deja al usuario en la app. Al confirmar desde settings: vuelve a abrir el panel de configuración.
+
+---
+
+**Decisión 2 — threshold de día verde: conteo simple vs. misiones específicas.**
+
+Antes de los modos, el día verde requería que TODAS las misiones activas estuvieran marcadas como 'done' (`active.every(...)`). Con los modos, se necesita un umbral numérico (3/6/10).
+
+**Alternativas consideradas:**
+1. **Mantener every() para Normal.** Inconsistente con Guerrero/Monje y más restrictivo que el umbral de 3 declarado.
+2. **Conteo de misiones done (cualquiera).** **Elegida.** `Object.values(todayMis).filter(v => v === 'done').length >= misionesMin`. Incluye propósitos en el conteo, lo que es correcto: un propósito completado también debe contar hacia el umbral diario. Simplifica la lógica y la hace coherente entre modos.
+
+---
+
+**Decisión 3 — Penalty prevDate: leer localStorage ANTES de loadState().**
+
+`loadState()` sobreescribe `ST.lastVisit = today` en memoria. Si la función de penalización se llama después, `prevDate` siempre sería `today` y nunca habría penalizaciones.
+
+**Alternativas consideradas:**
+1. **Guardar prevDate dentro de loadState().** Complica state.js (mezcla estado y lógica de penalización).
+2. **Añadir campo `prevVisit` al estado.** Redundante con `lastVisit`.
+3. **`_getPrevVisit()` lee raw localStorage antes de loadState().** **Elegida.** Lee directamente del storage sin migrar, captura el valor antes de que loadState lo sobreescriba, y se descarta inmediatamente. Solución de una línea en app.js con cero impacto en el resto del sistema.
+
+---
+
+**Decisión 4 — Modo Monje sin coins: eliminar en applyMissionToggle, no en render.**
+
+Las coins podrían haberse ocultado solo visualmente, dejando la lógica de acumulación intacta. Pero acumularlas invisiblemente y luego no mostrarlas crea inconsistencia.
+
+**Alternativas consideradas:**
+1. **Ocultar coins en UI para Monje.** El usuario no las ve pero las acumula. Confuso si algún día se cambia de modo.
+2. **No acumular coins en lógica (applyMissionToggle).** **Elegida.** `coinsDelta = modeConf.coinsEnabled ? (coins || 0) : 0`. Limpio, coherente con el espíritu del modo. Las coins actuales se mantienen si el usuario cambia de/a Monje — no se borran.
+
+---
+
 ## 2026-07-12 — Sprint 5.1: Logo definitivo, X/90 premium, tabs pill, calendario mensual
 
 **Decisión 1 — Logo: sin filtro CSS en el logo definitivo.**

@@ -1,0 +1,158 @@
+/* ============================================================
+   PENALTY SCREEN — Presence
+   Pantalla de penalización cinematográfica
+============================================================ */
+
+.penalty-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 800;
+  background: rgba(5, 5, 15, .98);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+.penalty-screen.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.penalty-inner {
+  max-width: 360px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  padding: 32px 0 40px;
+}
+
+.penalty-avatar-wrap {
+  position: relative;
+}
+
+.penalty-avatar-img {
+  width: 160px;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+  filter: drop-shadow(0 0 30px rgba(220, 50, 50, .45));
+}
+
+.penalty-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.penalty-warning {
+  font-size: 28px;
+  line-height: 1;
+  color: #ff6b35;
+}
+
+.penalty-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--t0);
+  letter-spacing: -.5px;
+  margin: 0;
+}
+
+.penalty-sub {
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.55;
+  max-width: 300px;
+  margin: 0;
+}
+
+/* ---- Tareas de penalización ---- */
+
+.penalty-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.penalty-task {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .2s, border-color .2s;
+}
+
+.penalty-task.done {
+  background: rgba(0, 245, 255, .07);
+  border-color: rgba(0, 245, 255, .22);
+}
+
+.penalty-task-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, .22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: transparent;
+  flex-shrink: 0;
+  transition: background .2s, border-color .2s, color .2s;
+}
+
+.penalty-task.done .penalty-task-check {
+  background: var(--c1);
+  border-color: var(--c1);
+  color: #000;
+}
+
+.penalty-task-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t1);
+  text-align: left;
+  line-height: 1.4;
+}
+
+/* ---- CTA ---- */
+
+.penalty-cta {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--c1);
+  color: #000;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .2s, transform .15s;
+}
+
+.penalty-cta:disabled {
+  opacity: .32;
+  cursor: default;
+}
+
+.penalty-cta:not(:disabled):active {
+  transform: scale(.97);
+}

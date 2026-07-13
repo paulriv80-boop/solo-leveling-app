@@ -440,6 +440,197 @@
 </div>
 
 
+<!-- GAME MODE OVERLAY (onboarding + selector desde Settings) -->
+<div class="game-mode-overlay" id="gameModeOverlay">
+  <div class="gmo-inner">
+    <div class="gmo-nav" id="gmoNav">
+      <button class="gmo-back-btn" onclick="closeGameModeSelect()" aria-label="Volver">
+        <i class="ti ti-arrow-left"></i>
+      </button>
+    </div>
+    <img src="assets/design-system/logo/final/definitivo/logo final.png" class="gmo-logo" id="gmoLogo" alt="Presence">
+    <h2 class="gmo-title">Elige tu Camino</h2>
+    <p class="gmo-sub">Toda disciplina comienza con una decisión.</p>
+    <div class="gmo-cards">
+
+      <div class="mode-card" data-mode="normal" onclick="selectModeCard('normal',this)">
+        <div class="mode-card-bg" style="background-image:url('assets/design-system/camino/modo normal.png')"></div>
+        <div class="mode-card-overlay"></div>
+        <div class="mode-card-body">
+          <div class="mode-card-name">Normal</div>
+          <div class="mode-card-tagline">Construye hábitos</div>
+          <div class="mode-card-msg">"Cada gran guerrero comenzó dando un solo paso."</div>
+          <div class="mode-card-meta">
+            <span>3 misiones mín.</span>
+            <span>XP ×1.0</span>
+          </div>
+        </div>
+        <div class="mode-card-check"><i class="ti ti-check"></i></div>
+      </div>
+
+      <div class="mode-card" data-mode="guerrero" onclick="selectModeCard('guerrero',this)">
+        <div class="mode-card-bg" style="background-image:url('assets/design-system/camino/modo guerrero.png')"></div>
+        <div class="mode-card-overlay"></div>
+        <div class="mode-card-body">
+          <div class="mode-card-name">Guerrero</div>
+          <div class="mode-card-tagline">Forja disciplina</div>
+          <div class="mode-card-msg">"La disciplina aparece cuando desaparecen las excusas."</div>
+          <div class="mode-card-meta">
+            <span>6 misiones mín.</span>
+            <span>XP ×1.5</span>
+          </div>
+        </div>
+        <div class="mode-card-check"><i class="ti ti-check"></i></div>
+      </div>
+
+      <div class="mode-card" data-mode="monje" onclick="selectModeCard('monje',this)">
+        <div class="mode-card-bg" style="background-image:url('assets/design-system/camino/modo monje.png')"></div>
+        <div class="mode-card-overlay"></div>
+        <div class="mode-card-body">
+          <div class="mode-card-name">Monje</div>
+          <div class="mode-card-tagline">Domina tu mente</div>
+          <div class="mode-card-msg">"El verdadero progreso ocurre cuando nadie está mirando."</div>
+          <div class="mode-card-meta">
+            <span>10 misiones mín.</span>
+            <span>XP ×2.0 · Sin coins</span>
+          </div>
+        </div>
+        <div class="mode-card-check"><i class="ti ti-check"></i></div>
+      </div>
+
+    </div>
+    <button class="gmo-confirm-btn" id="gmoConfirmBtn" onclick="confirmGameMode()" disabled>
+      Confirmar Camino
+    </button>
+  </div>
+</div>
+
+
+<!-- SETTINGS OVERLAY (slide-up) -->
+<div class="attrs-overlay" id="settingsOverlay" style="z-index:600">
+  <div class="attrs-overlay-scroll">
+    <div class="attrs-overlay-hdr">
+      <div class="attrs-overlay-title">Configuración</div>
+      <button class="attrs-close-btn" onclick="closeSettings()">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- 1. Modo de Juego -->
+    <button class="cfg-mode-card" onclick="openGameModeSelect()" id="cfgModeCard">
+      <div class="cfg-mode-img" id="cfgModeImg"></div>
+      <div class="cfg-mode-content">
+        <div class="cfg-mode-label">Modo de Juego</div>
+        <div class="cfg-mode-name" id="cfgModeName">Normal</div>
+        <div class="cfg-mode-tagline" id="cfgModeTagline">Construye hábitos</div>
+      </div>
+      <i class="ti ti-chevron-right cfg-arrow"></i>
+    </button>
+
+    <!-- 2. Perfil -->
+    <div class="cfg-section">
+      <div class="cfg-section-title">Perfil</div>
+      <div class="cfg-row cfg-row--avatar">
+        <img src="assets/Avatar_Rango_E_neutro.png" class="cfg-avatar-img" id="cfgAvatar" alt="Avatar">
+        <div class="cfg-row-info">
+          <div class="cfg-row-label">Guerrero</div>
+          <div class="cfg-row-sub">Rango E · Novato</div>
+        </div>
+        <button class="cfg-row-btn">Editar</button>
+      </div>
+    </div>
+
+    <!-- 3. Notificaciones -->
+    <div class="cfg-section">
+      <div class="cfg-section-title">Notificaciones</div>
+      <div class="cfg-row">
+        <span class="cfg-row-label">Activar notificaciones</span>
+        <label class="mc-toggle">
+          <input type="checkbox" id="prefNotifications" onchange="toggleSettingPref('notifications',this)">
+          <span class="mc-toggle-track"><span class="mc-toggle-thumb"></span></span>
+        </label>
+      </div>
+      <div class="cfg-row">
+        <span class="cfg-row-label">Recordatorios inteligentes</span>
+        <label class="mc-toggle">
+          <input type="checkbox" id="prefReminders" disabled>
+          <span class="mc-toggle-track"><span class="mc-toggle-thumb"></span></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 4. Apariencia -->
+    <div class="cfg-section">
+      <div class="cfg-section-title">Apariencia</div>
+      <div class="cfg-row">
+        <span class="cfg-row-label">Animaciones</span>
+        <label class="mc-toggle">
+          <input type="checkbox" id="prefAnimations" onchange="toggleSettingPref('animations',this)" checked>
+          <span class="mc-toggle-track"><span class="mc-toggle-thumb"></span></span>
+        </label>
+      </div>
+      <div class="cfg-row">
+        <span class="cfg-row-label">Sonidos</span>
+        <label class="mc-toggle">
+          <input type="checkbox" id="prefSounds" onchange="toggleSettingPref('sounds',this)">
+          <span class="mc-toggle-track"><span class="mc-toggle-thumb"></span></span>
+        </label>
+      </div>
+      <div class="cfg-row">
+        <span class="cfg-row-label">Vibración</span>
+        <label class="mc-toggle">
+          <input type="checkbox" id="prefVibration" onchange="toggleSettingPref('vibration',this)" checked>
+          <span class="mc-toggle-track"><span class="mc-toggle-thumb"></span></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 5. Datos -->
+    <div class="cfg-section">
+      <div class="cfg-section-title">Datos</div>
+      <button class="cfg-data-btn" onclick="exportProgress()">
+        <i class="ti ti-download"></i> Exportar progreso
+      </button>
+      <button class="cfg-data-btn" onclick="importProgress()">
+        <i class="ti ti-upload"></i> Importar respaldo
+      </button>
+    </div>
+
+    <!-- 6. Acerca de -->
+    <div class="cfg-section cfg-section--about">
+      <div class="cfg-section-title">Acerca de Presence</div>
+      <div class="cfg-about-row">
+        <span>Versión</span>
+        <span class="cfg-about-val">v6.0 Alpha</span>
+      </div>
+      <button class="cfg-about-link">Changelog</button>
+      <button class="cfg-about-link">Enviar comentarios</button>
+      <button class="cfg-about-link cfg-about-link--dim">Política de privacidad</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- PENALTY SCREEN (full-screen, z-index 800) -->
+<div class="penalty-screen" id="penaltyScreen">
+  <div class="penalty-inner">
+    <div class="penalty-avatar-wrap">
+      <img src="assets/Avatar_Rango_E_Penalizacion.png" class="penalty-avatar-img" alt="Penalización">
+    </div>
+    <div class="penalty-header">
+      <div class="penalty-warning">⚠</div>
+      <h2 class="penalty-title">Penalización</h2>
+      <p class="penalty-sub" id="penaltySub">Ayer no cumpliste con la disciplina mínima. Antes de continuar deberás completar la siguiente prueba.</p>
+    </div>
+    <div class="penalty-tasks" id="penaltyTasks"></div>
+    <button class="penalty-cta" id="penaltyCta" onclick="completePenalty()" disabled>
+      Confirmar · He completado las pruebas
+    </button>
+  </div>
+</div>
+
+
 <!-- RESET MODAL -->
 <div class="reset-overlay" id="resetOverlay" onclick="hideReset()"></div>
 <div class="reset-modal" id="resetModal">
