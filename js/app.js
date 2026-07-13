@@ -11,21 +11,18 @@
 
 function bootSystem() {
   const boot = document.getElementById('bootScreen');
-  if (!boot) return;
+
+  const _afterBoot = () => {
+    if (!ST.onboardingDone) openOnboarding();
+    else if (ST.penalty && ST.penalty.pending) openPenaltyScreen();
+  };
+
+  if (!boot) { _afterBoot(); return; }
 
   setTimeout(() => {
     boot.style.opacity    = '0';
     boot.style.transition = 'opacity .8s ease';
-
-    setTimeout(() => {
-      boot.remove();
-      // Después del boot, mostrar pantalla especial si aplica
-      if (!ST.onboardingDone) {
-        openOnboarding();
-      } else if (ST.penalty && ST.penalty.pending) {
-        openPenaltyScreen();
-      }
-    }, 800);
+    setTimeout(() => { boot.remove(); _afterBoot(); }, 800);
   }, 2500);
 }
 
@@ -43,3 +40,19 @@ checkAndGeneratePenalty(_prevVisit);
 if (ST.penalty && ST.penalty.pending) saveState();
 renderAll();
 bootSystem();
+
+// Detecta cambio de día cuando la app queda en segundo plano
+let _currentDay = DateUtils.today();
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  const today = DateUtils.today();
+  if (today === _currentDay) return;
+  const prevDay = _currentDay;
+  _currentDay = today;
+  if (!ST.penalty?.pending) {
+    checkAndGeneratePenalty(prevDay);
+    if (ST.penalty?.pending) { saveState(); openPenaltyScreen(); }
+  }
+  loadState();
+  renderAll();
+});

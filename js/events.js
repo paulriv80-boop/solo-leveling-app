@@ -178,6 +178,20 @@ function completePenalty() {
   renderAll();
 }
 
+function debugSimulatePenalty() {
+  const modeConf = CONFIG.GAME_MODES[ST.gameMode] || CONFIG.GAME_MODES.normal;
+  if (modeConf.penaltyCount === 0) {
+    Toast.show('El Modo Normal no tiene penalizaciones', 'var(--t2)');
+    return;
+  }
+  const pool  = [...CONFIG.PENALIZACIONES].sort(() => Math.random() - 0.5);
+  const tasks = pool.slice(0, modeConf.penaltyCount).map(p => p.id);
+  ST.penalty  = { pending: true, date: DateUtils.today(), tasks, completed: [], lastIds: tasks };
+  saveState();
+  closeSettings();
+  openPenaltyScreen();
+}
+
 function nav(id, btn) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
   const section = el('sec-' + id);
@@ -726,6 +740,7 @@ function toggleCatBlock(blk) {
 // ---- RESET ----
 
 function showReset() {
+  closeSettings(); // cerrar settings si está abierta
   el('resetOverlay')?.classList.add('show');
   el('resetModal')?.classList.add('show');
   const input = el('resetInput');

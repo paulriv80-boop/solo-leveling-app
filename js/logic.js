@@ -94,34 +94,33 @@ function applyDayCompletion() {
  */
 function checkAndGeneratePenalty(prevDate) {
   if (!prevDate) return;
-  if (ST.penalty && ST.penalty.pending) return; // Ya hay una pendiente
+  if (ST.penalty && ST.penalty.pending) return;
 
   const today = DateUtils.today();
-  if (prevDate === today) return; // Misma sesión, sin check
+  if (prevDate === today) return;
 
   const modeConf = CONFIG.GAME_MODES[ST.gameMode] || CONFIG.GAME_MODES.normal;
-  if (modeConf.penaltyCount === 0) return; // Modo Normal no tiene penalizaciones
+  if (modeConf.penaltyCount === 0) return;
 
   const prevMis  = ST.mis[prevDate] || {};
   const donePrev = Object.values(prevMis).filter(v => v === 'done').length;
-  if (donePrev >= modeConf.misionesMin) return; // Umbral cumplido, sin penalización
+  if (donePrev >= modeConf.misionesMin) return;
 
-  // Seleccionar tareas evitando repetir las últimas
-  const lastIds  = (ST.penalty && ST.penalty.lastIds) || [];
-  const pool     = CONFIG.PENALIZACIONES.filter(p => !lastIds.includes(p.id));
+  // Seleccionar tareas evitando repetir las últimas; reset si el pool queda vacío
+  let lastIds = (ST.penalty && ST.penalty.lastIds) || [];
+  let pool    = CONFIG.PENALIZACIONES.filter(p => !lastIds.includes(p.id));
+  if (pool.length < modeConf.penaltyCount) {
+    lastIds = [];
+    pool    = [...CONFIG.PENALIZACIONES];
+  }
+
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   const tasks    = [];
   for (let i = 0; i < modeConf.penaltyCount && i < shuffled.length; i++) {
     tasks.push(shuffled[i].id);
   }
 
-  ST.penalty = {
-    pending:   true,
-    date:      today,
-    tasks,
-    completed: [],
-    lastIds:   tasks,
-  };
+  ST.penalty = { pending: true, date: today, tasks, completed: [], lastIds: tasks };
 }
 
 /**

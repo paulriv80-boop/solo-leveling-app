@@ -4,6 +4,22 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-13 — Sprint 5.3: Ajustes generales
+
+**Decisión 1 — Topbar: `position: fixed` en lugar de `sticky`.**
+
+El topbar usaba `position: sticky; top: 0`. En iOS Safari, `sticky` puede fallar si algún ancestro tiene `overflow` o si el flujo del documento rompe la jerarquía de scroll. El usuario reportó que el header no permanecía visible al hacer scroll. Cambio a `position: fixed; left:0; right:0; width:100%` que garantiza comportamiento en todos los browsers móviles. Compensación: `padding-top: 78px` en `.content` (64px topbar + 14px gap).
+
+**Decisión 2 — Eliminar tab Menú en lugar de vaciarlo.**
+
+El tab Menú contenía: Títulos (placeholder), Configuración (placeholder), Alter Egos y Reset. Alter Egos ya estaba accesible desde el tab Progreso (overlay `#alterOverlay`). Los placeholders no aportaban valor. El Reset se movió a Settings → Zona de Peligro. Eliminar el tab reduce la nav a 4 ítems, más limpia y sin contenido vacío.
+
+**Decisión 3 — Botón debug "Simular penalización" en Settings → Datos.**
+
+El sistema de penalizaciones es difícil de testear manualmente (requiere esperar al día siguiente). Se añadió un botón de debug visible en la sección Datos de Settings para simular instantáneamente una penalización del modo activo. El botón tiene `opacity: .6` para indicar que es una función de desarrollo, no una acción principal.
+
+---
+
 ## 2026-07-12 — Sprint 5.2: Settings, Onboarding, Modos de Juego, Penalizaciones
 
 **Decisión 1 — Un solo overlay de modos compartido (onboarding + settings).**

@@ -211,3 +211,31 @@
 .cfg-about-link--dim {
   color: var(--t3);
 }
+
+/* ---- Zona de Peligro ---- */
+
+.cfg-section--danger .cfg-section-title {
+  color: rgba(255, 80, 80, .7);
+}
+
+.cfg-danger-btn {
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 60, 60, .07);
+  border: 1px solid rgba(255, 60, 60, .22);
+  border-radius: 10px;
+  color: rgba(255, 100, 100, .9);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cfg-danger-btn:active {
+  background: rgba(255, 60, 60, .13);
+}

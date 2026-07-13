@@ -2,6 +2,30 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-13 — sprint 5.3 Ajustes: Logo · Topbar fijo · Penalizaciones · Menú · Tarjetas Modo
+
+**Versión:** v6.0 Alpha — STATE_VERSION 10 (sin cambio de esquema)
+**Archivos:** `css/topbar.css`, `css/layout.css`, `css/settings.css`, `css/gamemodes.css`, `js/logic.js`, `js/app.js`, `js/events.js`, `index.html`
+**Tipo:** Correcciones y mejoras visuales post-prueba
+
+### 7 cambios implementados
+
+1. **Logo más grande.** `.logo-img` height aumentado de 32px a 44px para mayor protagonismo en el header.
+
+2. **Topbar fija (position: fixed).** Cambiado de `sticky` a `fixed` con `left:0; right:0; width:100%` para comportamiento garantizado en iOS Safari. `padding-top` del `.content` ajustado a 78px para compensar.
+
+3. **Sistema de penalizaciones robusto.** Tres mejoras: (a) Fix pool agotado — si `lastIds` deja el pool con menos tareas que las necesarias, se resetea automáticamente y se usa el pool completo. (b) `bootSystem()` ya no retorna early si `#bootScreen` no existe — ahora evalúa penalty/onboarding igual. (c) Listener `visibilitychange` — detecta cambio de día cuando la app queda en segundo plano y genera penalty en ese momento. Añadido botón "Simular penalización (debug)" en Settings → Datos.
+
+4. **Eliminado tab Menú.** El tab "Menú" removido del bottom-nav y el bloque `#sec-menu` eliminado del HTML. Los Alter Egos siguen accesibles desde el tab Progreso (botón → overlay `#alterOverlay`). El botón Reset movido a Settings.
+
+5. **Reset en Configuración.** Nueva sección "Zona de Peligro" al final de Settings con botón rojo de reset. `showReset()` ahora cierra Settings antes de mostrar el modal.
+
+6. **Tarjetas de modo rediseñadas.** Altura mínima aumentada a 200px. Gradiente rediseñado (bottom-to-top cinemático). `.mode-card-body` ahora posicionado absolutamente al fondo de la tarjeta. Añadidas estrellas de dificultad (Normal ★★, Guerrero ★★★★, Monje ★★★★★). Meta chips con fondo glass. Colores de selección por modo (verde/rojo/índigo en lugar de cyan genérico).
+
+7. **Dirección visual Genshin Impact documentada.** Las pantallas deben sentirse como videojuego AAA móvil: gradientes suaves, imágenes full-bleed, glass morphism, buen espacio negativo. Guía registrada para futuros sprints.
+
+---
+
 ## 2026-07-12 — sprint 5.2 Settings · Onboarding · Modos de Juego · Penalizaciones
 
 **Versión:** v6.0 Alpha — STATE_VERSION 9 → **10**

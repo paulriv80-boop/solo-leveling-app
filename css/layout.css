@@ -1,5 +1,5 @@
 /* ---- LAYOUT ---- */
-.content { padding: 14px 14px 80px; max-width: 680px; margin: 0 auto; }
+.content { padding: 78px 14px 80px; max-width: 680px; margin: 0 auto; }
 .sec { display: none; }
 .sec.on { display: block; }
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
