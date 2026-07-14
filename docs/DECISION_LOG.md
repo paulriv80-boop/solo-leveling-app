@@ -4,6 +4,26 @@ Registro de decisiones técnicas importantes: problema, alternativas considerada
 
 ---
 
+## 2026-07-13 — Sprint 5.4: Sistema Rutina
+
+**Decisión 1 — Pilares = MISIONES existentes, no una entidad nueva.**
+
+Alternativa descartada: crear un tipo "pilar" independiente con su propio array en `data.js`. Problema: duplicaría los 20 hábitos y rompería el sistema de XP/atributos existente. Decisión: los Pilares son exactamente las MISIONES del array `MISIONES`. La fuente de verdad sigue siendo `ST.activeMissions`. `ST.pilares` solo añade la capa de configuración por pilar (time, reminderOn, reminderDays) sin duplicar nada. Esto garantiza cero regresiones en XP, coins y atributos.
+
+**Decisión 2 — Camino reemplaza completamente a Propósitos (migración v11).**
+
+Alternativa descartada: mantener `ST.propositos` y añadir `ST.camino` en paralelo. Problema: código duplicado, ambigüedad entre los dos sistemas, doble listado en la vista de misiones. Decisión: migración completa — `ST.camino` reemplaza `ST.propositos`; los IDs en `ST.mis` pasan de `pu_` a `ca_` mediante el bloque de migración v10→v11 que recorre todo el historial. La migración es irreversible pero limpia y sin pérdida de datos.
+
+**Decisión 3 — Guardianes: nuevo tipo de misión con estado 'ok'/'fell' (no 'done'/'skip').**
+
+Las misiones de evitación tienen semántica inversa a los hábitos: en vez de "completar algo", se trata de "resistir algo". Se añade `GUARDIANES_DEFAULT` en `data.js` con 6 predefinidos (IDs `gd_`). El estado diario es `'ok'` (resistió) o `'fell'` (cayó), distinto a `'done'`/`'skip'` de las misiones normales. Esto permite racha independiente por guardián (`guardianStreak()`) y no interfiere con el contador de día verde (`applyDayCompletion` solo cuenta `'done'`). Los guardianes se renderizan como filas propias fuera del swipe, dado que no tienen la misma UX de deslizamiento.
+
+**Decisión 4 — Tap en pilar activo muestra el time picker, no desactiva.**
+
+Primera iteración planeaba: tap en pilar activo → desactivar. Problema: el usuario accidentalmente desactivaría pilares al querer configurarlos. Decisión: tap en pilar activo → abrir time picker inline. Desactivar requiere tocar el badge ✓ dentro de la tarjeta (`deactivatePilar(id, event)` con `stopPropagation`). Separación intencional de "editar" y "eliminar".
+
+---
+
 ## 2026-07-13 — Sprint 5.3: Ajustes generales
 
 **Decisión 1 — Topbar: `position: fixed` en lugar de `sticky`.**

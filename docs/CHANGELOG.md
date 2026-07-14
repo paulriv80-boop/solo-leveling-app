@@ -2,6 +2,34 @@
 
 Formato: fecha, versión/sprint, archivos modificados, cambios. Orden descendente (más reciente arriba).
 
+## 2026-07-13 — sprint 5.4 — Sistema "Rutina": Wizard guiado · Pilares · Goal · Camino · Guardianes · Mapa
+
+**Versión:** v6.1 Alpha — STATE_VERSION 11
+**Archivos:** `js/data.js`, `js/config.js`, `js/state.js`, `js/logic.js`, `js/events.js`, `js/render.js`, `css/rutina.css`, `css/style.css`, `index.html`
+**Tipo:** Feature completa — nuevo sistema central de la app
+
+### Cambios implementados
+
+1. **Wizard Rutina (5 pasos + intro).** El botón `+` del header de misiones se convierte en `⊞` y abre un overlay full-screen (z-700, slide-up) con 6 pasos: Intro → Pilares → Goal → Camino → Guardianes → Mapa. Navegación con dots-indicator, back button y close.
+
+2. **Pilares.** Las 20 MISIONES existentes se presentan como grid de tarjetas con imagen/gradiente. Tap activa/desactiva (fuente de verdad: `activeMissions`). Tap en pilar activo abre time picker inline. `ST.pilares` almacena `{ time, reminderOn, reminderDays }` por misión.
+
+3. **Goal.** Campo de texto libre para un objetivo de largo plazo sin XP. Se guarda en `ST.goal = { text, desc, createdAt }`.
+
+4. **Camino (reemplaza Propósitos).** `ST.camino` reemplaza `ST.propositos`. IDs en `ST.mis` migrados de `pu_` → `ca_`. Mini-form inline para añadir pasos con nombre, hora y frecuencia.
+
+5. **Guardianes.** Nuevo tipo de misión evitativa con 6 predefinidos (`GUARDIANES_DEFAULT` en `data.js`) + opción de añadir personalizados. Selección en grid. En la vista diaria aparecen como fila con botones ✓ (ok) / ✕ (fell). Racha calculada por `guardianStreak()`.
+
+6. **Mapa del sistema.** Vista CSS-only con 4 nodos conectados (Pilares → Goal → Camino → Guardianes). Botón ✏ en cada nodo navega directo al paso de edición.
+
+7. **Time blocks en vista de misiones.** Tab "todos" agrupa misiones por hora: 🌅 Mañana (5-12h) / ☀️ Tarde (12-18h) / 🌙 Noche (18-24h) / 🌑 Guardianes. Misiones sin hora asignada van a Mañana por defecto.
+
+8. **Migración v10 → v11.** `StateMigration.migrate()` convierte: reminders → pilares, propositos → camino (remap pu_ → ca_ en ST.mis de todo el historial).
+
+9. **Eliminaciones.** Removidos del HTML: `m-optional-panel`, `m-add-prop-btn`, `#propositoModal`.
+
+---
+
 ## 2026-07-13 — sprint 5.3 Ajustes: Logo · Topbar fijo · Penalizaciones · Menú · Tarjetas Modo
 
 **Versión:** v6.0 Alpha — STATE_VERSION 10 (sin cambio de esquema)

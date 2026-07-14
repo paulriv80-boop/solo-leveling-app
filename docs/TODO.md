@@ -27,10 +27,11 @@ Lista priorizada de tareas pendientes. Basada en el informe de reconocimiento de
 - [x] **Sprint 5.1 — Refinamiento Premium Misiones:** logo definitivo (`logo final.png`) sin filtros; eliminado ícono flotante y mini-semana; X/90 con barra de progreso cyan animada; botón Rutina (46px circle glass) en header; tabs pill glassmorphism; calendario mensual real por misión (números de día, iniciales L/M/X/J/V/S/D, alineación por día de semana).
 - [x] **Sprint 5.2 — Settings + Modos de Juego + Penalizaciones:** STATE_VERSION 10; onboarding "Elige tu Camino" (3 tarjetas imágenes modo normal/guerrero/monje); 3 modos (Normal 3mis/×1.0, Guerrero 6mis/×1.5, Monje 10mis/×2.0/sin coins); panel Configuración 6 secciones slide-up premium; sistema penalizaciones automático (Guerrero: 1 tarea, Monje: 2 tareas); avatar penalización cuando hay una pendiente.
 - [x] **Sprint 5.3 — Ajustes generales:** logo topbar 44px; topbar `position:fixed`; fix penalizaciones (pool agotado, visibilitychange, bootSystem fallback, botón debug); eliminado tab Menú (Reset → Settings Zona de Peligro); tarjetas modo rediseñadas (200px, gradiente cinemático, estrellas dificultad, colores por modo); dirección visual Genshin Impact documentada.
+- [x] **Sprint 5.4 — Sistema Rutina:** STATE_VERSION 11; wizard 6 pasos (Intro/Pilares/Goal/Camino/Guardianes/Mapa); `GUARDIANES_DEFAULT` en data.js; `ST.pilares/goal/camino/guardianes`; migración v10→v11 (propositos→camino, pu_→ca_ en ST.mis); time blocks en vista de misiones (🌅/☀️/🌙/🌑); `applyGuardianToggle()` y `guardianStreak()` en logic.js; eliminados `m-optional-panel`, `m-add-prop-btn`, `#propositoModal`.
 - [ ] **Imágenes para tarjetas m11–m20:** las misiones opcionales aún usan gradiente de color. Añadir imágenes cuando estén disponibles.
 - [ ] **Avatares de progresión:** generar y asignar imágenes distintas para cada uno de los 6 rangos. Propiedad `avatar` ya preparada en `RANGOS`.
 - [ ] **Sistema de rangos fase 2:** definir lógica de avance de rango (cómo y cuándo sube `ST.rank`). Pendiente de diseño y aprobación antes de implementar.
-- [ ] **Ruta de Propósito:** conectar `ST.propositos[]` al módulo de roadmap (Ruta de Propósito collapsible). Preparar estructura de hitos/progreso visual.
+- [ ] **Ruta de Propósito / Camino:** `ST.camino[]` ya existe; pendiente conectar al roadmap visual con hitos de progreso (más allá del Mapa del sistema actual).
 
 ## Media prioridad
 

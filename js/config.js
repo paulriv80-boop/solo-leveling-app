@@ -6,7 +6,7 @@
 
 const CONFIG = {
   STORAGE_KEY: 'sl_v3',
-  STATE_VERSION: 10,         // v10: modos de juego, penalizaciones, onboarding
+  STATE_VERSION: 11,         // v11: sistema Rutina (pilares, goal, camino, guardianes)
   XP_DIA_MAXIMO: 109,       // Suma XP de las 10 misiones default (m01–m10)
   RACHA_BONUS: [3, 7, 30],  // Umbrales de racha para bonificaciones
 

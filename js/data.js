@@ -379,3 +379,13 @@ const ALTER_EGOS = [
 
 const DAYS_LABELS   = ['L','M','X','J','V','S','D'];
 const MONTHS_LABELS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+
+const GUARDIANES_DEFAULT = [
+  { id:'gd_redes',       name:'Redes Sociales',    icon:'ti-device-mobile-off', desc:'Sin redes sociales hoy' },
+  { id:'gd_nofap',       name:'Nofap',             icon:'ti-shield-check',      desc:'Sin contenido adulto' },
+  { id:'gd_alcohol',     name:'Alcohol / Cigarro', icon:'ti-beer-off',          desc:'Sin alcohol ni tabaco' },
+  { id:'gd_videojuegos', name:'Videojuegos',       icon:'ti-device-gamepad-off',desc:'Sin videojuegos' },
+  { id:'gd_comida',      name:'Comida Chatarra',   icon:'ti-salad',             desc:'Sin comida procesada' },
+  { id:'gd_procras',     name:'Procrastinación', icon:'ti-clock-off',         desc:'Cero procrastinación' },
+];

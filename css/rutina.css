@@ -1,0 +1,425 @@
+/* ============================================================
+   RUTINA — Wizard, Mapa, Pilares, Camino, Guardianes, Time Blocks
+   ============================================================ */
+
+
+/* ---- OVERLAY BASE (full-screen, sólido, z-700) ---- */
+
+.rutina-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  background: var(--bg0);
+  overflow: hidden;
+  transform: translateY(100%);
+  transition: transform .36s cubic-bezier(.4, 0, .2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.rutina-overlay.open { transform: translateY(0); }
+
+/* Nav bar */
+.rutina-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 8px;
+  min-height: 56px;
+  flex-shrink: 0;
+}
+.rutina-back-btn, .rutina-close-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--t0); font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: background .2s;
+}
+.rutina-back-btn:active, .rutina-close-btn:active { background: rgba(255,255,255,.14); }
+
+/* Indicador de paso (dots) */
+.rutina-dots { display: flex; gap: 6px; align-items: center; }
+.rutina-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  transition: background .25s, width .25s;
+}
+.rutina-dot.active { background: var(--c1); width: 18px; border-radius: 3px; }
+
+/* Scroll interno de cada paso */
+.rutina-step {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 20px 100px;
+  max-width: 500px;
+  width: 100%;
+  margin: 0 auto;
+}
+.rutina-step.active { display: flex; }
+
+/* Títulos */
+.rutina-step-title {
+  font-size: 22px; font-weight: 900; color: var(--t0);
+  letter-spacing: -.5px; margin: 0 0 6px;
+}
+.rutina-step-sub {
+  font-size: 12px; color: var(--t3);
+  letter-spacing: .5px; margin: 0 0 24px; line-height: 1.5;
+}
+
+/* CTA botón principal */
+.rutina-cta {
+  display: block; width: 100%;
+  margin-top: 24px; padding: 16px;
+  background: var(--c1); color: #000;
+  font-family: inherit; font-size: 13px;
+  font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;
+  border: none; border-radius: 14px;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: opacity .2s, transform .15s;
+  flex-shrink: 0;
+}
+.rutina-cta:active { transform: scale(.97); }
+.rutina-cta:disabled { opacity: .35; cursor: default; }
+
+
+/* ---- PILARES — grid de misiones ---- */
+
+.pilares-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.pilar-card {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  min-height: 110px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .25s, box-shadow .25s, transform .15s;
+  background: var(--bg2);
+}
+.pilar-card.active {
+  border-color: var(--c1);
+  box-shadow: 0 0 16px rgba(0,245,255,.22);
+  transform: scale(1.02);
+}
+
+.pilar-card-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center top;
+  opacity: .6;
+}
+.pilar-card.active .pilar-card-bg { opacity: .85; }
+
+.pilar-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.85) 0%, rgba(0,0,0,.3) 100%);
+}
+
+.pilar-card-body {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 1; padding: 8px 10px 10px;
+}
+.pilar-card-name {
+  font-size: 11px; font-weight: 700; color: #fff;
+  letter-spacing: .5px; text-transform: uppercase; line-height: 1.2;
+}
+.pilar-card-freq {
+  font-size: 9px; color: rgba(255,255,255,.5);
+  letter-spacing: .3px; margin-top: 2px;
+}
+
+/* Badge de activación (✓) — tap = desactivar */
+.pilar-card-check {
+  position: absolute; top: 8px; right: 8px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--c1); color: #000;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; opacity: 0; z-index: 2;
+  transition: opacity .2s;
+  cursor: pointer;
+}
+.pilar-card.active .pilar-card-check { opacity: 1; }
+
+/* Time picker per pilar */
+.pilar-time-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 10px;
+  margin: 8px 0;
+}
+.pilar-time-lbl { font-size: 11px; color: var(--t2); flex: 1; }
+.pilar-time-input {
+  background: transparent; border: none;
+  color: var(--c1); font-family: inherit; font-size: 12px; font-weight: 700;
+  color-scheme: dark;
+}
+
+
+/* ---- GOAL — input de destino ---- */
+
+.goal-input-wrap { position: relative; margin-bottom: 16px; }
+.goal-input {
+  width: 100%; background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 14px; padding: 18px 16px;
+  color: var(--t0); font-family: inherit; font-size: 16px;
+  font-weight: 700; letter-spacing: -.3px;
+  resize: none; line-height: 1.4;
+  transition: border-color .2s;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+}
+.goal-input:focus {
+  outline: none;
+  border-color: rgba(0,245,255,.4);
+  box-shadow: 0 0 0 2px rgba(0,245,255,.08);
+}
+.goal-input::placeholder { color: var(--t3); font-weight: 500; }
+
+.goal-desc-input {
+  width: 100%; background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 10px; padding: 14px 16px;
+  color: var(--t1); font-family: inherit; font-size: 13px;
+  resize: none; line-height: 1.4;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+}
+.goal-desc-input:focus { outline: none; border-color: rgba(0,245,255,.3); }
+
+
+/* ---- CAMINO — lista de pasos ---- */
+
+.camino-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+
+.camino-step-card {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 14px 16px;
+  transition: border-color .2s;
+}
+.camino-step-card.done {
+  border-color: rgba(0,245,255,.2);
+  background: rgba(0,245,255,.05);
+}
+
+.camino-step-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.2);
+  flex-shrink: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: transparent;
+  transition: all .2s;
+}
+.camino-step-card.done .camino-step-check {
+  background: var(--c1); border-color: var(--c1); color: #000;
+}
+.camino-step-info { flex: 1; }
+.camino-step-name { font-size: 13px; font-weight: 700; color: var(--t0); }
+.camino-step-meta { font-size: 10px; color: var(--t3); margin-top: 2px; }
+
+.camino-add-btn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 14px 16px;
+  background: rgba(0,245,255,.05);
+  border: 1px dashed rgba(0,245,255,.25);
+  border-radius: 12px; color: var(--c1);
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: background .2s;
+  box-sizing: border-box;
+}
+.camino-add-btn:active { background: rgba(0,245,255,.1); }
+
+.camino-form {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(0,245,255,.2);
+  border-radius: 12px; padding: 14px 16px;
+  display: none; flex-direction: column; gap: 10px;
+  margin-top: 8px;
+}
+.camino-form.open { display: flex; }
+.camino-form input, .camino-form select {
+  background: transparent; border: none;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  color: var(--t0); font-family: inherit; font-size: 14px;
+  padding: 6px 0;
+  -webkit-appearance: none;
+}
+.camino-form input:focus, .camino-form select:focus { outline: none; border-color: var(--c1); }
+.camino-form-row { display: flex; gap: 8px; }
+.camino-form-save {
+  background: var(--c1); color: #000;
+  border: none; border-radius: 8px;
+  padding: 10px 20px; font-family: inherit;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ---- GUARDIANES — grid de misiones evitativas ---- */
+
+.guardianes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 16px;
+}
+
+.guardian-card {
+  position: relative;
+  background: rgba(255,255,255,.04);
+  border: 2px solid rgba(255,255,255,.07);
+  border-radius: 14px; padding: 16px 14px;
+  cursor: pointer; text-align: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .25s, background .25s, transform .15s;
+}
+.guardian-card.active {
+  border-color: rgba(160,100,255,.6);
+  background: rgba(140,80,255,.08);
+  box-shadow: 0 0 16px rgba(140,80,255,.2);
+  transform: scale(1.02);
+}
+.guardian-card-icon { font-size: 24px; color: var(--t2); margin-bottom: 6px; transition: color .2s; }
+.guardian-card.active .guardian-card-icon { color: rgba(200,160,255,.9); }
+.guardian-card-name {
+  font-size: 11px; font-weight: 700; color: var(--t1);
+  letter-spacing: .3px; line-height: 1.3; text-transform: uppercase;
+}
+.guardian-card-check {
+  position: absolute; top: 8px; right: 8px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(160,100,255,.9); color: #fff; font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .2s;
+}
+.guardian-card.active .guardian-card-check { opacity: 1; }
+.guardian-card--add { border-style: dashed; border-color: rgba(255,255,255,.15); }
+.guardian-card--add .guardian-card-icon { color: var(--t3); }
+
+
+/* ---- MAPA DEL SISTEMA ---- */
+
+.rutina-mapa {
+  display: flex; flex-direction: column;
+  align-items: stretch; gap: 0; padding: 8px 0 24px;
+}
+
+.mapa-node {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 16px; padding: 16px 18px;
+  position: relative;
+}
+.mapa-node--pilares   { border-color: rgba(0,245,255,.2); }
+.mapa-node--goal      { border-color: rgba(255,184,51,.25); }
+.mapa-node--camino    { border-color: rgba(0,245,255,.15); }
+.mapa-node--guardianes{ border-color: rgba(160,100,255,.2); }
+
+.mapa-node-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.mapa-node-icon { font-size: 20px; }
+.mapa-node-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--t3);
+}
+.mapa-node-title { font-size: 15px; font-weight: 900; color: var(--t0); letter-spacing: -.3px; }
+
+.mapa-node-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.mapa-chip {
+  font-size: 9px; font-weight: 700; color: var(--t2);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px; padding: 3px 9px;
+  letter-spacing: .5px; text-transform: uppercase;
+}
+
+/* Conector vertical entre nodos */
+.mapa-connector {
+  width: 2px; height: 32px;
+  background: linear-gradient(to bottom, rgba(255,255,255,.15), rgba(255,255,255,.05));
+  margin: 0 auto; position: relative;
+}
+.mapa-connector::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 50%;
+  transform: translateX(-50%);
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+}
+
+/* Botón editar nodo */
+.mapa-edit-btn {
+  position: absolute; top: 12px; right: 12px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--t3); font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ---- TIME BLOCKS en la vista de misiones ---- */
+
+.m-time-block { margin-bottom: 20px; }
+.m-time-block-hdr {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 0 10px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--t3);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  margin-bottom: 10px;
+}
+.m-time-block-hdr-emoji { font-size: 14px; }
+.m-time-block-hdr-count {
+  margin-left: auto;
+  background: rgba(255,255,255,.06);
+  border-radius: 20px; padding: 1px 7px;
+  font-size: 9px; color: var(--t3);
+}
+
+/* Filas de guardianes en la vista diaria */
+.m-guardian-row {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px; padding: 14px 16px;
+  margin-bottom: 8px;
+  transition: border-color .2s, background .2s;
+}
+.m-guardian-row.ok   { border-color: rgba(0,200,80,.3);  background: rgba(0,200,80,.05); }
+.m-guardian-row.fell { border-color: rgba(255,60,60,.3);  background: rgba(255,60,60,.05); }
+
+.m-guardian-icon { font-size: 18px; color: var(--t2); flex-shrink: 0; }
+.m-guardian-info { flex: 1; }
+.m-guardian-name { font-size: 13px; font-weight: 700; color: var(--t1); }
+.m-guardian-streak { font-size: 9px; color: var(--t3); margin-top: 2px; }
+
+.m-guardian-btns { display: flex; gap: 6px; }
+.m-guardian-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.05);
+  color: var(--t2); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.m-guardian-row.ok   .m-guardian-btn--ok   { background: rgba(0,200,80,.2);  border-color: rgba(0,200,80,.5);  color: #0dc650; }
+.m-guardian-row.fell .m-guardian-btn--fell { background: rgba(255,60,60,.15); border-color: rgba(255,60,60,.4); color: #ff4455; }

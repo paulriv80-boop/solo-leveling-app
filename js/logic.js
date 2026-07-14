@@ -14,10 +14,10 @@ function xpHoy() {
   const missionXP = MISIONES
     .filter(m => ST.activeMissions.includes(m.id))
     .reduce((sum, m) => sum + (todayMis[m.id] === 'done' ? m.xp : 0), 0);
-  const propXP = (ST.propositos || []).reduce((sum, p) => {
-    return sum + (todayMis['pu_' + p.id] === 'done' ? 25 : 0);
+  const caminoXP = (ST.camino || []).reduce((sum, s) => {
+    return sum + (todayMis['ca_' + s.id] === 'done' ? 25 : 0);
   }, 0);
-  return missionXP + propXP;
+  return missionXP + caminoXP;
 }
 
 /**
@@ -141,6 +141,38 @@ function applyCalendarDayClick(k, mode) {
 
   // Recalcular racha real cada vez que cambia el calendario
   ST.racha = DateUtils.calcRacha(ST.dias);
+}
+
+/**
+ * Marca un guardián como 'ok' (resistió) o 'fell' (cayó) hoy.
+ * Toggle: si ya estaba en el mismo estado, lo desmarca.
+ */
+function applyGuardianToggle(id, status) {
+  const today = DateUtils.today();
+  if (!ST.mis[today]) ST.mis[today] = {};
+  const current = ST.mis[today][id];
+  if (current === status) {
+    delete ST.mis[today][id];
+  } else {
+    ST.mis[today][id] = status;
+  }
+}
+
+/**
+ * Calcula racha de días consecutivos 'ok' para un guardián (máx 90).
+ */
+function guardianStreak(id) {
+  let count = 0;
+  const today = new Date();
+  for (let i = 1; i <= 90; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = d.toLocaleDateString('en-CA');
+    const v = (ST.mis[key] || {})[id];
+    if (v === 'ok') count++;
+    else break;
+  }
+  return count;
 }
 
 /**

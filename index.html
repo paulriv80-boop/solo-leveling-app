@@ -79,8 +79,8 @@
           <div class="days90-bar-fill" id="mDias90Bar" style="width:0%"></div>
         </div>
       </div>
-      <button class="m-rutina-btn" onclick="openAddMision()" aria-label="Gestionar Rutina">
-        <i class="ti ti-plus" aria-hidden="true"></i>
+      <button class="m-rutina-btn" onclick="openRutina()" aria-label="Gestionar Rutina">
+        <i class="ti ti-layout-navbar" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -99,20 +99,6 @@
 
     <!-- Lista de misiones (inyectada por renderMisiones) -->
     <div id="mListaMisiones"></div>
-
-    <!-- Panel misiones opcionales (m11-m20) -->
-    <div class="m-optional-panel" style="margin-top:16px">
-      <div class="m-optional-hdr" onclick="toggleOpcionalesPanel()">
-        <span>+ Misiones opcionales</span>
-        <span id="mOpcionalesChevron">▾</span>
-      </div>
-      <div class="collapsible-body" id="mOpcionalesBody" style="padding:0"></div>
-    </div>
-
-    <!-- Botón agregar propósito -->
-    <button class="m-add-prop-btn" onclick="openPropositoForm()" style="margin-top:8px">
-      + Agregar Propósito
-    </button>
 
 
   </div>
@@ -368,42 +354,99 @@
 </div>
 
 
-<!-- PROPÓSITO MODAL (slide-up) -->
-<div class="attrs-overlay" id="propositoModal" style="z-index:600">
-  <div class="attrs-overlay-scroll">
-    <div class="attrs-overlay-hdr">
-      <div class="attrs-overlay-title">Nuevo Propósito</div>
-      <button class="attrs-close-btn" onclick="closePropositoForm()">
-        <i class="ti ti-x" aria-hidden="true"></i>
-      </button>
+<!-- RUTINA OVERLAY (wizard + mapa) -->
+<div class="rutina-overlay" id="rutinaOverlay">
+
+  <!-- Nav superior: back + dots + close -->
+  <div class="rutina-nav">
+    <button class="rutina-back-btn" id="rutinaBackBtn" onclick="rutinaBack()">
+      <i class="ti ti-arrow-left"></i>
+    </button>
+    <div class="rutina-dots" id="rutinaDots"></div>
+    <button class="rutina-close-btn" onclick="closeRutina()">
+      <i class="ti ti-x"></i>
+    </button>
+  </div>
+
+  <!-- Paso 0: Intro -->
+  <div class="rutina-step" id="rutinaStep0">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+      <div style="font-size:48px;margin-bottom:24px;text-align:center">⚔️</div>
+      <h2 class="rutina-step-title" style="text-align:center">Tu Sistema</h2>
+      <p class="rutina-step-sub" style="text-align:center;max-width:280px;margin-left:auto;margin-right:auto">
+        Aquí construyes el sistema que te transforma diariamente.<br>Hábitos. Objetivo. Camino. Guardianes.
+      </p>
     </div>
-    <div style="display:flex;flex-direction:column;gap:14px">
-      <div>
-        <div class="slbl" style="margin-bottom:6px">Nombre *</div>
-        <input id="propNombreInput" class="proposito-input" placeholder="ej: Aprender Python">
-      </div>
-      <div>
-        <div class="slbl" style="margin-bottom:6px">Descripción</div>
-        <input id="propDescInput" class="proposito-input" placeholder="ej: Curso completo de Python">
-      </div>
-      <div>
-        <div class="slbl" style="margin-bottom:6px">Objetivo / Meta</div>
-        <input id="propObjetivoInput" class="proposito-input" placeholder="ej: Completar 1 módulo por semana">
-      </div>
-      <div>
-        <div class="slbl" style="margin-bottom:6px">Frecuencia</div>
-        <select id="propFrecSelect" class="proposito-input" style="padding:10px 12px;appearance:none">
+    <button class="rutina-cta" onclick="rutinaNext()">Construir mi Sistema</button>
+  </div>
+
+  <!-- Paso 1: Pilares -->
+  <div class="rutina-step" id="rutinaStep1">
+    <h2 class="rutina-step-title">🌳 Pilares</h2>
+    <p class="rutina-step-sub">Selecciona los hábitos que definen tu identidad diaria. Toca uno activo para configurar su hora.</p>
+    <div class="pilares-grid" id="pilaresGrid"></div>
+    <div class="pilar-time-row" id="pilarTimeRow" style="display:none">
+      <i class="ti ti-clock" style="color:var(--c1);font-size:14px"></i>
+      <span class="pilar-time-lbl">Hora de <span id="pilarTimeName">—</span></span>
+      <input type="time" class="pilar-time-input" id="pilarTimeInput" onchange="savePilarTime()">
+    </div>
+    <button class="rutina-cta" onclick="rutinaNext()">Siguiente</button>
+  </div>
+
+  <!-- Paso 2: Goal -->
+  <div class="rutina-step" id="rutinaStep2">
+    <h2 class="rutina-step-title">🎯 Goal</h2>
+    <p class="rutina-step-sub">Un solo objetivo de largo plazo. Tu destino define el camino.</p>
+    <div class="goal-input-wrap">
+      <textarea class="goal-input" id="goalText" rows="2"
+        placeholder="¿Cuál es tu gran objetivo?"></textarea>
+    </div>
+    <textarea class="goal-desc-input" id="goalDesc" rows="2"
+      placeholder="Describe brevemente por qué importa... (opcional)"></textarea>
+    <button class="rutina-cta" onclick="rutinaNext()">Siguiente</button>
+  </div>
+
+  <!-- Paso 3: Camino -->
+  <div class="rutina-step" id="rutinaStep3">
+    <h2 class="rutina-step-title">🛤 Camino</h2>
+    <p class="rutina-step-sub" id="caminoSub">Los pasos que debes dar para llegar a tu Goal.</p>
+    <div class="camino-list" id="caminoList"></div>
+    <button class="camino-add-btn" onclick="showCaminoForm()">
+      <i class="ti ti-plus"></i> Añadir paso
+    </button>
+    <div class="camino-form" id="caminoForm">
+      <input type="text" id="caminoNombre" placeholder="Nombre del paso (ej. Aprender Python)" maxlength="60">
+      <div class="camino-form-row">
+        <input type="time" id="caminoTime"
+          style="flex:1;background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.1);color:var(--c1);font-family:inherit;padding:6px 0">
+        <select id="caminoFreq"
+          style="flex:1;background:var(--bg2);border:1px solid rgba(255,255,255,.1);color:var(--t0);border-radius:8px;padding:6px 8px;font-family:inherit">
           <option value="diario">Diario</option>
-          <option value="semanal">Semanal</option>
+          <option value="semana">Semanal</option>
           <option value="libre">Libre</option>
         </select>
       </div>
-      <button class="av-btn" style="margin-top:4px" onclick="saveProposito()">
-        <i class="ti ti-check" aria-hidden="true"></i>
-        Guardar Propósito
-      </button>
+      <button class="camino-form-save" onclick="saveCaminoStep()">Guardar paso</button>
     </div>
+    <button class="rutina-cta" onclick="rutinaNext()">Siguiente</button>
   </div>
+
+  <!-- Paso 4: Guardianes -->
+  <div class="rutina-step" id="rutinaStep4">
+    <h2 class="rutina-step-title">🌑 Guardianes</h2>
+    <p class="rutina-step-sub">Lo que debes evitar para mantener integridad. Cada día que resistas suma a tu racha.</p>
+    <div class="guardianes-grid" id="guardianesGrid"></div>
+    <button class="rutina-cta" onclick="rutinaNext()">Ver mi Sistema</button>
+  </div>
+
+  <!-- Paso 5: Mapa -->
+  <div class="rutina-step" id="rutinaStep5">
+    <h2 class="rutina-step-title" style="text-align:center;margin-bottom:4px">Tu Sistema</h2>
+    <p class="rutina-step-sub" style="text-align:center">Esta es la arquitectura de tu transformación.</p>
+    <div class="rutina-mapa" id="rutinaMapa"></div>
+    <button class="rutina-cta" onclick="finishRutina()">Comenzar mi día</button>
+  </div>
+
 </div>
 
 

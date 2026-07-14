@@ -3,8 +3,8 @@
 ## 1. Estado general
 
 - **Nombre de la app:** **Presence** (anteriormente "THE SYSTEM").
-- **Versión visible (UI):** v6.0 Alpha.
-- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 10` (`js/config.js`).
+- **Versión visible (UI):** v6.1 Alpha.
+- **Versión de esquema de estado:** `CONFIG.STATE_VERSION = 11` (`js/config.js`).
 - **Producción:** desplegado en GitHub Pages.
   - App: https://paulriv80-boop.github.io/solo-leveling-app
   - Repo: https://github.com/paulriv80-boop/solo-leveling-app
@@ -66,7 +66,7 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 
 | Tab | Descripción |
 |---|---|
-| **Misiones** (home) | Topbar HUD (XP+Coins+Settings); logo piedra-tallada; header X/90 premium; mini calendario 7 días; 4 tabs (To-dos / Hechos / Saltados / botón+); tarjetas swipe Tinder con badge racha/freq/dif + botón chevron para expandir panel de historial (calendario 30d, estadísticas, recordatorio); panel misiones opcionales (+); botón Agregar Propósito |
+| **Misiones** (home) | Topbar HUD (XP+Coins+Settings); logo piedra-tallada; header X/90 premium; 3 tabs (To-dos / Hechos / Saltados); tab "todos" agrupa por time blocks (🌅 Mañana / ☀️ Tarde / 🌙 Noche / 🌑 Guardianes); tarjetas swipe con badge racha/freq/dif + historial expandible; bloque Guardianes con botones ok/fell y racha; botón ⊞ abre wizard Rutina |
 | **Progreso** (antes Stats) | Avatar full-screen con aura pulsante logo Presence; badge rango; X/90 top-right; botón Tienda + botón Trofeo (derecha); overlay Tienda: canje de monedas de sombra; overlay Atributos: radar pentagonal (5 categorías, colapsables) + barras luminosas; overlay Alter Egos; overlay Rangos |
 | **Comunidad** | Placeholder — arquitectura para rankings, eventos globales y desafíos cooperativos (futuro) |
 | **Tools** | Grid de herramientas Coming Soon: IA Mentor (destacado), Pomodoro, Respiración, Workout, Diario, Visualización, Temporizador, Meditación |
@@ -80,8 +80,12 @@ Capas según las reglas del proyecto (Datos / Estado / Lógica de negocio / Pres
 - **10 atributos** (`ST.stats`): Fuerza, Agilidad, Vitalidad, Serenidad, Confianza, Intelecto, Claridad, Conexión, Disciplina, Empatía. Organizados en 5 categorías (`CATEGORIES` en `data.js`): Cuerpo (3) / Mente (1) / Presencia (2) / Enfoque (1) / Vínculo (3).
 - **Lógica de barras:** `attr_value % 5` = barras llenas del atributo (ciclos de 5). Puntaje de categoría = `sum(floor(attr/5))` para attrs en esa categoría.
 - **20 misiones fijas** (`MISIONES` array en `data.js`): m01–m10 visibles (con imagen de fondo), m11–m20 opcionales. Propiedades: `cats:[{cat, stars}]` (visual + mapeo de atributos), `freq` (string: 'Diario'/'3x/sem'/etc.), `dif` (1–5, estático), `img` (ruta asset, solo m01–m10).
-- **Sistema Propósito:** `ST.propositos[]` = array de objetos `{id, name, desc, objetivo, frecuencia, progreso, created}`. Cada propósito genera una tarjeta swipe diaria con XP=25.
-- **Estado de misión:** `ST.mis[fecha][id]` = `'done'` | `'skip'` | `undefined`.
+- **Sistema Rutina (v11):** centro de la app — wizard 6 pasos (Intro/Pilares/Goal/Camino/Guardianes/Mapa). `ST.rutina.configured` controla si se muestra el mapa directo o el intro.
+  - `ST.pilares[mId] = { time, reminderOn, reminderDays }` — configuración por pilar.
+  - `ST.goal = { text, desc, createdAt }` — objetivo de largo plazo.
+  - `ST.camino[]` = array `{id, name, desc, time, freq, duration, reminderOn, reminderDays, done, createdAt}`. Reemplaza `ST.propositos`. IDs en `ST.mis` con prefijo `ca_`.
+  - `ST.guardianes[]` = misiones de evitación; `id` con prefijo `gd_`; `ST.mis[fecha][id]` = `'ok'` | `'fell'`.
+- **Estado de misión:** `ST.mis[fecha][id]` = `'done'` | `'skip'` | `'ok'` (guardián resistió) | `'fell'` (guardián cayó) | `undefined`.
 - **Monedas (`ST.coins`):** máx. 26c/día según misiones completadas. Se gastan en la Tienda.
 - **Operator Level:** `getLevel(totalXP)` calcula nivel con progresión escalada (Nivel 1→2: 200 XP, +150 XP por cada nivel adicional). Se muestra en Inicio con barra de progreso.
 - **Misiones auto-reset:** cada nuevo día local (no UTC) el día actual empieza desde cero. Almacenamiento: `ST.mis['YYYY-MM-DD']`.
@@ -112,6 +116,7 @@ Todas las descritas en la sección 4, con persistencia completa en `localStorage
 | v7→v8 | `energia→vitalidad`, `conocimiento→intelecto`, `espiritualidad→conexion`; `propositos[]`; `activeMissions[]`; limpia `ST.mis` |
 | v8→v9 | Añade `empatia: 0` a `ST.stats` (3er atributo de Vínculo) |
 | v9→v10 | Añade `gameMode`, `onboardingDone`, `settingsPrefs`, `penalty` al estado |
+| v10→v11 | Sistema Rutina: añade `goal`, `rutina`, `pilares`, `camino`, `guardianes`; migra `reminders→pilares`; migra `propositos→camino`; remap `pu_→ca_` en `ST.mis` de todo el historial |
 
 > **Sprint 4.3 (sin cambio de STATE_VERSION):** bug `calcDias90` corregido, logo con aura pulsante color-rango, tab Progreso, categorías colapsables, Tienda en overlay de Progreso, badges racha/freq/dif en misiones, imágenes de fondo m01–m10.
 > **Sprint 4.4 (sin cambio de STATE_VERSION):** botón Rango compacto (44×44, columna derecha, encima de Tienda), swipe de misiones sin deformación de viewport (`html { overflow-x: hidden }`), logo con efecto piedra tallada estático (sin animación, sin neón), nuevos assets `final/logo.png` y `final/solo_icon.png`, logo añadido en home de misiones.

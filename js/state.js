@@ -13,18 +13,24 @@ const DEFAULT_STATE = {
     fuerza: 0, agilidad: 0, vitalidad: 0, serenidad: 0,
     confianza: 0, intelecto: 0, claridad: 0, conexion: 0, disciplina: 0, empatia: 0,
   },
-  mis: {},            // { 'YYYY-MM-DD': { misionId: 'done'|'skip' } }
+  mis: {},            // { 'YYYY-MM-DD': { misionId: 'done'|'skip'|'ok'|'fell' } }
   zona: {},           // { 'YYYY-MM-DD': { fell: bool } }
   dias: {},           // { 'YYYY-MM-DD': 'green'|'red'|'gold'|'blue' }
   rank: 0,
   activeMissions: ['m01','m02','m03','m04','m05','m06','m07','m08','m09','m10'],
-  propositos: [],     // [{ id, name, desc, objetivo, frecuencia, progreso, created }]
+  propositos: [],     // [{ id, name, desc, objetivo, frecuencia, progreso, created }] — deprecated en v11
   alterActive: null,
   lastVisit: null,
   gameMode: 'normal',
   onboardingDone: false,
   settingsPrefs: { animations: true, sounds: false, vibration: true, notifications: false },
   penalty: { pending: false, date: null, tasks: [], completed: [], lastIds: [] },
+  // v11 — Sistema Rutina
+  goal:       { text: '', desc: '', createdAt: null },
+  rutina:     { configured: false },
+  pilares:    {},   // { mId: { time: null, reminderOn: false, reminderDays: [] } }
+  camino:     [],   // [{ id, name, desc, time, freq, duration, reminderOn, reminderDays, done, createdAt }]
+  guardianes: [],   // [{ id, name, icon, custom: bool, createdAt }]
 };
 
 // Estado activo en memoria — única fuente de verdad
@@ -152,6 +158,52 @@ const StateMigration = {
       raw.onboardingDone = raw.onboardingDone !== undefined ? raw.onboardingDone : false;
       raw.settingsPrefs  = raw.settingsPrefs  || { animations: true, sounds: false, vibration: true, notifications: false };
       raw.penalty        = raw.penalty        || { pending: false, date: null, tasks: [], completed: [], lastIds: [] };
+    }
+
+    // v10 → v11: sistema Rutina (pilares, goal, camino, guardianes)
+    if (version < 11) {
+      raw.goal       = raw.goal       || { text: '', desc: '', createdAt: null };
+      raw.rutina     = raw.rutina     || { configured: false };
+      raw.pilares    = raw.pilares    || {};
+      raw.guardianes = raw.guardianes || [];
+
+      // Migrar reminders existentes a pilares (tiempo y recordatorio por misión)
+      if (raw.reminders) {
+        Object.keys(raw.reminders).forEach(id => {
+          if (!raw.pilares[id]) raw.pilares[id] = {};
+          raw.pilares[id].time         = raw.reminders[id].time    || null;
+          raw.pilares[id].reminderOn   = raw.reminders[id].enabled || false;
+          raw.pilares[id].reminderDays = raw.reminders[id].days    || [];
+        });
+      }
+
+      // Migrar propositos → camino
+      raw.camino = (raw.propositos || []).map(p => ({
+        id:          p.id,
+        name:        p.name || '',
+        desc:        p.desc || '',
+        time:        null,
+        freq:        p.frecuencia || 'diario',
+        duration:    null,
+        reminderOn:  false,
+        reminderDays:[],
+        done:        false,
+        createdAt:   p.created || null,
+      }));
+
+      // Remap ST.mis: pu_XXX → ca_XXX para todos los días históricos
+      if (raw.mis) {
+        Object.keys(raw.mis).forEach(date => {
+          const dayObj = raw.mis[date];
+          Object.keys(dayObj).forEach(k => {
+            if (k.startsWith('pu_')) {
+              const newKey = 'ca_' + k.slice(3);
+              dayObj[newKey] = dayObj[k];
+              delete dayObj[k];
+            }
+          });
+        });
+      }
     }
 
     raw.version = CONFIG.STATE_VERSION;

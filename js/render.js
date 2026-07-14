@@ -262,27 +262,72 @@ function renderMisiones() {
   const today    = DateUtils.today();
   const todayMis = ST.mis[today] || {};
 
-  // Lista combinada: misiones activas + propósitos
+  // Lista combinada: misiones activas + camino (reemplaza propositos)
   const active = MISIONES.filter(m => (ST.activeMissions || []).includes(m.id));
-  const propMissions = (ST.propositos || []).map(p => ({
-    id: 'pu_' + p.id, name: p.name || 'Propósito', desc: p.objetivo || '',
-    xp: 25, coins: 2, isProp: true, propId: p.id,
-    cats: [{ cat:'mente', stars:3 }, { cat:'enfoque', stars:2 }, { cat:'vinculo', stars:1 }],
+  const caminoMissions = (ST.camino || []).filter(s => !s.done).map(s => ({
+    id: 'ca_' + s.id, name: s.name, desc: s.desc || '',
+    xp: 25, coins: 2, isCamino: true, caminoId: s.id,
+    time: s.time,
+    cats: [{ cat:'enfoque', stars:3 }, { cat:'mente', stars:2 }],
   }));
-  const all = [...active, ...propMissions];
+  const all = [...active, ...caminoMissions];
 
   const todos   = all.filter(m => !todayMis[m.id]);
   const done    = all.filter(m => todayMis[m.id] === 'done');
   const skipped = all.filter(m => todayMis[m.id] === 'skip');
 
-  const list = _mActiveTab === 'done' ? done : _mActiveTab === 'skip' ? skipped : todos;
-
   const container = el('mListaMisiones');
   if (container) {
-    container.innerHTML = list.length
-      ? list.map(m => buildMisionCard(m)).join('')
-      : `<div class="m-empty">No hay misiones en esta sección</div>`;
-    if (typeof attachSwipeHandlers === 'function') attachSwipeHandlers(_mActiveTab);
+    if (_mActiveTab === 'done') {
+      container.innerHTML = done.length
+        ? done.map(m => buildMisionCard(m)).join('')
+        : `<div class="m-empty">No hay misiones hechas hoy</div>`;
+      if (typeof attachSwipeHandlers === 'function') attachSwipeHandlers(_mActiveTab);
+    } else if (_mActiveTab === 'skip') {
+      container.innerHTML = skipped.length
+        ? skipped.map(m => buildMisionCard(m)).join('')
+        : `<div class="m-empty">No hay misiones saltadas hoy</div>`;
+      if (typeof attachSwipeHandlers === 'function') attachSwipeHandlers(_mActiveTab);
+    } else {
+      // Tab "todos" — agrupar por bloque de tiempo
+      const blocks = { manana: [], tarde: [], noche: [] };
+      todos.forEach(m => {
+        const t = m.time || (ST.pilares || {})[m.id]?.time || null;
+        blocks[_getTimeBlock(t)].push(m);
+      });
+
+      const blockDefs = [
+        { key: 'manana', emoji: '🌅', label: 'Mañana' },
+        { key: 'tarde',  emoji: '☀️',  label: 'Tarde'  },
+        { key: 'noche',  emoji: '🌙',  label: 'Noche'  },
+      ];
+
+      let html = blockDefs
+        .filter(b => blocks[b.key].length > 0)
+        .map(b => `<div class="m-time-block">
+          <div class="m-time-block-hdr">
+            <span class="m-time-block-hdr-emoji">${b.emoji}</span>
+            <span>${b.label}</span>
+            <span class="m-time-block-hdr-count">${blocks[b.key].length}</span>
+          </div>
+          ${blocks[b.key].map(m => buildMisionCard(m)).join('')}
+        </div>`).join('');
+
+      // Bloque Guardianes
+      const activeGuardianes = ST.guardianes || [];
+      if (activeGuardianes.length > 0) {
+        html += `<div class="m-time-block">
+          <div class="m-time-block-hdr">
+            <span class="m-time-block-hdr-emoji">🌑</span>
+            <span>Guardianes</span>
+          </div>
+          ${activeGuardianes.map(g => _buildGuardianRow(g)).join('')}
+        </div>`;
+      }
+
+      container.innerHTML = html || `<div class="m-empty">No hay misiones pendientes</div>`;
+      if (typeof attachSwipeHandlers === 'function') attachSwipeHandlers(_mActiveTab);
+    }
   }
 
   // Actualizar contadores de tabs
@@ -442,6 +487,34 @@ function buildMisionCard(m) {
           </div>
         </div>
       </div>
+    </div>
+  </div>`;
+}
+
+
+function _getTimeBlock(time) {
+  if (!time) return 'manana';
+  const h = parseInt(time.split(':')[0], 10);
+  if (h >= 5  && h < 12) return 'manana';
+  if (h >= 12 && h < 18) return 'tarde';
+  return 'noche';
+}
+
+function _buildGuardianRow(g) {
+  const today  = DateUtils.today();
+  const status = (ST.mis[today] || {})[g.id] || '';
+  const streak = guardianStreak(g.id);
+  return `<div class="m-guardian-row ${status}" id="gdr-${g.id}">
+    <i class="ti ${g.icon} m-guardian-icon"></i>
+    <div class="m-guardian-info">
+      <div class="m-guardian-name">${g.name}</div>
+      ${streak > 0 ? `<div class="m-guardian-streak">🔥 ${streak} días sin caer</div>` : ''}
+    </div>
+    <div class="m-guardian-btns">
+      <button class="m-guardian-btn m-guardian-btn--ok" title="Resistí"
+        onclick="toggleGuardianDay('${g.id}','ok')">✓</button>
+      <button class="m-guardian-btn m-guardian-btn--fell" title="Caí"
+        onclick="toggleGuardianDay('${g.id}','fell')">✕</button>
     </div>
   </div>`;
 }
